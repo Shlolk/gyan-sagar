@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:;">
+    <title>QuizQuest Kids - Adventure Learning for Kids</title>
+    
+    <!-- External CSS -->
+    <link rel="stylesheet" href="styles.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <!-- HEADER / NAVIGATION -->
+    <header class="header">
+        <div class="header-container">
+            <!-- Logo Section -->
+            <div class="logo-section">
+                <div class="logo-icon">🎮</div>
+                <div class="logo-text">
+                    <h1>QuizQuest Kids</h1>
+                    <p>Making learning an adventure for every child</p>
+                </div>
+            </div>
+
+            <!-- Navigation Menu -->
+            <nav class="nav-menu">
+                <a href="#home" class="nav-link active">Home</a>
+                <a href="#achievements" class="nav-link">Achievements</a>
+                <a href="#how-to-play" class="nav-link">How to Play</a>
+            </nav>
+
+            <!-- User Section -->
+            <div class="user-section">
+                <span class="score-badge">
+                    <i class="fas fa-star"></i> 1,250
+                </span>
+                <div class="user-avatar">👧</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+        <!-- HERO SECTION -->
+        <section class="hero-section" id="home">
+            <div class="hero-wrapper">
+                <div class="hero-left">
+                    <span class="age-badge">Ages 5-12</span>
+                    <h2 class="hero-title">Ready for an<br>Adventure?</h2>
+                    <p class="hero-description">Join Robo-Kid and friends on the ultimate quest for knowledge!</p>
+                    <button class="btn btn-primary" id="startBtn">
+                        <i class="fas fa-play"></i> START PLAYING!
+                    </button>
+                </div>
+                <div class="hero-right">
+                    <div class="hero-mascot">
+                        <img src="robot.png" alt="Robo-Kid mascot" class="mascot-image">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CHOOSE YOUR WORLD SECTION -->
+        <section class="worlds-section" id="how-to-play">
+            <h2 class="section-title">Choose Your World</h2>
+            <p class="section-subtitle">Where will your curiosity take you today?</p>
+            
+            <div class="worlds-grid">
+                <!-- Jungle Adventure Card -->
+                <div class="world-card jungle-card">
+                    <div class="card-image"><img src="jungle.png" alt="Jungle Adventure" class="card-img"></div>
+                    <div class="card-badge jungle-badge">🎯</div>
+                    <h3 class="card-title">Jungle Adventure</h3>
+                    <p class="card-description">Math & counting questions - Ages 4-7</p>
+                    <a href="jungle.html" class="btn btn-secondary btn-green">
+                        <i class="fas fa-arrow-right"></i> Explore Now
+                    </a>
+                </div>
+
+                <!-- Space Quest Card -->
+                <div class="world-card space-card">
+                    <div class="card-image"><img src="space.png" alt="Space Quest" class="card-img"></div>
+                    <div class="card-badge space-badge">🚀</div>
+                    <h3 class="card-title">Space Quest</h3>
+                    <p class="card-description">Solar system & planets - Ages 5-8</p>
+                    <a href="space.html" class="btn btn-secondary btn-blue">
+                        <i class="fas fa-arrow-right"></i> Explore Now
+                    </a>
+                </div>
+
+                <!-- Pirate Island Card -->
+                <div class="world-card pirate-card">  
+                      <div class="card-image"><img src="pirate.png" alt="Pirate Island" class="card-img"></div>
+                    <div class="card-badge pirate-badge">🏴‍☠️</div>
+                    <h3 class="card-title">Pirate Island</h3>
+                    <p class="card-description">Logic & riddles - Ages 6-9</p>
+                    <a href="pirate.html" class="btn btn-secondary btn-orange">
+                        <i class="fas fa-arrow-right"></i> Explore Now
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- FEATURES / BENEFITS SECTION -->
+        <section class="features-section" id="achievements">
+            <div class="features-wrapper">
+                <div class="features-left">
+                    <span class="badge">Safe & Educational</span>
+                    <h2 class="features-title">Learning that feels like playtime!</h2>
+                    
+                    <div class="features-list">
+                        <div class="feature-item">
+                            <i class="fas fa-star"></i>
+                            <p>Curated content for early childhood development</p>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-cube"></i>
+                            <p>Interactive 3D visuals that spark imagination</p>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-medal"></i>
+                            <p>Rewards and badges to build confidence</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="features-right">
+                    <div class="phone-mockup">
+                        <img src="phone-mockup.png" alt="QuizQuest Mobile App" class="phone-image">
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>QuizQuest Kids</h4>
+                <p>Making learning an adventure for every child!</p>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="jungle.html">Jungle Adventure</a></li>
+                    <li><a href="space.html">Space Quest</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Fun Themes</h4>
+                <ul>
+                    <li><a href="jungle.html">🌿 Jungle Adventure</a></li>
+                    <li><a href="space.html">🚀 Space Quest</a></li>
+                    <li><a href="pirate.html">🏴‍☠️ Pirate Island</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 QuizQuest Kids. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- SCRIPT -->
+    <script src="quiz.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:;">
+    <title>Pirate Island - QuizQuest Kids</title>
+    
+    <!-- External CSS -->
+    <link rel="stylesheet" href="styles.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <!-- PIRATE VIDEO BACKGROUND -->
+    <video class="pirate-video-bg" autoplay muted loop playsinline>
+        <source src="From KlickPin CF Pin these clever cozy dessert tips that look high-end but stay practical with realistic ideas for busy days and small budgets and create a look - Pin-936678422514708774.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+
+
+
+    <!-- QUIZ MODAL SCREEN - FULL SCREEN FOR PIRATE -->
+    <div class="quiz-modal full-screen-quiz" id="quizModal">
+        <div class="quiz-container">
+            <!-- Quiz Screen -->
+            <div class="quiz-screen" id="quizScreen">
+                <!-- Header -->
+                <div class="quiz-header">
+                    <a href="index.html" class="btn-close" title="Back to Home"><i class="fas fa-times"></i></a>
+                    <div class="quiz-title" id="quizTitle">🏴‍☠️ Pirate Island</div>
+                    <div class="quiz-stats">
+                        <span class="score-display">Score: <span id="scoreDisplay">0</span>/5</span>
+                    </div>
+                </div>
+
+                <!-- Progress Bar -->
+                <div class="progress-container">
+                    <div class="progress-bar" id="progressBar"></div>
+                </div>
+                <div class="question-counter" id="questionCounter">Question 1 of 5</div>
+
+                <!-- Question -->
+                <div class="question-box" id="questionBox">
+                    <h3 id="questionText">Question text here</h3>
+                </div>
+
+                <!-- Options -->
+                <div class="options-container" id="optionsContainer"></div>
+
+                <!-- Feedback -->
+                <div class="feedback-box hidden" id="feedbackBox">
+                    <div class="feedback-content" id="feedbackContent"></div>
+                </div>
+
+                <!-- Next Button -->
+                <button class="btn btn-primary btn-next hidden" id="nextBtn">
+                    Next Question <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+
+            <!-- Results Screen -->
+            <div class="results-screen hidden" id="resultsScreen">
+                <div class="results-content">
+                    <div class="results-emoji" id="resultsEmoji">🎉</div>
+                    <h2 class="results-title" id="resultsTitle">Awesome Job!</h2>
+                    <div class="final-score" id="finalScore">You got 5 out of 5 correct!</div>
+                    <div class="results-message" id="resultsMessage">You're a quiz champion! 🏆</div>
+                    
+                    <div class="results-buttons">
+                        <button class="btn btn-primary" id="playAgainBtn">
+                            <i class="fas fa-redo"></i> Play Again
+                        </button>
+                        <button class="btn btn-secondary" id="backToWorldsBtn">
+                            <i class="fas fa-arrow-left"></i> Back to Worlds
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confetti Container -->
+    <div id="confetti-container"></div>
+
+
+    <!-- SCRIPT -->
+    <script>
+        // Auto-initialize pirate quiz when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set the quiz world to pirate
+            const quizData = {
+                pirate: {
+                    title: "🏴‍☠️ Pirate Island",
+                    color: "#ff9500",
+                    theme: "pirate",
+                    questions: [
+                        {
+                            question: "A pirate has 3 gold coins. He finds 4 more. How many total?",
+                            options: ["5", "6", "7", "8"],
+                            correct: "7",
+                            explanation: "3 + 4 = 7 gold coins! Treasure found! 💰"
+                        },
+                        {
+                            question: "What is the opposite of 'land'?",
+                            options: ["Sky", "Sea", "Ship", "Beach"],
+                            correct: "Sea",
+                            explanation: "Sea is the opposite of land! Pirates sail the seas! ⛵"
+                        },
+                        {
+                            question: "If a treasure map says 'walk 5 steps north, then 3 steps south', how many steps from start?",
+                            options: ["8 steps north", "2 steps north", "5 steps south", "3 steps north"],
+                            correct: "2 steps north",
+                            explanation: "5 north - 3 south = 2 steps north! Smart pirate! 🗺️"
+                        },
+                        {
+                            question: "A pirate ship has 8 cannons. 3 are broken. How many work?",
+                            options: ["4", "5", "6", "8"],
+                            correct: "5",
+                            explanation: "8 - 3 = 5 working cannons! Your ship is ready! ⚔️"
+                        },
+                        {
+                            question: "What do pirates say instead of 'hello'?",
+                            options: ["Yo", "Ahoy", "Shiver me timbers", "Matey"],
+                            correct: "Ahoy",
+                            explanation: "Ahoy, matey! Classic pirate greeting! 🏴‍☠️"
+                        }
+                    ]
+                }
+            };
+
+            // Initialize pirate quiz
+            window.currentQuiz = quizData.pirate;
+            window.currentQuestionIndex = 0;
+            window.score = 0;
+            window.quizActive = true;
+            window.answered = false;
+
+            // Update theme
+            document.querySelector(".quiz-container").className = "quiz-container theme-pirate";
+            
+            // Load first question
+            loadQuestionPirate();
+        });
+
+        function loadQuestionPirate() {
+            if (window.currentQuestionIndex >= window.currentQuiz.questions.length) {
+                showResultsPirate();
+                return;
+            }
+
+            const question = window.currentQuiz.questions[window.currentQuestionIndex];
+            window.answered = false;
+
+            document.getElementById("questionCounter").textContent = `Question ${window.currentQuestionIndex + 1} of 5`;
+            updateProgressBar();
+
+            document.getElementById("questionText").textContent = question.question;
+
+            const container = document.getElementById("optionsContainer");
+            container.innerHTML = "";
+
+            question.options.forEach((option, index) => {
+                const optionBtn = document.createElement("button");
+                optionBtn.className = "option-btn";
+                optionBtn.textContent = option;
+                optionBtn.addEventListener("click", () => checkAnswerPirate(option, question.correct, question.explanation));
+                container.appendChild(optionBtn);
+            });
+
+            document.getElementById("feedbackBox").classList.add("hidden");
+            document.getElementById("nextBtn").classList.add("hidden");
+        }
+
+        function updateProgressBar() {
+            const progress = ((window.currentQuestionIndex + 1) / 5) * 100;
+            document.getElementById("progressBar").style.width = progress + "%";
+        }
+
+        function checkAnswerPirate(selected, correct, explanation) {
+            if (window.answered) return;
+
+            window.answered = true;
+            const isCorrect = selected === correct;
+
+            if (isCorrect) {
+                window.score++;
+                playCorrectSound();
+                showCorrectFeedback(explanation);
+            } else {
+                playWrongSound();
+                showIncorrectFeedback(selected, correct, explanation);
+            }
+
+            document.getElementById("scoreDisplay").textContent = window.score;
+
+            const buttons = document.querySelectorAll(".option-btn");
+            buttons.forEach(btn => {
+                if (btn.textContent === correct) {
+                    btn.classList.add("correct");
+                } else if (btn.textContent === selected && !isCorrect) {
+                    btn.classList.add("incorrect");
+                }
+                btn.disabled = true;
+            });
+
+            document.getElementById("feedbackBox").classList.remove("hidden");
+
+            setTimeout(() => {
+                document.getElementById("nextBtn").classList.remove("hidden");
+            }, 500);
+        }
+
+        function showCorrectFeedback(explanation) {
+            const feedbackBox = document.getElementById("feedbackBox");
+            const content = document.getElementById("feedbackContent");
+
+            feedbackBox.className = "feedback-box feedback-correct";
+            content.innerHTML = `
+                <div class="feedback-icon">✅</div>
+                <div class="feedback-title">Correct!</div>
+                <div class="feedback-text">${explanation}</div>
+            `;
+        }
+
+        function showIncorrectFeedback(selected, correct, explanation) {
+            const feedbackBox = document.getElementById("feedbackBox");
+            const content = document.getElementById("feedbackContent");
+
+            feedbackBox.className = "feedback-box feedback-incorrect";
+            content.innerHTML = `
+                <div class="feedback-icon">❌</div>
+                <div class="feedback-title">Not quite!</div>
+                <div class="feedback-text">The correct answer is: <strong>${correct}</strong></div>
+                <div class="feedback-text">${explanation}</div>
+            `;
+        }
+
+        function playCorrectSound() {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gain = audioContext.createGain();
+
+            oscillator.connect(gain);
+            gain.connect(audioContext.destination);
+
+            oscillator.frequency.value = 800;
+            oscillator.type = "sine";
+
+            gain.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.3);
+        }
+
+        function playWrongSound() {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gain = audioContext.createGain();
+
+            oscillator.connect(gain);
+            gain.connect(audioContext.destination);
+
+            oscillator.frequency.setValueAtTime(400, audioContext.currentTime);
+            oscillator.frequency.linearRampToValueAtTime(200, audioContext.currentTime + 0.3);
+            oscillator.type = "sine";
+
+            gain.gain.setValueAtTime(0.2, audioContext.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.3);
+        }
+
+        document.getElementById("nextBtn").addEventListener("click", function() {
+            window.currentQuestionIndex++;
+            loadQuestionPirate();
+        });
+
+        document.getElementById("playAgainBtn").addEventListener("click", function() {
+            window.currentQuestionIndex = 0;
+            window.score = 0;
+            window.answered = false;
+            document.getElementById("scoreDisplay").textContent = "0";
+            document.getElementById("quizScreen").classList.remove("hidden");
+            document.getElementById("resultsScreen").classList.add("hidden");
+            loadQuestionPirate();
+        });
+
+        document.getElementById("backToWorldsBtn").addEventListener("click", function() {
+            window.location.href = "index.html";
+        });
+
+        function showResultsPirate() {
+            window.quizActive = false;
+
+            document.getElementById("quizScreen").classList.add("hidden");
+            document.getElementById("resultsScreen").classList.remove("hidden");
+
+            const percentage = (window.score / 5) * 100;
+            let emoji = "🎉";
+            let title = "Awesome Job!";
+            let message = "";
+
+            if (window.score === 5) {
+                emoji = "🏆";
+                title = "PERFECT SCORE! 🌟";
+                message = "You're a quiz champion! You got every single one right! You're incredible!";
+                createConfetti();
+            } else if (window.score >= 4) {
+                emoji = "🌟";
+                title = "Excellent Work!";
+                message = "You got 4 out of 5! That's amazing! Keep practicing!";
+            } else if (window.score >= 3) {
+                emoji = "😊";
+                title = "Great Job!";
+                message = "You got 3 out of 5! Good effort! Play again to improve!";
+            } else if (window.score >= 2) {
+                emoji = "💪";
+                title = "Good Try!";
+                message = "You got 2 out of 5. Keep learning and try again!";
+            } else {
+                emoji = "📚";
+                title = "Learning Adventure!";
+                message = "You're just getting started! Try again to improve!";
+            }
+
+            document.getElementById("resultsEmoji").textContent = emoji;
+            document.getElementById("resultsTitle").textContent = title;
+            document.getElementById("finalScore").textContent = `You got ${window.score} out of 5 correct!`;
+            document.getElementById("resultsMessage").textContent = message;
+        }
+
+        function createConfetti() {
+            const container = document.getElementById("confetti-container");
+            container.innerHTML = "";
+
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement("div");
+                confetti.className = "confetti";
+                confetti.textContent = ["🎉", "⭐", "🎊", "🏆", "🌟"][Math.floor(Math.random() * 5)];
+                confetti.style.left = Math.random() * 100 + "%";
+                confetti.style.animationDelay = Math.random() * 0.5 + "s";
+
+                container.appendChild(confetti);
+
+                setTimeout(() => confetti.remove(), 3000);
+            }
+        }
+    </script>
+</body>
+
+</html>
