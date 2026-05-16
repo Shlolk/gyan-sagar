@@ -15,6 +15,7 @@
     
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 </head>
 
 <body>
@@ -51,17 +52,29 @@
     <main class="main-content">
         <!-- HERO SECTION -->
         <section class="hero-section" id="home">
+            <div class="hero-bg">
+                <span class="hero-glow hero-glow-1" aria-hidden="true"></span>
+                <span class="hero-glow hero-glow-2" aria-hidden="true"></span>
+                <span class="hero-cloud hero-cloud-1" aria-hidden="true"></span>
+                <span class="hero-cloud hero-cloud-2" aria-hidden="true"></span>
+                <span class="hero-cloud hero-cloud-3" aria-hidden="true"></span>
+                <span class="hero-particle hero-particle-1" aria-hidden="true"></span>
+                <span class="hero-particle hero-particle-2" aria-hidden="true"></span>
+                <span class="hero-particle hero-particle-3" aria-hidden="true"></span>
+                <span class="hero-particle hero-particle-4" aria-hidden="true"></span>
+            </div>
             <div class="hero-wrapper">
                 <div class="hero-left">
                     <span class="age-badge">Ages 5-12</span>
-                    <h2 class="hero-title">Ready for an<br>Adventure?</h2>
-                    <p class="hero-description">Join Robo-Kid and friends on the ultimate quest for knowledge!</p>
-                    <button class="btn btn-primary" id="startBtn">
-                        <i class="fas fa-play"></i> START PLAYING!
-                    </button>
+                    <h2 class="hero-title">Learn, Play, and<br>Level Up Every Day</h2>
+                    <p class="hero-description">Join Robo-Kid on a colorful learning adventure packed with mini quests, rewards, and brain-boosting challenges.</p>
+                    <a class="btn btn-primary" id="startBtn" href="#how-to-play">
+                        <i class="fas fa-play"></i> START LEARNING!
+                    </a>
                 </div>
                 <div class="hero-right">
                     <div class="hero-mascot">
+                        <div class="mascot-halo" aria-hidden="true"></div>
                         <img src="robot.png" alt="Robo-Kid mascot" class="mascot-image">
                     </div>
                 </div>
@@ -70,7 +83,41 @@
 
         <!-- CHOOSE YOUR WORLD SECTION -->
         <section class="worlds-section" id="how-to-play">
-            <h2 class="section-title">Choose Your World</h2>
+            <div class="how-to-play-panel">
+                <div class="how-to-header">
+                    <div class="how-to-copy">
+                        <span class="badge how-to-play-badge">How to Play</span>
+                        <h2 class="section-title">Your Learning Adventure Starts Here</h2>
+                        <p class="section-subtitle">Pick a world, answer the questions, and collect stars as you learn.</p>
+                    </div>
+
+                    <div class="how-to-spotlight">
+                        <div class="how-to-spotlight-label">Quick Journey</div>
+                        <div class="how-to-spotlight-title">3 worlds, 1 mission</div>
+                        <div class="how-to-spotlight-text">Learn, play, and level up with every tap.</div>
+                    </div>
+                </div>
+
+                <div class="how-to-steps">
+                    <div class="how-to-step">
+                        <div class="step-number step-jungle">1</div>
+                        <h3>Choose a world</h3>
+                        <p>Tap Jungle Adventure, Space Quest, or Pirate Island to begin your journey.</p>
+                    </div>
+                    <div class="how-to-step">
+                        <div class="step-number step-space">2</div>
+                        <h3>Answer questions</h3>
+                        <p>Read each question and pick the best answer before moving to the next one.</p>
+                    </div>
+                    <div class="how-to-step">
+                        <div class="step-number step-pirate">3</div>
+                        <h3>Earn rewards</h3>
+                        <p>Get feedback, collect stars, and try again to improve your score.</p>
+                    </div>
+                </div>
+            </div>
+
+            <h2 class="section-title worlds-title">Choose Your World</h2>
             <p class="section-subtitle">Where will your curiosity take you today?</p>
             
             <div class="worlds-grid">

@@ -250,10 +250,12 @@
                 feedbackCloseTimer = null;
             }
 
-            feedbackBox.className = "feedback-box feedback-incorrect";
+            feedbackBox.className = "feedback-box feedback-incorrect feedback-jungle-wrong";
             content.innerHTML = `
-                <div class="feedback-icon">❌</div>
-                <div class="feedback-title">Not quite!</div>
+                <div class="feedback-popup-image-wrap">
+                    <img class="feedback-popup-image" src="worng-pop.png" alt="Sad jungle monkey showing a wrong answer">
+                </div>
+                <div class="feedback-title">Oops, try again!</div>
                 <div class="feedback-text">The correct answer is: <strong>${correct}</strong></div>
                 <div class="feedback-text">${explanation}</div>
             `;

@@ -222,9 +222,11 @@
             const feedbackBox = document.getElementById("feedbackBox");
             const content = document.getElementById("feedbackContent");
 
-            feedbackBox.className = "feedback-box feedback-correct";
+            feedbackBox.className = "feedback-box feedback-correct feedback-space-popup";
             content.innerHTML = `
-                <div class="feedback-icon">✅</div>
+                <div class="feedback-popup-image-wrap">
+                    <img class="feedback-popup-image" src="happy-astonaut.png" alt="Happy astronaut celebrating a correct answer">
+                </div>
                 <div class="feedback-title">Correct!</div>
                 <div class="feedback-text">${explanation}</div>
             `;
@@ -234,10 +236,12 @@
             const feedbackBox = document.getElementById("feedbackBox");
             const content = document.getElementById("feedbackContent");
 
-            feedbackBox.className = "feedback-box feedback-incorrect";
+            feedbackBox.className = "feedback-box feedback-incorrect feedback-space-wrong";
             content.innerHTML = `
-                <div class="feedback-icon">❌</div>
-                <div class="feedback-title">Not quite!</div>
+                <div class="feedback-popup-image-wrap">
+                    <img class="feedback-popup-image" src="sad-mech.jpeg" alt="Sad space robot showing a wrong answer">
+                </div>
+                <div class="feedback-title">Oops, try again!</div>
                 <div class="feedback-text">The correct answer is: <strong>${correct}</strong></div>
                 <div class="feedback-text">${explanation}</div>
             `;

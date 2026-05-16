@@ -256,7 +256,7 @@ function showCorrectFeedback(explanation) {
   content.innerHTML = isJungleQuiz
     ? `<div class="feedback-popup-image-wrap">
          <img class="feedback-popup-image"
-              src="download__2_-removebg-preview.png"
+            src="popup.png"
               alt="Happy jungle monkey celebrating a correct answer">
        </div>`
     : `<div class="feedback-icon">✅</div>
@@ -274,13 +274,26 @@ function showCorrectFeedback(explanation) {
 function showIncorrectFeedback(selected, correct, explanation) {
   const feedbackBox = document.getElementById("feedbackBox");
   const content = document.getElementById("feedbackContent");
+  const isJungleQuiz = currentQuiz && currentQuiz.theme === "jungle";
 
-  feedbackBox.className = "feedback-box feedback-incorrect";
-  content.innerHTML = `
-    <div class="feedback-icon">❌</div>
-    <div class="feedback-title">Not quite!</div>
-    <div class="feedback-text">The correct answer is: <strong>${correct}</strong></div>
-    <div class="feedback-text">${explanation}</div>`;
+  feedbackBox.className = isJungleQuiz
+    ? "feedback-box feedback-incorrect feedback-jungle-wrong"
+    : "feedback-box feedback-incorrect";
+
+  content.innerHTML = isJungleQuiz
+    ? `
+      <div class="feedback-popup-image-wrap">
+        <img class="feedback-popup-image" src="worng-pop.png" alt="Sad jungle monkey showing a wrong answer">
+      </div>
+      <div class="feedback-title">Oops, try again!</div>
+      <div class="feedback-text">The correct answer is: <strong>${correct}</strong></div>
+      <div class="feedback-text">${explanation}</div>
+    `
+    : `
+      <div class="feedback-icon">❌</div>
+      <div class="feedback-title">Not quite!</div>
+      <div class="feedback-text">The correct answer is: <strong>${correct}</strong></div>
+      <div class="feedback-text">${explanation}</div>`;
 }
 
 function clearFeedbackTimer() {
@@ -443,4 +456,137 @@ document.addEventListener("DOMContentLoaded", function () {
   if (backToWorldsBtn) backToWorldsBtn.addEventListener("click", backToWorlds);
 
   console.log("✨ Quiz system initialized!");
+});
+
+// ===== HERO ANIMATIONS =====
+
+document.addEventListener("DOMContentLoaded", function () {
+  const heroSection = document.querySelector(".hero-section");
+  if (!heroSection || typeof gsap === "undefined") return;
+
+  const heroBadge = heroSection.querySelector(".age-badge");
+  const heroTitle = heroSection.querySelector(".hero-title");
+  const heroDescription = heroSection.querySelector(".hero-description");
+  const heroButton = heroSection.querySelector("#startBtn");
+  const heroMascotCard = heroSection.querySelector(".hero-mascot");
+  const heroRobot = heroSection.querySelector(".mascot-image");
+  const cloudEls = heroSection.querySelectorAll(".hero-cloud");
+  const glowEls = heroSection.querySelectorAll(".hero-glow");
+  const particleEls = heroSection.querySelectorAll(".hero-particle");
+  const worldsSection = document.querySelector("#how-to-play");
+
+  if (heroButton && worldsSection) {
+    heroButton.addEventListener("click", () => {
+      worldsSection.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  }
+
+  const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  if (!prefersReducedMotion) {
+    const heroTimeline = gsap.timeline({ defaults: { ease: "power3.out" } });
+    heroTimeline
+      .from(heroSection, { opacity: 0, y: 22, duration: 0.7 })
+      .from([heroBadge, heroTitle, heroDescription], { opacity: 0, y: 28, duration: 0.7, stagger: 0.12 }, "<0.1")
+      .from(heroButton, { opacity: 0, y: 20, scale: 0.94, duration: 0.55 }, "<0.05")
+      .from(heroMascotCard, { opacity: 0, x: 42, y: 20, duration: 0.8 }, "<")
+      .from(heroRobot, { opacity: 0, y: 28, scale: 0.96, duration: 0.65 }, "<0.12")
+      .from(cloudEls, { opacity: 0, y: 16, duration: 0.55, stagger: 0.08 }, "<0.05")
+      .from(particleEls, { opacity: 0, scale: 0.7, duration: 0.45, stagger: 0.05 }, "<0.08");
+
+    gsap.to(heroMascotCard, {
+      y: -10,
+      duration: 2.8,
+      ease: "sine.inOut",
+      repeat: -1,
+      yoyo: true
+    });
+
+    gsap.to(heroRobot, {
+      y: -8,
+      duration: 3.2,
+      ease: "sine.inOut",
+      repeat: -1,
+      yoyo: true
+    });
+
+    cloudEls.forEach((cloud, index) => {
+      gsap.to(cloud, {
+        x: index % 2 === 0 ? 12 : -12,
+        duration: 5 + index,
+        ease: "sine.inOut",
+        repeat: -1,
+        yoyo: true
+      });
+    });
+
+    glowEls.forEach((glow, index) => {
+      gsap.to(glow, {
+        scale: index === 0 ? 1.06 : 0.94,
+        duration: 4.2 + index,
+        ease: "sine.inOut",
+        repeat: -1,
+        yoyo: true
+      });
+    });
+  }
+
+  const parallaxTargets = [
+    { element: heroMascotCard, amount: 18 },
+    { element: heroRobot, amount: 14 },
+    { element: heroSection.querySelector(".hero-glow-1"), amount: 10 },
+    { element: heroSection.querySelector(".hero-glow-2"), amount: 10 },
+    { element: heroSection.querySelector(".hero-cloud-1"), amount: 8 },
+    { element: heroSection.querySelector(".hero-cloud-2"), amount: 7 },
+    { element: heroSection.querySelector(".hero-cloud-3"), amount: 6 }
+  ].filter(item => item.element);
+
+  let mouseX = 0;
+  let mouseY = 0;
+  let frameRequested = false;
+
+  function updateParallax() {
+    frameRequested = false;
+    parallaxTargets.forEach(item => {
+      const moveX = mouseX * item.amount;
+      const moveY = mouseY * item.amount;
+      gsap.to(item.element, {
+        x: moveX,
+        y: moveY,
+        duration: 0.7,
+        ease: "power2.out",
+        overwrite: "auto"
+      });
+    });
+  }
+
+  function handlePointerMove(event) {
+    if (prefersReducedMotion) return;
+    const bounds = heroSection.getBoundingClientRect();
+    const x = (event.clientX - bounds.left) / bounds.width;
+    const y = (event.clientY - bounds.top) / bounds.height;
+
+    mouseX = (x - 0.5) * 2;
+    mouseY = (y - 0.5) * 2;
+
+    if (!frameRequested) {
+      frameRequested = true;
+      window.requestAnimationFrame(updateParallax);
+    }
+  }
+
+  function resetParallax() {
+    parallaxTargets.forEach(item => {
+      gsap.to(item.element, {
+        x: 0,
+        y: 0,
+        duration: 0.8,
+        ease: "power3.out",
+        overwrite: "auto"
+      });
+    });
+  }
+
+  heroSection.addEventListener("mousemove", handlePointerMove);
+  heroSection.addEventListener("mouseleave", resetParallax);
 });
