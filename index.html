@@ -4,11 +4,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:;">
+    <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com; font-src https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data:;">
     <title>QuizQuest Kids - Adventure Learning for Kids</title>
     
     <!-- External CSS -->
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="pill-nav.css">
+    <link rel="stylesheet" href="tilted-card.css">
+    <link rel="stylesheet" href="magic-bento.css">
+    <link rel="stylesheet" href="decay-card.css">
+    <link rel="stylesheet" href="scroll-float.css">
     
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
@@ -16,6 +21,7 @@
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 </head>
 
 <body>
@@ -32,11 +38,52 @@
             </div>
 
             <!-- Navigation Menu -->
-            <nav class="nav-menu">
-                <a href="#home" class="nav-link active">Home</a>
-                <a href="#achievements" class="nav-link">Achievements</a>
-                <a href="#how-to-play" class="nav-link">How to Play</a>
-            </nav>
+            <div class="pill-nav-container">
+                <nav class="pill-nav" aria-label="Primary">
+                    <div class="pill-nav-items desktop-only">
+                        <ul class="pill-list" role="menubar">
+                            <li role="none">
+                                <a role="menuitem" href="#home" class="pill is-active" aria-label="Home">
+                                    <span class="hover-circle" aria-hidden="true"></span>
+                                    <span class="label-stack">
+                                        <span class="pill-label">Home</span>
+                                        <span class="pill-label-hover" aria-hidden="true">Home</span>
+                                    </span>
+                                </a>
+                            </li>
+                            <li role="none">
+                                <a role="menuitem" href="#achievements" class="pill" aria-label="Achievements">
+                                    <span class="hover-circle" aria-hidden="true"></span>
+                                    <span class="label-stack">
+                                        <span class="pill-label">Achievements</span>
+                                        <span class="pill-label-hover" aria-hidden="true">Achievements</span>
+                                    </span>
+                                </a>
+                            </li>
+                            <li role="none">
+                                <a role="menuitem" href="#how-to-play" class="pill" aria-label="How to Play">
+                                    <span class="hover-circle" aria-hidden="true"></span>
+                                    <span class="label-stack">
+                                        <span class="pill-label">How to Play</span>
+                                        <span class="pill-label-hover" aria-hidden="true">How to Play</span>
+                                    </span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <button class="mobile-menu-button mobile-only" aria-label="Toggle menu">
+                        <span class="hamburger-line"></span>
+                        <span class="hamburger-line"></span>
+                    </button>
+                </nav>
+                <div class="mobile-menu-popover mobile-only">
+                    <ul class="mobile-menu-list">
+                        <li><a href="#home" class="mobile-menu-link is-active">Home</a></li>
+                        <li><a href="#achievements" class="mobile-menu-link">Achievements</a></li>
+                        <li><a href="#how-to-play" class="mobile-menu-link">How to Play</a></li>
+                    </ul>
+                </div>
+            </div>
 
             <!-- User Section -->
             <div class="user-section">
@@ -66,7 +113,7 @@
             <div class="hero-wrapper">
                 <div class="hero-left">
                     <span class="age-badge">Ages 5-12</span>
-                    <h2 class="hero-title">Learn, Play, and<br>Level Up Every Day</h2>
+                    <h2 class="hero-title scroll-float" data-start="top bottom-=20%" data-end="bottom center">Learn, Play, and<br>Level Up Every Day</h2>
                     <p class="hero-description">Join Robo-Kid on a colorful learning adventure packed with mini quests, rewards, and brain-boosting challenges.</p>
                     <a class="btn btn-primary" id="startBtn" href="#how-to-play">
                         <i class="fas fa-play"></i> START LEARNING!
@@ -87,7 +134,7 @@
                 <div class="how-to-header">
                     <div class="how-to-copy">
                         <span class="badge how-to-play-badge">How to Play</span>
-                        <h2 class="section-title">Your Learning Adventure Starts Here</h2>
+                        <h2 class="section-title scroll-float" data-start="top bottom" data-end="bottom center+=20%">Your Learning Adventure Starts Here</h2>
                         <p class="section-subtitle">Pick a world, answer the questions, and collect stars as you learn.</p>
                     </div>
 
@@ -117,42 +164,51 @@
                 </div>
             </div>
 
-            <h2 class="section-title worlds-title">Choose Your World</h2>
+            <h2 class="section-title worlds-title scroll-float">Choose Your World</h2>
             <p class="section-subtitle">Where will your curiosity take you today?</p>
             
-            <div class="worlds-grid">
+            <div class="worlds-grid bento-section">
                 <!-- Jungle Adventure Card -->
-                <div class="world-card jungle-card">
-                    <div class="card-image"><img src="jungle.png" alt="Jungle Adventure" class="card-img"></div>
-                    <div class="card-badge jungle-badge">🎯</div>
-                    <h3 class="card-title">Jungle Adventure</h3>
-                    <p class="card-description">Math & counting questions - Ages 4-7</p>
-                    <a href="jungle.html" class="btn btn-secondary btn-green">
-                        <i class="fas fa-arrow-right"></i> Explore Now
-                    </a>
-                </div>
+                <figure class="tilted-card-figure">
+                    <div class="world-card jungle-card tilted-card-inner magic-bento-card magic-bento-card--border-glow particle-container">
+                        <div class="card-image"><img src="jungle.png" alt="Jungle Adventure" class="card-img"></div>
+                        <div class="card-badge jungle-badge">🎯</div>
+                        <h3 class="card-title">Jungle Adventure</h3>
+                        <p class="card-description">Math & counting questions - Ages 4-7</p>
+                        <a href="jungle.html" class="btn btn-secondary btn-green">
+                            <i class="fas fa-arrow-right"></i> Explore Now
+                        </a>
+                    </div>
+                    <figcaption class="tilted-card-caption">Math & Counting</figcaption>
+                </figure>
 
                 <!-- Space Quest Card -->
-                <div class="world-card space-card">
-                    <div class="card-image"><img src="space.png" alt="Space Quest" class="card-img"></div>
-                    <div class="card-badge space-badge">🚀</div>
-                    <h3 class="card-title">Space Quest</h3>
-                    <p class="card-description">Solar system & planets - Ages 5-8</p>
-                    <a href="space.html" class="btn btn-secondary btn-blue">
-                        <i class="fas fa-arrow-right"></i> Explore Now
-                    </a>
-                </div>
+                <figure class="tilted-card-figure">
+                    <div class="world-card space-card tilted-card-inner magic-bento-card magic-bento-card--border-glow particle-container">
+                        <div class="card-image"><img src="space.png" alt="Space Quest" class="card-img"></div>
+                        <div class="card-badge space-badge">🚀</div>
+                        <h3 class="card-title">Space Quest</h3>
+                        <p class="card-description">Solar system & planets - Ages 5-8</p>
+                        <a href="space.html" class="btn btn-secondary btn-blue">
+                            <i class="fas fa-arrow-right"></i> Explore Now
+                        </a>
+                    </div>
+                    <figcaption class="tilted-card-caption">Solar System</figcaption>
+                </figure>
 
                 <!-- Pirate Island Card -->
-                <div class="world-card pirate-card">  
-                      <div class="card-image"><img src="pirate.png" alt="Pirate Island" class="card-img"></div>
-                    <div class="card-badge pirate-badge">🏴‍☠️</div>
-                    <h3 class="card-title">Pirate Island</h3>
-                    <p class="card-description">Logic & riddles - Ages 6-9</p>
-                    <a href="pirate.html" class="btn btn-secondary btn-orange">
-                        <i class="fas fa-arrow-right"></i> Explore Now
-                    </a>
-                </div>
+                <figure class="tilted-card-figure">
+                    <div class="world-card pirate-card tilted-card-inner magic-bento-card magic-bento-card--border-glow particle-container">  
+                        <div class="card-image"><img src="pirate.png" alt="Pirate Island" class="card-img"></div>
+                        <div class="card-badge pirate-badge">🏴‍☠️</div>
+                        <h3 class="card-title">Pirate Island</h3>
+                        <p class="card-description">Logic & riddles - Ages 6-9</p>
+                        <a href="pirate.html" class="btn btn-secondary btn-orange">
+                            <i class="fas fa-arrow-right"></i> Explore Now
+                        </a>
+                    </div>
+                    <figcaption class="tilted-card-caption">Logic & Riddles</figcaption>
+                </figure>
             </div>
         </section>
 
@@ -161,7 +217,7 @@
             <div class="features-wrapper">
                 <div class="features-left">
                     <span class="badge">Safe & Educational</span>
-                    <h2 class="features-title">Learning that feels like playtime!</h2>
+                    <h2 class="features-title scroll-float">Learning that feels like playtime!</h2>
                     
                     <div class="features-list">
                         <div class="feature-item">
@@ -180,12 +236,49 @@
                 </div>
 
                 <div class="features-right">
-                    <div class="phone-mockup">
-                        <img src="phone-mockup.png" alt="QuizQuest Mobile App" class="phone-image">
+                    <div class="phone-mockup decay-card" data-max-displacement="400" data-movement-bound="50">
+                        <svg viewBox="-60 -75 720 900" preserveAspectRatio="xMidYMid slice" class="decay-svg">
+                            <filter id="decayFilter">
+                                <feTurbulence
+                                    type="turbulence"
+                                    baseFrequency="0.015"
+                                    numOctaves="5"
+                                    seed="4"
+                                    stitchTiles="stitch"
+                                    x="0%" y="0%" width="100%" height="100%"
+                                    result="turbulence1"
+                                />
+                                <feDisplacementMap
+                                    class="decay-displacement-map"
+                                    in="SourceGraphic"
+                                    in2="turbulence1"
+                                    scale="0"
+                                    xChannelSelector="R"
+                                    yChannelSelector="B"
+                                    x="0%" y="0%" width="100%" height="100%"
+                                    result="displacementMap"
+                                />
+                            </filter>
+                            <g>
+                                <image
+                                    href="phone-mockup.png"
+                                    x="0" y="0"
+                                    width="600" height="750"
+                                    filter="url(#decayFilter)"
+                                    preserveAspectRatio="xMidYMid slice"
+                                />
+                            </g>
+                        </svg>
+                        <div class="decay-card-text">
+                            <span>Mobile</span>
+                            Ready!
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
+
+
     </main>
 
     <!-- FOOTER -->
@@ -218,8 +311,13 @@
     </footer>
 
     <!-- SCRIPT -->
-    <script src="quiz.js"></script>
     <script src="script.js"></script>
+    <script src="pill-nav.js"></script>
+    <script src="tilted-card.js"></script>
+    <script src="magic-bento.js"></script>
+    <script src="hyperspeed.js"></script>
+    <script src="decay-card.js"></script>
+    <script src="scroll-float.js"></script>
 </body>
 
 </html>

@@ -1,0 +1,115 @@
+.tilted-card-figure {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  perspective: 1200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+}
+
+.tilted-card-mobile-alert {
+  position: absolute;
+  top: 1rem;
+  text-align: center;
+  font-size: 0.875rem;
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .tilted-card-caption {
+    display: none !important;
+  }
+}
+
+.tilted-card-inner {
+  position: relative;
+  transform-style: preserve-3d;
+  will-change: transform;
+  width: 100%;
+  height: 100%;
+}
+
+/* Prevent CSS transition from fighting with GSAP for transforms */
+.tilted-card-inner.world-card {
+  transition: box-shadow 0.3s ease, border 0.3s ease, background 0.3s ease !important;
+}
+
+/* Let GSAP handle the hover scale and rotation */
+.tilted-card-inner.world-card:hover {
+  transform: none; 
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+}
+
+/* Tilted card internal layering for 3D effect */
+.tilted-card-inner.world-card .card-image,
+.tilted-card-inner.world-card .card-badge {
+  transform: translateZ(30px);
+  will-change: transform;
+}
+
+.tilted-card-inner.world-card .card-title,
+.tilted-card-inner.world-card .card-description {
+  transform: translateZ(20px);
+  will-change: transform;
+}
+
+.tilted-card-inner.world-card .btn {
+  transform: translateZ(40px);
+  will-change: transform;
+}
+
+.tilted-card-caption {
+  pointer-events: none;
+  position: absolute;
+  left: 0;
+  top: 0;
+  border-radius: 8px;
+  background-color: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.15);
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #10214f;
+  opacity: 0;
+  z-index: 100;
+  will-change: transform, opacity;
+  white-space: nowrap;
+}
+
+.tilted-card-img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 15px;
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+.tilted-card-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  will-change: transform;
+  transform: translateZ(30px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tilted-card-demo-text {
+  color: white;
+  font-weight: 700;
+  font-size: 1.25rem;
+  text-shadow: 0 4px 12px rgba(0,0,0,0.6);
+  font-family: 'Fredoka', sans-serif;
+  text-align: center;
+}

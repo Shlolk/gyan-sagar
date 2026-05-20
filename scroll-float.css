@@ -1,0 +1,15 @@
+.scroll-float {
+  /* overflow: hidden; can sometimes clip large text scaling, but we'll keep it as requested, 
+     or clip vertically only */
+  overflow-y: hidden;
+  padding-bottom: 0.1em; /* Prevent descenders from clipping */
+}
+
+.scroll-float-text {
+  display: inline-block;
+  /* We let it inherit the heading's font-size, weight, line-height, etc. */
+}
+
+.char {
+  display: inline-block;
+}

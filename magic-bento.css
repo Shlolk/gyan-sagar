@@ -1,0 +1,61 @@
+.bento-section {
+  position: relative;
+  user-select: none;
+}
+
+.magic-bento-card {
+  --glow-x: 50%;
+  --glow-y: 50%;
+  --glow-intensity: 0;
+  --glow-radius: 200px;
+  --purple-glow: rgba(132, 0, 255, 0.2);
+  
+  position: relative;
+  overflow: hidden;
+  /* We will let existing card styles handle background, or override if needed */
+  border: 1px solid #2F293A;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+/* Magic Bento Border Glow */
+.magic-bento-card--border-glow::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  padding: 4px; /* Thickness of the glowing border */
+  background: radial-gradient(
+    var(--glow-radius) circle at var(--glow-x) var(--glow-y),
+    rgba(132, 0, 255, calc(var(--glow-intensity) * 0.8)) 0%,
+    rgba(132, 0, 255, calc(var(--glow-intensity) * 0.4)) 30%,
+    transparent 60%
+  );
+  border-radius: inherit; /* Inherits 28px or 15px from parent */
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  pointer-events: none;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+  z-index: 10;
+}
+
+.bento-particle {
+  pointer-events: none;
+}
+
+.bento-particle::before {
+  content: '';
+  position: absolute;
+  top: -4px;
+  left: -4px;
+  right: -4px;
+  bottom: -4px;
+  background: rgba(132, 0, 255, 0.2);
+  border-radius: 50%;
+  z-index: -1;
+}
