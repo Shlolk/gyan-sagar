@@ -1,0 +1,1083 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<title>Quiz Adventure Map</title>
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&family=Fredoka+One&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --primary: #159947;
+    --primary-dark: #086b32;
+    --primary-light: #65d97e;
+    --secondary: #0a6c86;
+    --tertiary: #f1a51d;
+    --tertiary-dark: #b46e00;
+    --surface: #fff8e7;
+    --cream: #fff3d0;
+    --pink: #f45d8c;
+    --purple: #7f5af0;
+    --sky: #4db8df;
+    --ink: #17351f;
+    --muted: #59715e;
+    --red: #e84d5b;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Quicksand', sans-serif;
+    color: var(--ink);
+    background:
+      radial-gradient(circle at 15% 5%, rgba(255, 228, 109, 0.32), transparent 30%),
+      linear-gradient(180deg, #bfefff 0%, var(--surface) 38%, #cfe9b7 100%);
+    overscroll-behavior-y: none;
+    -webkit-tap-highlight-color: transparent;
+    overflow-x: hidden;
+    min-height: 100dvh;
+  }
+
+  /* ── TOP BAR ── */
+  .top-bar {
+    position: fixed; top: 12px; left: 50%; z-index: 100;
+    width: min(940px, calc(100% - 24px));
+    transform: translateX(-50%);
+    min-height: 72px;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 16px;
+    padding: 10px 16px;
+    background: rgba(255, 251, 235, 0.86);
+    backdrop-filter: blur(18px);
+    border: 1px solid rgba(255,255,255,0.86);
+    border-radius: 26px;
+    box-shadow: 0 18px 42px rgba(41, 77, 37, 0.18);
+  }
+
+  .avatar-wrap {
+    display: flex; align-items: center; gap: 12px;
+  }
+  .avatar {
+    width: 50px; height: 50px;
+    border-radius: 50%;
+    border: 4px solid white;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2), 0 0 0 3px var(--primary-light);
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.2s;
+  }
+  .avatar:hover { transform: scale(1.1); }
+  .avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+  .xp-col { display: flex; flex-direction: column; gap: 3px; }
+  .xp-bar-track {
+    width: 130px; height: 12px;
+    background: #e0ddc8;
+    border-radius: 999px;
+    border: 2px solid rgba(255,255,255,0.8);
+    overflow: hidden;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+  }
+  .xp-bar-fill {
+    height: 100%;
+    width: 65%;
+    background: linear-gradient(90deg, #22c55e, #4ae176);
+    border-radius: 999px;
+    position: relative;
+    overflow: hidden;
+  }
+  .xp-bar-fill::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: repeating-linear-gradient(45deg, rgba(255,255,255,0.2) 0, rgba(255,255,255,0.2) 8px, transparent 8px, transparent 16px);
+    background-size: 24px 24px;
+    animation: stripe-move 1.5s linear infinite;
+  }
+  @keyframes stripe-move { to { background-position: 24px 0; } }
+  .xp-label { font-size: 12px; font-weight: 700; color: var(--primary-dark); }
+
+  .stats-pill {
+    display: flex; align-items: center; gap: 10px;
+    background: rgba(255,255,255,0.72);
+    border: 2px solid rgba(255,255,255,0.9);
+    border-radius: 999px;
+    padding: 6px 16px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    backdrop-filter: blur(10px);
+  }
+  .stat { display: flex; align-items: center; gap: 5px; font-weight: 700; font-size: 18px; color: var(--ink); }
+  .stat-divider { width: 2px; height: 20px; background: #bccbb9; border-radius: 2px; }
+
+  /* ── MAIN CANVAS ── */
+  .game-canvas {
+    position: relative;
+    min-height: 100dvh;
+    padding-top: 112px;
+    padding-bottom: 124px;
+    overflow-x: hidden;
+  }
+
+  /* Sky → Grass → Deep Jungle gradient */
+  .world-bg {
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg,
+      #95dcf6 0%,
+      #c9f5ff 12%,
+      #e6f8bf 24%,
+      #9dde75 38%,
+      #5ab75c 58%,
+      #2d8246 100%
+    );
+    pointer-events: none;
+  }
+
+  /* Animated sun */
+  .sun {
+    position: absolute; top: 80px; right: 60px;
+    width: 80px; height: 80px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #ffe566 40%, #ffb300 100%);
+    box-shadow: 0 0 0 12px rgba(255,220,0,0.25), 0 0 60px rgba(255,180,0,0.4);
+    animation: sun-pulse 4s ease-in-out infinite;
+    pointer-events: none;
+  }
+  @keyframes sun-pulse {
+    0%,100% { box-shadow: 0 0 0 12px rgba(255,220,0,0.25), 0 0 60px rgba(255,180,0,0.4); }
+    50%      { box-shadow: 0 0 0 22px rgba(255,220,0,0.15), 0 0 90px rgba(255,180,0,0.5); }
+  }
+
+  /* Clouds */
+  .cloud-layer { position: absolute; top: 80px; left: 0; right: 0; height: 120px; overflow: hidden; pointer-events: none; }
+  .cloud {
+    position: absolute;
+    background: rgba(255,255,255,0.9);
+    border-radius: 999px;
+    animation: cloud-drift linear infinite;
+  }
+  .cloud::before, .cloud::after {
+    content: '';
+    position: absolute;
+    background: inherit;
+    border-radius: 50%;
+  }
+  @keyframes cloud-drift { from { transform: translateX(-200px); } to { transform: translateX(110vw); } }
+
+  /* Rainbow winding path */
+  .path-svg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
+
+  /* Decorative emojis */
+  .deco {
+    position: absolute;
+    pointer-events: none;
+    user-select: none;
+    animation: float 3s ease-in-out infinite;
+    filter: drop-shadow(0 4px 6px rgba(0,0,0,0.2));
+  }
+  @keyframes float {
+    0%,100% { transform: translateY(0) rotate(0deg); }
+    50%      { transform: translateY(-12px) rotate(3deg); }
+  }
+
+  /* Level nodes container */
+  .nodes-layer {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: min(560px, 100%);
+    min-height: 1660px;
+    margin: 0 auto;
+    padding: 56px 24px 100px;
+    gap: 0;
+  }
+
+  /* Individual node wrapper */
+  .node-wrap {
+    --node-offset: 0px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 78px;
+    position: relative;
+  }
+
+  /* Base level button */
+  .level-btn {
+    border-radius: 50%;
+    border: 5px solid white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Fredoka One', cursive;
+    font-size: 28px;
+    color: white;
+    cursor: pointer;
+    position: relative;
+    transition: transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.15s;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.25);
+    overflow: visible;
+    outline: none;
+    -webkit-appearance: none;
+    isolation: isolate;
+  }
+  .level-btn:focus-visible {
+    box-shadow: 0 0 0 5px rgba(255,255,255,0.88), 0 0 0 9px rgba(21,153,71,0.45);
+  }
+  .level-btn:hover  { transform: scale(1.12) translateY(-3px); }
+  .level-btn:active { transform: scale(0.95) translateY(2px); }
+
+  /* Completed: gold */
+  .node-done .level-btn {
+    width: 80px; height: 80px;
+    background: linear-gradient(160deg, #ffe159 10%, #ef9900 100%);
+    box-shadow: 0 8px 0 #a96800, 0 10px 24px rgba(180,110,0,0.35);
+  }
+  .node-done .level-btn::before {
+    content: '';
+    position: absolute; inset: 4px;
+    border-radius: 50%;
+    background: linear-gradient(160deg, rgba(255,255,255,0.45) 0%, transparent 55%);
+    pointer-events: none;
+  }
+  .node-done .level-btn:active { box-shadow: 0 2px 0 #a96800, 0 4px 12px rgba(0,0,0,0.2); }
+
+  /* Current: green glowing */
+  .node-current .level-btn {
+    width: 96px; height: 96px;
+    background: linear-gradient(160deg, #4ae176 10%, #00a63e 100%);
+    box-shadow: 0 8px 0 #005321, 0 0 30px rgba(74,225,118,0.6), 0 0 60px rgba(74,225,118,0.3);
+    animation: current-glow 2.5s ease-in-out infinite;
+    font-size: 34px;
+  }
+  @keyframes current-glow {
+    0%,100% { box-shadow: 0 8px 0 #005321, 0 0 30px rgba(74,225,118,0.5), 0 0 60px rgba(74,225,118,0.25); }
+    50%      { box-shadow: 0 8px 0 #005321, 0 0 50px rgba(74,225,118,0.8), 0 0 90px rgba(74,225,118,0.4); }
+  }
+  .node-current .level-btn::before {
+    content: '';
+    position: absolute; inset: 4px;
+    border-radius: 50%;
+    background: linear-gradient(160deg, rgba(255,255,255,0.5) 0%, transparent 55%);
+    pointer-events: none;
+  }
+
+  /* Locked: grey */
+  .node-locked .level-btn {
+    width: 74px; height: 74px;
+    background: linear-gradient(160deg, #d1cdc0 10%, #aaa89e 100%);
+    box-shadow: 0 6px 0 #888070, 0 8px 20px rgba(0,0,0,0.15);
+    opacity: 0.8;
+    font-size: 28px;
+    color: rgba(255,255,255,0.6);
+  }
+  .node-locked { opacity: 0.76; }
+  .node-done,
+  .node-current { opacity: 1; }
+  .node-locked .level-btn .material-symbols-outlined { font-size: 30px; color: rgba(120,115,100,0.7); }
+
+  /* Boss/final: big purple */
+  .node-boss .level-btn {
+    width: 108px; height: 108px;
+    background: linear-gradient(160deg, #c084fc 10%, #7c3aed 100%);
+    box-shadow: 0 10px 0 #4c1d95, 0 0 30px rgba(139,92,246,0.5);
+    font-size: 38px;
+    opacity: 0.8;
+  }
+  .node-boss .level-btn .material-symbols-outlined { font-size: 36px; }
+
+  /* Stars */
+  .stars-row {
+    display: flex; gap: 4px;
+    margin-top: 10px;
+    min-height: 22px;
+  }
+  .star-icon { font-size: 20px; animation: star-bob 2.5s ease-in-out infinite; }
+  .star-icon.empty { filter: grayscale(1) opacity(0.35); }
+  @keyframes star-bob {
+    0%,100% { transform: scale(1); }
+    50%      { transform: scale(1.2) translateY(-3px); filter: drop-shadow(0 0 6px rgba(234,179,8,0.7)); }
+  }
+
+  /* Current label */
+  .current-badge {
+    background: white;
+    border: 2px solid var(--primary-light);
+    border-radius: 999px;
+    padding: 4px 14px;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--primary-dark);
+    letter-spacing: 0.08em;
+    margin-top: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+
+  /* Location pin bounce */
+  .pin-bounce {
+    animation: pin-anim 1.2s ease-in-out infinite;
+    font-size: 40px;
+    margin-bottom: -8px;
+    filter: drop-shadow(0 4px 6px rgba(0,80,30,0.4));
+  }
+  @keyframes pin-anim {
+    0%,100% { transform: translateY(0) scale(1); }
+    40%      { transform: translateY(-12px) scale(1.15); }
+    60%      { transform: translateY(-8px) scale(1.1); }
+  }
+
+  /* Boss trophy pulse */
+  .boss-trophy { font-size: 48px; animation: trophy-spin 3s ease-in-out infinite; margin-bottom: -6px; }
+  @keyframes trophy-spin {
+    0%,100% { transform: scale(1) rotate(-5deg); filter: drop-shadow(0 0 8px rgba(239,153,0,0.5)); }
+    50%      { transform: scale(1.15) rotate(5deg); filter: drop-shadow(0 0 20px rgba(239,153,0,0.9)); }
+  }
+
+  /* Horizontal offset for zigzag */
+  .offset-left  { --node-offset: -60px; }
+  .offset-right { --node-offset: 60px; }
+  .offset-left2 { --node-offset: -40px; }
+  .offset-right2{ --node-offset: 40px; }
+
+  /* ── BOTTOM NAV ── */
+  .bottom-nav {
+    position: fixed; bottom: 12px; left: 50%; z-index: 100;
+    width: min(560px, calc(100% - 24px));
+    transform: translateX(-50%);
+    min-height: 78px;
+    display: flex; align-items: center; justify-content: space-around;
+    gap: 2px;
+    padding: 8px 10px;
+    background: rgba(255, 251, 235, 0.9);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,0.82);
+    box-shadow: 0 18px 46px rgba(21, 62, 33, 0.2);
+    border-radius: 28px;
+  }
+  .nav-item {
+    display: flex; flex-direction: column; align-items: center; gap: 2px;
+    text-decoration: none; color: #7a8a78;
+    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    min-width: 56px;
+    padding: 7px 8px;
+    border-radius: 20px;
+    font-size: 11px; font-weight: 700;
+  }
+  .nav-item:hover { transform: scale(1.15) translateY(-3px); }
+  .nav-item:active { transform: scale(0.9); }
+  .nav-item .material-symbols-outlined { font-size: 28px; }
+
+  .nav-item.active {
+    color: white;
+    background: linear-gradient(135deg, #22c55e, #00a63e);
+    box-shadow: 0 6px 0 #005321, 0 8px 20px rgba(0,166,62,0.3);
+    transform: translateY(-6px);
+    padding: 8px 12px;
+  }
+  .nav-item.active .material-symbols-outlined { font-variation-settings: 'FILL' 1; font-size: 30px; }
+
+  /* ── SPARKLE PARTICLES ── */
+  #sparkles { position: fixed; inset: 0; pointer-events: none; z-index: 5; overflow: hidden; }
+  .sparkle {
+    position: absolute;
+    border-radius: 50%;
+    animation: sparkle-anim linear infinite;
+  }
+  @keyframes sparkle-anim {
+    0%   { transform: translateY(0) scale(0) rotate(0deg); opacity: 0; }
+    20%  { opacity: 1; }
+    80%  { opacity: 0.5; }
+    100% { transform: translateY(-70vh) scale(0.5) rotate(360deg); opacity: 0; }
+  }
+
+  /* Rainbow path connector dots */
+  .connector {
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.6);
+    border: 2px solid rgba(255,255,255,0.9);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    position: absolute;
+    pointer-events: none;
+  }
+
+  /* Floating critter */
+  @keyframes critter-hop {
+    0%,100% { transform: translateY(0) scaleX(1); }
+    50%      { transform: translateY(-18px) scaleX(-1); }
+  }
+
+  /* Pop animation for node entrance */
+  @keyframes node-pop {
+    0%   { transform: translateX(var(--node-offset)) scale(0) rotate(-10deg); opacity: 0; }
+    70%  { transform: translateX(var(--node-offset)) scale(1.12) rotate(4deg); opacity: 1; }
+    100% { transform: translateX(var(--node-offset)) scale(1) rotate(0deg); opacity: 1; }
+  }
+  .node-wrap { animation: node-pop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) both; }
+  .node-wrap:nth-child(1) { animation-delay: 0.1s; }
+  .node-wrap:nth-child(2) { animation-delay: 0.2s; }
+  .node-wrap:nth-child(3) { animation-delay: 0.3s; }
+  .node-wrap:nth-child(4) { animation-delay: 0.4s; }
+  .node-wrap:nth-child(5) { animation-delay: 0.5s; }
+  .node-wrap:nth-child(6) { animation-delay: 0.6s; }
+  .node-wrap:nth-child(7) { animation-delay: 0.7s; }
+  .node-wrap:nth-child(8) { animation-delay: 0.8s; }
+
+  /* Tooltip on hover */
+  .node-tooltip {
+    position: absolute; top: -44px; left: 50%; transform: translateX(-50%);
+    background: rgba(23,53,31,0.88);
+    color: white;
+    font-size: 12px; font-weight: 700;
+    padding: 5px 12px;
+    border-radius: 999px;
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .node-wrap:hover .node-tooltip { opacity: 1; }
+
+  .material-symbols-outlined {
+    font-variation-settings: 'FILL' 1, 'wght' 500;
+    display: inline-block; line-height: 1;
+  }
+
+  @media (max-width: 640px) {
+    .top-bar {
+      top: 8px;
+      width: calc(100% - 16px);
+      min-height: 64px;
+      padding: 8px 10px;
+      border-radius: 22px;
+    }
+    .avatar { width: 44px; height: 44px; border-width: 3px; }
+    .avatar-wrap { gap: 9px; }
+    .xp-bar-track { width: clamp(86px, 28vw, 118px); }
+    .xp-label { font-size: 11px; }
+    .stats-pill { gap: 7px; padding: 6px 10px; }
+    .stat { font-size: 15px; }
+    .game-canvas { padding-top: 92px; padding-bottom: 112px; }
+    .sun { width: 58px; height: 58px; right: 22px; top: 102px; }
+    .nodes-layer { min-height: 1520px; padding-inline: 14px; }
+    .node-wrap { margin-bottom: 68px; }
+    .offset-left { --node-offset: -36px; }
+    .offset-right { --node-offset: 36px; }
+    .offset-left2 { --node-offset: -24px; }
+    .offset-right2 { --node-offset: 24px; }
+    .deco { opacity: 0.68; font-size: 30px !important; }
+    .bottom-nav {
+      bottom: 8px;
+      width: calc(100% - 16px);
+      min-height: 70px;
+      padding: 7px 6px;
+      border-radius: 24px;
+    }
+    .nav-item { min-width: 0; flex: 1; font-size: 10px; padding-inline: 4px; }
+    .nav-item .material-symbols-outlined { font-size: 25px; }
+    .nav-item.active { transform: translateY(-4px); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      scroll-behavior: auto !important;
+      transition-duration: 0.001ms !important;
+    }
+  }
+
+  /* ── ISLAND ADVENTURE MAP ── */
+  .game-canvas {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    min-height: 100dvh;
+    height: auto;
+    padding: 94px 18px 112px;
+    background:
+      linear-gradient(180deg, rgba(9, 43, 24, 0.28), rgba(7, 31, 21, 0.68)),
+      url("Jungle Sunset Forest Tree 3D Cartoon Backgrounds 🌳✨.jpeg") center / cover fixed no-repeat;
+  }
+
+  .world-bg,
+  .sun,
+  .cloud-layer,
+  .deco,
+  .path-svg {
+    display: none;
+  }
+
+  .map-shell {
+    width: min(100%, 1180px);
+    display: flex;
+    justify-content: center;
+  }
+
+  .map-scroller {
+    width: 100%;
+    overflow: visible;
+    display: flex;
+    justify-content: center;
+  }
+
+  .island-map {
+    position: relative;
+    width: min(calc(100vw - 44px), calc((100dvh - 206px) * 2.055), 1120px);
+    aspect-ratio: 565 / 275;
+    height: auto;
+    margin: 0 auto;
+    overflow: hidden;
+    border-radius: 20px;
+    background: url("game-map.png") center / cover no-repeat;
+    box-shadow:
+      0 0 0 1px rgba(255,255,255,0.82),
+      0 14px 0 rgba(34, 121, 64, 0.16),
+      0 24px 48px rgba(15, 91, 105, 0.28);
+    isolation: isolate;
+  }
+
+  .island-map::before,
+  .island-map::after,
+  .island-svg,
+  .map-water-detail,
+  .map-label {
+    display: none;
+  }
+
+  .island-map::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    display: block;
+    background: linear-gradient(180deg, rgba(255,255,255,0.16), transparent 24%, transparent 82%, rgba(0,92,109,0.08));
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  .island-svg {
+    display: none;
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .nodes-layer {
+    position: absolute;
+    inset: 0;
+    z-index: 4;
+    display: block;
+    width: 100%;
+    min-height: 0;
+    margin: 0;
+    padding: 0;
+  }
+
+  .node-wrap {
+    --node-scale: 1;
+    position: absolute;
+    align-items: center;
+    margin: 0;
+    transform: translate(-50%, -50%);
+    animation: island-node-pop 0.46s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+  }
+
+  @keyframes island-node-pop {
+    0% { transform: translate(-50%, -50%) scale(0.3); opacity: 0; }
+    72% { transform: translate(-50%, -50%) scale(1.1); opacity: 1; }
+    100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+  }
+
+  .level-1 { left: 10%; top: 66%; }
+  .level-2 { left: 23%; top: 52%; }
+  .level-3 { left: 36%; top: 64%; }
+  .level-4 { left: 49%; top: 45%; }
+  .level-5 { left: 62%; top: 58%; }
+  .level-6 { left: 75%; top: 42%; }
+  .level-7 { left: 87%; top: 56%; }
+  .level-99 { left: 94%; top: 34%; }
+
+  .level-btn {
+    width: clamp(48px, 5.5vw, 68px);
+    height: clamp(46px, 5.1vw, 64px);
+    border-radius: 13px;
+    border: 4px solid white;
+    background: linear-gradient(180deg, #ff1b13 0%, #d90e09 68%, #a80705 100%);
+    box-shadow: 0 6px 0 rgba(130, 0, 0, 0.34), 0 10px 16px rgba(72, 40, 18, 0.18);
+    color: transparent;
+    font-size: 0;
+    text-shadow: none;
+  }
+
+  .level-btn::after {
+    content: '';
+    position: absolute;
+    inset: -7px;
+    border-radius: 18px;
+    background: rgba(255, 238, 82, 0);
+    box-shadow: 0 0 0 0 rgba(255, 238, 82, 0);
+    pointer-events: none;
+    transition: background 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .island-map .level-btn::before {
+    content: '★';
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    color: #ffe754;
+    font-family: 'Fredoka One', cursive;
+    font-size: clamp(42px, 5.2vw, 62px);
+    line-height: 1;
+    text-shadow: 0 3px 0 #f39c13, 0 5px 8px rgba(78, 21, 0, 0.22);
+  }
+
+  .level-btn:hover::after,
+  .level-btn:focus-visible::after {
+    background: rgba(255, 238, 82, 0.14);
+    box-shadow: 0 0 0 4px rgba(255,255,255,0.45), 0 0 22px rgba(255, 220, 35, 0.55);
+  }
+  .island-map .level-btn:focus-visible {
+    box-shadow: none;
+  }
+  .level-btn:hover { transform: scale(1.03); }
+  .level-btn:active { transform: scale(0.98); }
+
+  .node-current .level-btn {
+    width: clamp(54px, 6vw, 74px);
+    height: clamp(50px, 5.6vw, 70px);
+    background: linear-gradient(180deg, #ff3325 0%, #df130d 68%, #a80705 100%);
+    box-shadow: 0 7px 0 rgba(130, 0, 0, 0.36), 0 0 0 7px rgba(255, 235, 75, 0.24), 0 16px 24px rgba(72, 40, 18, 0.24);
+    animation: current-stone 1.8s ease-in-out infinite;
+  }
+  .node-current .level-btn::after {
+    background: rgba(255, 245, 91, 0.14);
+    box-shadow: 0 0 0 4px rgba(255,255,255,0.48), 0 0 24px rgba(255, 219, 39, 0.7);
+  }
+
+  @keyframes current-stone {
+    50% { transform: scale(1.05); }
+  }
+
+  .node-done .level-btn {
+    background: linear-gradient(180deg, #ff1b13 0%, #d90e09 68%, #a80705 100%);
+  }
+
+  .node-locked .level-btn {
+    width: clamp(48px, 5.5vw, 68px);
+    height: clamp(46px, 5.1vw, 64px);
+    background: linear-gradient(180deg, #bfbfbf 0%, #8e8e8e 68%, #666 100%);
+    box-shadow: 0 7px 0 rgba(71, 71, 71, 0.36), 0 12px 18px rgba(72, 40, 18, 0.16);
+    opacity: 1;
+  }
+
+  .node-locked .level-btn .material-symbols-outlined {
+    display: block;
+    color: #4d4d4d;
+    font-size: clamp(28px, 3.2vw, 38px);
+  }
+
+  .node-locked .level-btn::before {
+    display: none;
+  }
+
+  .node-boss .level-btn {
+    width: clamp(48px, 5.5vw, 68px);
+    height: clamp(46px, 5.1vw, 64px);
+    font-size: 0;
+    background: linear-gradient(180deg, #bfbfbf 0%, #8e8e8e 68%, #666 100%);
+    box-shadow: 0 7px 0 rgba(71, 71, 71, 0.36), 0 12px 18px rgba(72, 40, 18, 0.16);
+  }
+
+  .stars-row {
+    position: absolute;
+    left: 50%;
+    bottom: calc(100% - 1px);
+    display: flex;
+    justify-content: center;
+    transform: translateX(-50%) rotate(-5deg);
+    gap: 0;
+    width: 100%;
+    pointer-events: none;
+    z-index: 5;
+  }
+
+  .star-icon {
+    margin: 0 -2px;
+    font-size: clamp(15px, 1.9vw, 22px);
+    filter: drop-shadow(0 2px 1px rgba(133, 89, 0, 0.32));
+  }
+
+  .pin-bounce,
+  .boss-trophy {
+    display: none;
+  }
+
+  .node-tooltip {
+    top: auto;
+    bottom: calc(100% + 16px);
+    background: rgba(70, 47, 22, 0.88);
+  }
+
+  .current-badge {
+    position: absolute;
+    left: 50%;
+    top: calc(100% + 4px);
+    transform: translateX(-50%);
+    background: #fff7c8;
+    border-color: #ffd94a;
+    color: #593f00;
+    box-shadow: 0 5px 0 rgba(173, 103, 0, 0.18), 0 8px 16px rgba(62, 47, 14, 0.16);
+  }
+  .island-map .current-badge {
+    display: none;
+  }
+
+  .map-marker {
+    position: absolute;
+    z-index: 6;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border: 3px solid #fff;
+    border-radius: 999px;
+    color: #653700;
+    background: linear-gradient(180deg, #fff6a9, #ffd85a);
+    box-shadow: 0 5px 0 rgba(150, 86, 0, 0.22), 0 8px 16px rgba(59, 43, 17, 0.18);
+    font-size: clamp(11px, 1.25vw, 14px);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    pointer-events: none;
+  }
+
+  .start-marker { left: 3%; top: 76%; }
+  .end-marker { right: 1.8%; top: 20%; }
+
+  @media (max-width: 760px) {
+    .game-canvas {
+      height: auto;
+      min-height: 100dvh;
+      padding: 92px 8px 96px;
+      align-items: flex-start;
+    }
+    .map-shell { padding: 0 8px; }
+    .map-scroller {
+      overflow-x: auto;
+      overflow-y: visible;
+      justify-content: flex-start;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255,255,255,0.72) rgba(14,102,177,0.25);
+    }
+    .island-map {
+      flex: 0 0 900px;
+      width: 900px;
+      aspect-ratio: 565 / 275;
+    }
+    .level-btn,
+    .node-locked .level-btn,
+    .node-boss .level-btn { width: 58px; height: 54px; }
+    .node-current .level-btn { width: 64px; height: 58px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ── TOP BAR ── -->
+<header class="top-bar">
+  <div class="avatar-wrap">
+    <div class="avatar">
+      <img alt="Player Avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAm2NoSF70JnrGV2ZLzkkcbnSsYkjuZl9c1OdfItFBEYTyAwrWUfwkjlJ9WKPNKzqoUjaVRe2EFnJBSdk9_s9ZoRbICHs-khG-vBj5Niro2HjhWM98385WfU4fWkwgkQ5x70LVU5UJSQKOqLDUi4m38stEyy9zFHZAF-PPB_ZWx68d9Y9og7bZKdZEgkth3RA7x7Ed9UBA_FQboob1FPX1v2kn4S7adyerggnNZB55sHjO9dP7TA__kheA92OD82Ezd3k3gaoyKYyo"/>
+    </div>
+    <div class="xp-col">
+      <div class="xp-bar-track"><div class="xp-bar-fill"></div></div>
+      <span class="xp-label">⚡ XP Level 14</span>
+    </div>
+  </div>
+  <div class="stats-pill">
+    <div class="stat">1200 <span>🪙</span></div>
+    <div class="stat-divider"></div>
+    <div class="stat">5 <span>❤️</span></div>
+  </div>
+</header>
+
+<!-- ── SPARKLES OVERLAY ── -->
+<div id="sparkles"></div>
+
+<!-- ── GAME CANVAS ── -->
+<main class="game-canvas">
+  <section class="map-shell" aria-label="Quiz adventure island map">
+    <div class="map-scroller">
+      <div class="island-map">
+        <div class="map-water-detail water-1"></div>
+        <div class="map-water-detail water-2"></div>
+        <div class="map-water-detail water-3"></div>
+        <div class="map-label">Quiz Adventure</div>
+        <div class="map-marker start-marker">START</div>
+        <div class="map-marker end-marker">FINISH</div>
+
+        <svg class="island-svg" viewBox="0 0 1120 430" preserveAspectRatio="none" aria-hidden="true">
+          <defs>
+            <filter id="softShadow" x="-10%" y="-20%" width="120%" height="150%">
+              <feDropShadow dx="0" dy="10" stdDeviation="4" flood-color="#0069a7" flood-opacity="0.28"/>
+            </filter>
+            <linearGradient id="sandGrad" x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0" stop-color="#fff67b"/>
+              <stop offset="0.55" stop-color="#ffd45b"/>
+              <stop offset="1" stop-color="#f49a38"/>
+            </linearGradient>
+            <linearGradient id="grassGrad" x1="0" x2="1" y1="0" y2="1">
+              <stop offset="0" stop-color="#79f514"/>
+              <stop offset="1" stop-color="#29c833"/>
+            </linearGradient>
+          </defs>
+
+          <path fill="rgba(255,255,255,0.72)" d="M12 196C46 112 118 82 206 54c92-30 160-62 248-28 52 20 98 58 156 58 78 0 122-75 212-82 103-8 196 52 220 142 32 119-76 144-66 230-90-2-163-35-244-24-80 12-124 54-210 38-76-14-139-32-214 6-112 57-217 24-287-46-38-38-29-101-9-152z"/>
+          <path filter="url(#softShadow)" fill="url(#sandGrad)" d="M20 190C54 111 118 88 201 65c85-24 159-63 236-27 64 31 94 64 162 58 82-7 123-83 218-76 105 8 174 74 191 162 24 119-66 140-47 211-92 6-163-31-241-16-81 15-126 54-214 38-76-14-132-31-207 8-111 56-215 12-276-61-38-45-22-116-3-172z"/>
+          <path fill="url(#grassGrad)" d="M54 192C92 127 152 112 225 90c65-19 135-48 192-18 64 35 88 66 160 62 84-4 122-74 210-65 82 9 145 62 156 134 17 105-69 118-43 176-72 1-128-24-190-10-70 16-112 47-188 33-72-13-125-26-193 8-88 45-180 12-234-43-40-41-58-114-41-175z"/>
+          <path fill="#ff9229" d="M34 219C83 250 135 230 159 189c32-54 86-78 146-70 73 9 90 64 63 114-23 43-84 61-83 99 0 21 29 35 62 28 75-16 112-98 179-109 72-12 97 54 52 96-18 17-44 25-78 29 58 17 111 1 157-34 58-45 87-112 158-111 72 2 112 53 82 107-20 37-70 41-109 38 58 18 125 8 176-26l16 24c-65 43-159 55-232 22-41-18-67-50-65-83 2-37 37-64 91-71-43-6-69 25-107 70-44 52-94 83-156 90-52 6-105-8-127-39-21-29-9-66 29-89 31-19 56-37 64-63 9-27-5-48-34-56-41-12-89 9-114 50-43 70-133 95-207 57l11-39z"/>
+          <path fill="none" stroke="#d96e1e" stroke-width="10" stroke-linecap="round" opacity="0.35" d="M48 240C96 263 148 236 174 197c28-42 74-62 125-56 59 7 72 47 49 86-23 39-83 63-82 101 2 40 63 55 124 28 68-31 101-100 168-93 50 5 64 45 30 76-24 22-61 32-104 34 74 29 137 6 187-43 52-51 88-91 147-82 53 8 75 48 51 85-20 31-63 41-112 39 58 18 137 10 189-25"/>
+          <path fill="#ffe875" d="M87 303c18-8 35-7 43 1s3 20-14 27-35 7-43-1-3-20 14-27zM399 89c18-7 34-6 41 1 8 8 3 18-13 25-17 7-34 6-41-1-8-8-3-19 13-25zM875 143c18-7 34-6 41 1 8 8 3 18-13 25-17 7-34 6-41-1-8-8-3-19 13-25z" opacity="0.55"/>
+          <path fill="#e97535" d="M311 171l42-32 14 70-54 33zM875 218l47-38 18 81-61 31zM576 225l46-29 15 68-56 31z"/>
+          <path fill="#c9562d" d="M353 139l20 22-6 48-14-70zM922 180l25 28-7 53-18-81zM622 196l22 24-7 44-15-68z"/>
+          <path fill="#32a83a" d="M344 83c24-58 70-69 90-12-31-7-54-2-90 12zM377 102c54-32 91-11 83 43-29-27-48-35-83-43zM393 101c43-44 86-36 92 17-37-15-57-17-92-17zM735 158c25-58 72-65 91-9-34-8-55-5-91 9zM766 178c54-34 94-14 84 41-29-27-50-34-84-41zM778 174c45-44 88-33 92 20-35-17-55-19-92-20z"/>
+          <path stroke="#9d5a28" stroke-width="14" stroke-linecap="round" d="M397 90v105M785 169v118"/>
+          <circle cx="525" cy="228" r="8" fill="#ffd43c"/><circle cx="545" cy="220" r="8" fill="#ffd43c"/><circle cx="565" cy="230" r="8" fill="#ffd43c"/><circle cx="536" cy="242" r="8" fill="#ffd43c"/><circle cx="558" cy="248" r="8" fill="#5ee1ff"/>
+          <path fill="#9b3f23" d="M503 184l72-18 18 66-77 17z"/><path fill="#c35229" d="M503 184l44 29 46-47z"/><path fill="#6c2b1c" d="M516 249l77-17-11 24-70 14z"/>
+          <text x="596" y="126" font-size="60" fill="white" opacity="0.9" text-anchor="middle">⌁</text>
+        </svg>
+
+        <div class="nodes-layer">
+          <div class="node-wrap node-done level-1">
+            <div class="node-tooltip">Island Start</div>
+            <button class="level-btn" data-level="1"><span>1</span></button>
+            <div class="stars-row"><span class="star-icon">⭐</span><span class="star-icon">⭐</span><span class="star-icon">⭐</span></div>
+          </div>
+
+          <div class="node-wrap node-done level-2">
+            <div class="node-tooltip">Lagoon Math</div>
+            <button class="level-btn" data-level="2"><span>2</span></button>
+            <div class="stars-row"><span class="star-icon">⭐</span><span class="star-icon">⭐</span></div>
+          </div>
+
+          <div class="node-wrap node-done level-3">
+            <div class="node-tooltip">Shell Steps</div>
+            <button class="level-btn" data-level="3"><span>3</span></button>
+            <div class="stars-row"><span class="star-icon">⭐</span><span class="star-icon">⭐</span><span class="star-icon">⭐</span></div>
+          </div>
+
+          <div class="node-wrap node-done level-4">
+            <div class="node-tooltip">Palm Puzzle</div>
+            <button class="level-btn" data-level="4"><span>4</span></button>
+            <div class="stars-row"><span class="star-icon">⭐</span><span class="star-icon">⭐</span><span class="star-icon empty">⭐</span></div>
+          </div>
+
+          <div class="node-wrap node-current level-5">
+            <div class="node-tooltip">You are here!</div>
+            <button class="level-btn" data-level="5"><span>5</span></button>
+            <div class="stars-row"><span class="star-icon">⭐</span><span class="star-icon">⭐</span><span class="star-icon">⭐</span></div>
+          </div>
+
+          <div class="node-wrap node-locked level-6">
+            <div class="node-tooltip">Rocky Turn</div>
+            <button class="level-btn" data-level="6"><span class="material-symbols-outlined">lock</span></button>
+          </div>
+
+          <div class="node-wrap node-locked level-7">
+            <div class="node-tooltip">Treasure Cove</div>
+            <button class="level-btn" data-level="7"><span class="material-symbols-outlined">lock</span></button>
+          </div>
+
+          <div class="node-wrap node-locked node-boss level-99">
+            <div class="node-tooltip">Final Treasure</div>
+            <button class="level-btn" data-level="99"><span class="material-symbols-outlined">lock</span></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- ── BOTTOM NAV ── -->
+<nav class="bottom-nav">
+  <a class="nav-item" href="#">
+    <span class="material-symbols-outlined">home</span>
+    <span>Home</span>
+  </a>
+  <a class="nav-item active" href="#">
+    <span class="material-symbols-outlined">map</span>
+    <span>Map</span>
+  </a>
+  <a class="nav-item" href="#">
+    <span class="material-symbols-outlined">leaderboard</span>
+    <span>Ranks</span>
+  </a>
+  <a class="nav-item" href="#">
+    <span class="material-symbols-outlined">emoji_events</span>
+    <span>Trophy</span>
+  </a>
+  <a class="nav-item" href="#">
+    <span class="material-symbols-outlined">person</span>
+    <span>Me</span>
+  </a>
+</nav>
+
+<script>
+  // ── Sparkle particles ──
+  const sparklesEl = document.getElementById('sparkles');
+  const colors = ['#ffd93d','#ff6b9d','#4ae176','#38bdf8','#c084fc','#ffffff','#ff9f43'];
+
+  function spawnSparkle() {
+    const el = document.createElement('div');
+    el.className = 'sparkle';
+    const size = Math.random() * 8 + 3;
+    const color = colors[Math.floor(Math.random() * colors.length)];
+    const dur = Math.random() * 5000 + 4000;
+    const delay = Math.random() * 2000;
+    el.style.cssText = `
+      width:${size}px; height:${size}px;
+      left:${Math.random()*100}%;
+      top:${Math.random()*80+10}%;
+      background:${color};
+      box-shadow:0 0 ${size*2}px ${color};
+      animation-duration:${dur}ms;
+      animation-delay:${delay}ms;
+    `;
+    sparklesEl.appendChild(el);
+    setTimeout(() => el.remove(), dur + delay + 500);
+  }
+
+  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    for (let i = 0; i < 30; i++) setTimeout(spawnSparkle, i * 200);
+    setInterval(spawnSparkle, 600);
+  }
+
+  // ── Click ripple on level buttons with lock/unlock logic ──
+  document.querySelectorAll('.level-btn').forEach(btn => {
+    btn.addEventListener('click', function(e) {
+      const nodeWrap = btn.closest('.node-wrap');
+      const isAttrLocked = btn.getAttribute('data-locked') === 'true';
+      const isClassLocked = nodeWrap && nodeWrap.classList.contains('node-locked');
+      const isStaticLocked = nodeWrap && nodeWrap.classList.contains('static-locked');
+      console.debug('Level click:', { level: btn.getAttribute('data-level'), isAttrLocked, isClassLocked });
+      if (isAttrLocked || isClassLocked || isStaticLocked) {
+        alert('Level locked. Complete previous levels to unlock this one.');
+        return;
+      }
+
+      const rect = btn.getBoundingClientRect();
+      const ripple = document.createElement('span');
+      ripple.style.cssText = `
+        position:fixed; border-radius:50%; pointer-events:none; z-index:9999;
+        width:60px; height:60px;
+        left:${rect.left + rect.width/2 - 30}px;
+        top:${rect.top + rect.height/2 - 30}px;
+        background:rgba(255,255,255,0.6);
+        transform:scale(0);
+        animation: ripple-out 0.5s ease-out forwards;
+      `;
+      document.body.appendChild(ripple);
+      setTimeout(() => ripple.remove(), 500);
+
+      const levelAttr = btn.getAttribute('data-level');
+      if (levelAttr) {
+        window.location.href = `jungle.html?start=true&level=${levelAttr}`;
+      }
+    });
+  });
+
+  // Inject ripple keyframe
+  const style = document.createElement('style');
+  style.textContent = '@keyframes ripple-out { to { transform:scale(4); opacity:0; } }';
+  document.head.appendChild(style);
+
+  // ── Level unlock logic ──
+  (function() {
+    const params = new URLSearchParams(window.location.search);
+    const world = params.get('world') || 'jungle';
+    const progressKey = 'cleared_' + world;
+
+    function getClearedLevel(world) {
+      return parseInt(localStorage.getItem('cleared_' + world) || '0', 10) || 0;
+    }
+    function setClearedLevel(world, level) {
+      const key = 'cleared_' + world;
+      const cur = getClearedLevel(world);
+      if (level > cur) localStorage.setItem(key, String(level));
+    }
+
+    function resetIfWorldCompleted() {
+      const cleared = getClearedLevel(world);
+      // Auto-restart Jungle Adventure after final boss completion.
+      if (world === 'jungle' && cleared >= 99) {
+        localStorage.removeItem(progressKey);
+        alert('Amazing! You finished Jungle Adventure. Starting again from Level 1!');
+      }
+    }
+
+    function scrollToStartLevel() {
+      const activeNode = document.querySelector('.node-current') || document.querySelector('.level-1');
+      if (!activeNode) return;
+      setTimeout(() => {
+        activeNode.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
+      }, 180);
+    }
+
+    function updateNodes() {
+      const cleared = getClearedLevel(world);
+      console.debug('updateNodes: cleared level for', world, 'is', cleared);
+
+      function isLevelUnlocked(levelNum, clearedLevel) {
+        // Final boss unlocks only after Crystal Cave (level 7) is cleared.
+        if (levelNum === 99) return clearedLevel >= 7;
+        return levelNum <= clearedLevel + 1;
+      }
+
+      document.querySelectorAll('.current-badge').forEach(badge => badge.remove());
+      document.querySelectorAll('.node-wrap').forEach(wrap => {
+        const btn = wrap.querySelector('.level-btn');
+        if (!btn) return;
+        if (wrap.classList.contains('static-locked')) {
+          wrap.classList.add('node-locked');
+          btn.style.cursor = 'not-allowed';
+          btn.setAttribute('data-locked','true');
+          return;
+        }
+        const lvl = parseInt(btn.getAttribute('data-level') || '0', 10);
+        // reset classes and lock attr
+        wrap.classList.remove('node-done','node-current','node-locked');
+        btn.removeAttribute('data-locked');
+        if (lvl === 0) return;
+        if (lvl <= cleared) {
+          wrap.classList.add('node-done');
+          btn.style.cursor = 'pointer';
+          btn.removeAttribute('data-locked');
+        } else if (isLevelUnlocked(lvl, cleared)) {
+          wrap.classList.add('node-current');
+          btn.style.cursor = 'pointer';
+          btn.removeAttribute('data-locked');
+          const badge = document.createElement('div');
+          badge.className = 'current-badge';
+          badge.textContent = '🎯 CURRENT';
+          wrap.appendChild(badge);
+        } else {
+          wrap.classList.add('node-locked');
+          btn.style.cursor = 'not-allowed';
+          btn.setAttribute('data-locked','true');
+        }
+        console.debug('node', lvl, 'classes:', wrap.className, 'data-locked:', btn.getAttribute('data-locked'));
+      });
+      scrollToStartLevel();
+    }
+
+    window.addEventListener('storage', updateNodes);
+    resetIfWorldCompleted();
+    updateNodes();
+  })();
+</script>
+</body>
+</html>

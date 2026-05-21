@@ -9,6 +9,23 @@
     
     <!-- External CSS -->
     <link rel="stylesheet" href="styles.css">
+    <style>
+        .explore-btn {
+            position: fixed;
+            right: 24px;
+            bottom: 110px;
+            z-index: 250;
+            background: linear-gradient(135deg,#4ae176 0%,#00a63e 100%);
+            color: #fff;
+            padding: 14px 20px;
+            border-radius: 999px;
+            font-weight: 700;
+            text-decoration: none;
+            box-shadow: 0 8px 0 rgba(0,83,33,0.4), 0 12px 30px rgba(0,0,0,0.15);
+            display: inline-flex; align-items: center; gap:10px;
+        }
+        .explore-btn:hover { transform: translateY(-3px); }
+    </style>
     
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
@@ -24,6 +41,8 @@
         Your browser does not support the video tag.
     </video>
 
+    <a href="quiz-adventure.html" class="explore-btn" title="Explore the Quiz Map">Explore 🌟</a>
+
    
 
     <!-- QUIZ MODAL SCREEN - FULL SCREEN FOR JUNGLE -->
@@ -36,15 +55,19 @@
                     <a href="index.html" class="btn-close" title="Back to Home"><i class="fas fa-times"></i></a>
                     <div class="quiz-title" id="quizTitle">🌿 Jungle Adventure</div>
                     <div class="quiz-stats">
-                        <span class="score-display">Score: <span id="scoreDisplay">0</span>/5</span>
+                        <span class="score-display">Score: <span id="scoreDisplay">0</span>/<span id="scoreTotal">10</span></span>
+                        <span class="score-display" style="margin-left:12px;">Time: <span id="timerDisplay">30</span>s</span>
+                        <span class="score-display" style="margin-left:12px;">Lives: <span id="livesDisplay">❤️❤️❤️</span></span>
                     </div>
+                    <button id="startQuizBtn" class="btn btn-primary" style="margin-left:12px;">Start Quiz</button>
+                    <button id="restartAdventureBtn" class="btn btn-secondary" style="margin-left:8px;">Restart Fresh</button>
                 </div>
 
                 <!-- Progress Bar -->
                 <div class="progress-container">
                     <div class="progress-bar" id="progressBar"></div>
                 </div>
-                <div class="question-counter" id="questionCounter">Question 1 of 5</div>
+                <div class="question-counter" id="questionCounter">Question 1 of 10</div>
 
                 <!-- Question -->
                 <div class="question-box" id="questionBox">
@@ -70,12 +93,15 @@
                 <div class="results-content">
                     <div class="results-emoji" id="resultsEmoji">🎉</div>
                     <h2 class="results-title" id="resultsTitle">Awesome Job!</h2>
-                    <div class="final-score" id="finalScore">You got 5 out of 5 correct!</div>
+                    <div class="final-score" id="finalScore">You got 0 out of 10 correct!</div>
                     <div class="results-message" id="resultsMessage">You're a quiz champion! 🏆</div>
                     
                     <div class="results-buttons">
                         <button class="btn btn-primary" id="playAgainBtn">
                             <i class="fas fa-redo"></i> Play Again
+                        </button>
+                        <button class="btn btn-secondary" id="restartAdventureResultsBtn">
+                            <i class="fas fa-rotate-left"></i> Restart Fresh
                         </button>
                         <button class="btn btn-secondary" id="backToWorldsBtn">
                             <i class="fas fa-arrow-left"></i> Back to Worlds
@@ -93,65 +119,240 @@
     <!-- SCRIPT -->
     <script>
         let feedbackCloseTimer = null;
+        let questionTimer = null;
+        let questionTimeLeft = 30;
+        let livesRemaining = 3;
+
+        const JUNGLE_LEVELS = {
+            1: {
+                title: "🌿 Jungle Adventure - Level 1",
+                color: "#4cd964",
+                theme: "jungle",
+                questions: [
+                    { question: "How many parrots are here? 🦜🦜", options: ["1", "2", "3", "4"], correct: "2", explanation: "Two parrots! Great counting." },
+                    { question: "What is 1 + 1?", options: ["1", "2", "3", "4"], correct: "2", explanation: "1 + 1 = 2." },
+                    { question: "Which number comes after 3?", options: ["2", "3", "4", "5"], correct: "4", explanation: "4 comes after 3." },
+                    { question: "How many bananas? 🍌🍌🍌", options: ["2", "3", "4", "5"], correct: "3", explanation: "Three bananas." },
+                    { question: "What is 2 + 1?", options: ["1", "2", "3", "4"], correct: "3", explanation: "2 + 1 = 3." },
+                    { question: "Which is bigger? 2 or 5", options: ["2", "5", "Both same", "0"], correct: "5", explanation: "5 is bigger than 2." },
+                    { question: "How many leaves? 🍃🍃", options: ["1", "2", "3", "4"], correct: "2", explanation: "Two leaves." },
+                    { question: "What is 3 - 1?", options: ["1", "2", "3", "4"], correct: "2", explanation: "3 - 1 = 2." },
+                    { question: "Which number comes before 5?", options: ["3", "4", "5", "6"], correct: "4", explanation: "4 comes before 5." },
+                    { question: "Count the monkey tails: 4 tails, take away 1. How many left?", options: ["2", "3", "4", "5"], correct: "3", explanation: "4 - 1 = 3." }
+                ]
+            },
+            2: {
+                title: "🌿 Jungle Adventure - Level 2",
+                color: "#3bcf6b",
+                theme: "jungle",
+                questions: [
+                    { question: "What is 2 + 2?", options: ["3", "4", "5", "6"], correct: "4", explanation: "2 + 2 = 4." },
+                    { question: "What is 5 - 1?", options: ["2", "3", "4", "5"], correct: "4", explanation: "5 - 1 = 4." },
+                    { question: "How many birds? 🐦🐦🐦🐦", options: ["3", "4", "5", "6"], correct: "4", explanation: "There are four birds." },
+                    { question: "What comes after 6?", options: ["5", "6", "7", "8"], correct: "7", explanation: "7 comes after 6." },
+                    { question: "What is 3 + 2?", options: ["4", "5", "6", "7"], correct: "5", explanation: "3 + 2 = 5." },
+                    { question: "What is 6 - 2?", options: ["2", "3", "4", "5"], correct: "4", explanation: "6 - 2 = 4." },
+                    { question: "Which number is smaller? 1 or 4", options: ["1", "4", "Both same", "10"], correct: "1", explanation: "1 is smaller." },
+                    { question: "How many paws? 🐒🐒🐒", options: ["2", "3", "4", "6"], correct: "3", explanation: "Three monkeys." },
+                    { question: "What is 4 + 1?", options: ["4", "5", "6", "7"], correct: "5", explanation: "4 + 1 = 5." },
+                    { question: "What is 7 - 3?", options: ["2", "3", "4", "5"], correct: "4", explanation: "7 - 3 = 4." }
+                ]
+            },
+            3: {
+                title: "🌿 Jungle Adventure - Level 3",
+                color: "#27c15a",
+                theme: "jungle",
+                questions: [
+                    { question: "What is 6 + 2?", options: ["6", "7", "8", "9"], correct: "8", explanation: "6 + 2 = 8." },
+                    { question: "What is 9 - 4?", options: ["3", "4", "5", "6"], correct: "5", explanation: "9 - 4 = 5." },
+                    { question: "How many mangoes? 🥭🥭🥭🥭🥭", options: ["4", "5", "6", "7"], correct: "5", explanation: "There are five mangoes." },
+                    { question: "What is 7 + 1?", options: ["6", "7", "8", "9"], correct: "8", explanation: "7 + 1 = 8." },
+                    { question: "Which number comes after 8?", options: ["7", "8", "9", "10"], correct: "9", explanation: "9 comes after 8." },
+                    { question: "What is 8 - 3?", options: ["4", "5", "6", "7"], correct: "5", explanation: "8 - 3 = 5." },
+                    { question: "What is 4 + 4?", options: ["6", "7", "8", "9"], correct: "8", explanation: "4 + 4 = 8." },
+                    { question: "What is 10 - 5?", options: ["3", "4", "5", "6"], correct: "5", explanation: "10 - 5 = 5." },
+                    { question: "How many eyes do 2 monkeys have?", options: ["2", "4", "6", "8"], correct: "4", explanation: "Two monkeys have four eyes." },
+                    { question: "What is 3 + 4?", options: ["5", "6", "7", "8"], correct: "7", explanation: "3 + 4 = 7." }
+                ]
+            },
+            4: {
+                title: "🌿 Jungle Adventure - Level 4",
+                color: "#20b856",
+                theme: "jungle",
+                questions: [
+                    { question: "What is 5 + 4?", options: ["8", "9", "10", "11"], correct: "9", explanation: "5 + 4 = 9." },
+                    { question: "What is 12 - 2?", options: ["8", "9", "10", "11"], correct: "10", explanation: "12 - 2 = 10." },
+                    { question: "How many bananas? 🍌🍌🍌🍌🍌🍌", options: ["5", "6", "7", "8"], correct: "6", explanation: "Six bananas." },
+                    { question: "What is 7 + 2?", options: ["8", "9", "10", "11"], correct: "9", explanation: "7 + 2 = 9." },
+                    { question: "What is 11 - 6?", options: ["4", "5", "6", "7"], correct: "5", explanation: "11 - 6 = 5." },
+                    { question: "Which number is larger? 9 or 6", options: ["6", "9", "Both same", "1"], correct: "9", explanation: "9 is larger." },
+                    { question: "What is 3 + 5?", options: ["7", "8", "9", "10"], correct: "8", explanation: "3 + 5 = 8." },
+                    { question: "What is 10 - 3?", options: ["6", "7", "8", "9"], correct: "7", explanation: "10 - 3 = 7." },
+                    { question: "How many monkey ears do 3 monkeys have?", options: ["4", "5", "6", "8"], correct: "6", explanation: "Three monkeys have six ears." },
+                    { question: "What is 6 + 3?", options: ["8", "9", "10", "11"], correct: "9", explanation: "6 + 3 = 9." }
+                ]
+            },
+            5: {
+                title: "🌿 Jungle Adventure - Level 5",
+                color: "#179f49",
+                theme: "jungle",
+                questions: [
+                    { question: "What is 8 + 4?", options: ["10", "11", "12", "13"], correct: "12", explanation: "8 + 4 = 12." },
+                    { question: "What is 14 - 5?", options: ["8", "9", "10", "11"], correct: "9", explanation: "14 - 5 = 9." },
+                    { question: "What is 2 + 7?", options: ["8", "9", "10", "11"], correct: "9", explanation: "2 + 7 = 9." },
+                    { question: "What is 13 - 3?", options: ["9", "10", "11", "12"], correct: "10", explanation: "13 - 3 = 10." },
+                    { question: "Which comes after 10?", options: ["9", "10", "11", "12"], correct: "11", explanation: "11 comes after 10." },
+                    { question: "What is 6 + 6?", options: ["10", "11", "12", "13"], correct: "12", explanation: "6 + 6 = 12." },
+                    { question: "What is 15 - 7?", options: ["6", "7", "8", "9"], correct: "8", explanation: "15 - 7 = 8." },
+                    { question: "How many feet do 2 monkeys and 1 frog have together?", options: ["8", "10", "12", "14"], correct: "12", explanation: "2 monkeys have 8 feet and 1 frog has 4 feet, so 12 feet altogether." },
+                    { question: "What is 9 + 1?", options: ["9", "10", "11", "12"], correct: "10", explanation: "9 + 1 = 10." },
+                    { question: "What is 12 - 4?", options: ["6", "7", "8", "9"], correct: "8", explanation: "12 - 4 = 8." }
+                ]
+            }
+            ,
+            6: {
+                title: "🏔️ Jungle Adventure - Mountain Peak (Hard)",
+                color: "#146b2c",
+                theme: "jungle",
+                questions: [
+                    { question: "What is 17 + 8?", options: ["24","25","26","27"], correct: "25", explanation: "17 + 8 = 25." },
+                    { question: "What is 36 ÷ 6?", options: ["4","5","6","7"], correct: "6", explanation: "36 ÷ 6 = 6." },
+                    { question: "If a pack has 4 cookies and you have 5 packs, how many cookies?", options: ["15","18","20","22"], correct: "20", explanation: "4 × 5 = 20 cookies." },
+                    { question: "What is 9 × 4?", options: ["32","34","36","38"], correct: "36", explanation: "9 × 4 = 36." },
+                    { question: "What is 45 - 17?", options: ["26","27","28","29"], correct: "28", explanation: "45 - 17 = 28." },
+                    { question: "Which is larger: 7×6 or 8×5?", options: ["7×6","8×5","Both same","Can't tell"], correct: "7×6", explanation: "7×6 = 42 and 8×5 = 40, so 7×6 is larger." },
+                    { question: "If you have 3 tens and 4 ones, what number do you have?", options: ["34","43","30","14"], correct: "34", explanation: "3 tens = 30, plus 4 ones = 34." },
+                    { question: "Half of 30 is?", options: ["10","12","15","20"], correct: "15", explanation: "30 ÷ 2 = 15." },
+                    { question: "What is 14 + 11?", options: ["24","25","26","27"], correct: "25", explanation: "14 + 11 = 25." },
+                    { question: "What is 7 × 7?", options: ["42","45","49","52"], correct: "49", explanation: "7 × 7 = 49." }
+                ]
+            },
+            7: {
+                title: "💎 Jungle Adventure - Crystal Cave (Very Hard)",
+                color: "#0f5c3a",
+                theme: "jungle",
+                questions: [
+                    { question: "What is half of 12?", options: ["5","6","7","8"], correct: "6", explanation: "12 ÷ 2 = 6." },
+                    { question: "How many apples in 3 rows of 4 apples?", options: ["7","10","12","14"], correct: "12", explanation: "3 × 4 = 12 apples." },
+                    { question: "What number makes 8 when added to 5?", options: ["2","3","4","5"], correct: "3", explanation: "5 + 3 = 8." },
+                    { question: "What is 4 × 4?", options: ["12","14","15","16"], correct: "16", explanation: "4 × 4 = 16." },
+                    { question: "If you take away 9 from 20, what remains?", options: ["9","10","11","12"], correct: "11", explanation: "20 - 9 = 11." },
+                    { question: "Which number is smaller: 18 or 21?", options: ["18","21","19","20"], correct: "18", explanation: "18 is smaller than 21." },
+                    { question: "3 + 3 + 3 = ?", options: ["6","8","9","7"], correct: "9", explanation: "3 + 3 + 3 = 9." },
+                    { question: "What is 16 ÷ 4?", options: ["2","3","4","5"], correct: "4", explanation: "16 ÷ 4 = 4." },
+                    { question: "If you add 7 to 6, what do you get?", options: ["12","13","14","11"], correct: "13", explanation: "7 + 6 = 13." },
+                    { question: "Which single equation equals 10?", options: ["6+4","5+3","7+4","8+1"], correct: "6+4", explanation: "6 + 4 = 10 (others are not 10)." }
+                ]
+            },
+            99: {
+                title: "🐉 Final Boss - Dragon's Challenge",
+                color: "#6b1f8c",
+                theme: "boss",
+                questions: [
+                    { question: "What is 23 - 7?", options: ["14","15","16","17"], correct: "16", explanation: "23 - 7 = 16." },
+                    { question: "What is 5 × 6?", options: ["25","30","35","40"], correct: "30", explanation: "5 × 6 = 30." },
+                    { question: "If you split 18 into 3 equal parts, each part is?", options: ["5","6","7","8"], correct: "6", explanation: "18 ÷ 3 = 6." },
+                    { question: "What is 14 + 9?", options: ["22","23","24","25"], correct: "23", explanation: "14 + 9 = 23." },
+                    { question: "What is 7 × 4?", options: ["26","27","28","29"], correct: "28", explanation: "7 × 4 = 28." },
+                    { question: "What is 36 ÷ 6?", options: ["5","6","7","8"], correct: "6", explanation: "36 ÷ 6 = 6." },
+                    { question: "What is 12 + 11?", options: ["22","23","24","25"], correct: "23", explanation: "12 + 11 = 23." },
+                    { question: "If you have 4 groups of 5, how many?", options: ["15","18","20","22"], correct: "20", explanation: "4 × 5 = 20." },
+                    { question: "What is 29 - 10?", options: ["18","19","20","21"], correct: "19", explanation: "29 - 10 = 19." },
+                    { question: "What is 9 × 5?", options: ["40","45","50","55"], correct: "45", explanation: "9 × 5 = 45." }
+                ]
+            }
+        };
+
+        function getLevelFromUrl() {
+            const params = new URLSearchParams(window.location.search);
+            const rawLevel = parseInt(params.get('level') || '1', 10);
+            if (Number.isNaN(rawLevel)) return 1;
+            // Allow normal levels 1..7 and boss 99
+            if (rawLevel === 99) return 99;
+            return Math.min(7, Math.max(1, rawLevel));
+        }
+
+        function getQuizForLevel(level) {
+            return JUNGLE_LEVELS[level] || JUNGLE_LEVELS[1];
+        }
+
+        function restartJungleAdventureFresh() {
+            const ok = confirm("Restart Jungle Adventure from the beginning? This will reset your jungle progress.");
+            if (!ok) return;
+
+            clearQuestionTimer();
+            try {
+                localStorage.removeItem('cleared_jungle');
+            } catch (e) { }
+
+            window.location.href = 'quiz-adventure.html?world=jungle';
+        }
 
         // Auto-initialize jungle quiz when page loads
         document.addEventListener('DOMContentLoaded', function() {
-            // Set the quiz world to jungle
-            const quizData = {
-                jungle: {
-                    title: "🌿 Jungle Adventure",
-                    color: "#4cd964",
-                    theme: "jungle",
-                    questions: [
-                        {
-                            question: "What is 5 + 3?",
-                            options: ["6", "7", "8", "9"],
-                            correct: "8",
-                            explanation: "5 + 3 = 8. Great counting! 🐒"
-                        },
-                        {
-                            question: "If you have 10 bananas and eat 2, how many are left?",
-                            options: ["8", "10", "12", "7"],
-                            correct: "8",
-                            explanation: "10 - 2 = 8. You're a math monkey! 🍌"
-                        },
-                        {
-                            question: "7 + 4 = ?",
-                            options: ["9", "10", "11", "12"],
-                            correct: "11",
-                            explanation: "7 + 4 = 11. Excellent! 🌳"
-                        },
-                        {
-                            question: "Count the monkeys: 2 monkeys + 3 monkeys = ?",
-                            options: ["4", "5", "6", "7"],
-                            correct: "5",
-                            explanation: "2 + 3 = 5 monkeys swinging together! 🐵"
-                        },
-                        {
-                            question: "What is 9 - 4?",
-                            options: ["4", "5", "6", "7"],
-                            correct: "5",
-                            explanation: "9 - 4 = 5. Jungle math champion! 🏆"
-                        }
-                    ]
-                }
-            };
+            // Check URL params to decide if the quiz should start immediately
+            const params = new URLSearchParams(window.location.search);
+            const startParam = params.get('start');
+            const level = getLevelFromUrl();
 
-            // Initialize jungle quiz
-            window.currentQuiz = quizData.jungle;
+            window.requestedLevel = level;
+            window.currentQuiz = getQuizForLevel(level);
             window.currentQuestionIndex = 0;
             window.score = 0;
+            livesRemaining = 3;
             window.quizActive = true;
             window.answered = false;
 
-            // Update theme
-            document.querySelector(".quiz-container").className = "quiz-container theme-jungle";
-            
-            // Load first question
-            loadQuestionJungle();
+            const quizContainer = document.querySelector(".quiz-container");
+            if (quizContainer) quizContainer.className = "quiz-container theme-jungle";
+
+            const quizTitle = document.getElementById("quizTitle");
+            if (quizTitle) quizTitle.textContent = window.currentQuiz.title;
+
+            const scoreDisplay = document.getElementById("scoreDisplay");
+            if (scoreDisplay) scoreDisplay.textContent = "0";
+
+            const scoreTotal = document.getElementById("scoreTotal");
+            if (scoreTotal) scoreTotal.textContent = String(window.currentQuiz.questions.length);
+
+            updateLivesDisplay();
+
+            document.getElementById("questionCounter").textContent = `Question 1 of ${window.currentQuiz.questions.length}`;
+
+            // Load first question only when explicitly requested via start=true
+            if (startParam === 'true') {
+                loadQuestionJungle();
+            }
+
+                // Hook up manual start button so users visiting jungle.html directly can start the quiz
+                const startBtn = document.getElementById('startQuizBtn');
+                if (startBtn) {
+                    startBtn.addEventListener('click', function () {
+                        // Reset quiz state and start
+                        window.currentQuestionIndex = 0;
+                        window.score = 0;
+                        window.quizActive = true;
+                        window.answered = false;
+                        document.getElementById('scoreDisplay').textContent = '0';
+                        document.getElementById('quizScreen').classList.remove('hidden');
+                        document.getElementById('resultsScreen').classList.add('hidden');
+                        loadQuestionJungle();
+                    });
+                }
+
+                const restartBtn = document.getElementById('restartAdventureBtn');
+                if (restartBtn) {
+                    restartBtn.addEventListener('click', restartJungleAdventureFresh);
+                }
+
+                const restartResultBtn = document.getElementById('restartAdventureResultsBtn');
+                if (restartResultBtn) {
+                    restartResultBtn.addEventListener('click', restartJungleAdventureFresh);
+                }
         });
 
         function loadQuestionJungle() {
+            clearQuestionTimer();
             if (window.currentQuestionIndex >= window.currentQuiz.questions.length) {
                 showResultsJungle();
                 return;
@@ -159,9 +360,12 @@
 
             const question = window.currentQuiz.questions[window.currentQuestionIndex];
             window.answered = false;
+            questionTimeLeft = 30;
 
-            document.getElementById("questionCounter").textContent = `Question ${window.currentQuestionIndex + 1} of 5`;
+            document.getElementById("questionCounter").textContent = `Question ${window.currentQuestionIndex + 1} of ${window.currentQuiz.questions.length}`;
             updateProgressBar();
+            updateTimerDisplay();
+            startQuestionTimer();
 
             document.getElementById("questionText").textContent = question.question;
 
@@ -180,8 +384,87 @@
             document.getElementById("nextBtn").classList.add("hidden");
         }
 
+        function updateTimerDisplay() {
+            const timerDisplay = document.getElementById("timerDisplay");
+            if (timerDisplay) timerDisplay.textContent = String(questionTimeLeft);
+        }
+
+        function updateLivesDisplay() {
+            const livesDisplay = document.getElementById("livesDisplay");
+            if (!livesDisplay) return;
+
+            livesDisplay.textContent = "❤️".repeat(Math.max(0, livesRemaining)) + "🖤".repeat(Math.max(0, 3 - livesRemaining));
+        }
+
+        function loseLifeAndMaybeEndQuiz() {
+            livesRemaining = Math.max(0, livesRemaining - 1);
+            updateLivesDisplay();
+
+            if (livesRemaining <= 0) {
+                clearQuestionTimer();
+                window.currentQuestionIndex = window.currentQuiz.questions.length;
+                setTimeout(() => showResultsJungle(), 700);
+                return true;
+            }
+
+            return false;
+        }
+
+        function clearQuestionTimer() {
+            if (questionTimer) {
+                clearInterval(questionTimer);
+                questionTimer = null;
+            }
+        }
+
+        function startQuestionTimer() {
+            clearQuestionTimer();
+            questionTimer = setInterval(() => {
+                if (window.answered) {
+                    clearQuestionTimer();
+                    return;
+                }
+
+                questionTimeLeft -= 1;
+                updateTimerDisplay();
+
+                if (questionTimeLeft <= 0) {
+                    clearQuestionTimer();
+                    handleQuestionTimeout();
+                }
+            }, 1000);
+        }
+
+        function handleQuestionTimeout() {
+            if (window.answered) return;
+
+            window.answered = true;
+            const ended = loseLifeAndMaybeEndQuiz();
+            playWrongSound();
+
+            const question = window.currentQuiz.questions[window.currentQuestionIndex];
+            showTimeoutFeedback(question.correct, question.explanation);
+
+            const buttons = document.querySelectorAll(".option-btn");
+            buttons.forEach(btn => {
+                if (btn.textContent === question.correct) {
+                    btn.classList.add("correct");
+                }
+                btn.disabled = true;
+            });
+
+            document.getElementById("feedbackBox").classList.remove("hidden");
+
+            if (!ended) {
+                setTimeout(() => {
+                    document.getElementById("nextBtn").classList.remove("hidden");
+                }, 500);
+            }
+        }
+
         function updateProgressBar() {
-            const progress = ((window.currentQuestionIndex + 1) / 5) * 100;
+            const totalQuestions = window.currentQuiz.questions.length;
+            const progress = ((window.currentQuestionIndex + 1) / totalQuestions) * 100;
             document.getElementById("progressBar").style.width = progress + "%";
         }
 
@@ -189,6 +472,7 @@
             if (window.answered) return;
 
             window.answered = true;
+            clearQuestionTimer();
             const isCorrect = selected === correct;
 
             if (isCorrect) {
@@ -196,6 +480,7 @@
                 playCorrectSound();
                 showCorrectFeedback(explanation);
             } else {
+                loseLifeAndMaybeEndQuiz();
                 playWrongSound();
                 showIncorrectFeedback(selected, correct, explanation);
             }
@@ -214,9 +499,11 @@
 
             document.getElementById("feedbackBox").classList.remove("hidden");
 
-            setTimeout(() => {
-                document.getElementById("nextBtn").classList.remove("hidden");
-            }, 500);
+            if (livesRemaining > 0 || isCorrect) {
+                setTimeout(() => {
+                    document.getElementById("nextBtn").classList.remove("hidden");
+                }, 500);
+            }
         }
 
         function showCorrectFeedback(explanation) {
@@ -256,6 +543,26 @@
                     <img class="feedback-popup-image" src="worng-pop.png" alt="Sad jungle monkey showing a wrong answer">
                 </div>
                 <div class="feedback-title">Oops, try again!</div>
+                <div class="feedback-text">The correct answer is: <strong>${correct}</strong></div>
+                <div class="feedback-text">${explanation}</div>
+            `;
+        }
+
+        function showTimeoutFeedback(correct, explanation) {
+            const feedbackBox = document.getElementById("feedbackBox");
+            const content = document.getElementById("feedbackContent");
+
+            if (feedbackCloseTimer) {
+                clearTimeout(feedbackCloseTimer);
+                feedbackCloseTimer = null;
+            }
+
+            feedbackBox.className = "feedback-box feedback-incorrect feedback-jungle-wrong";
+            content.innerHTML = `
+                <div class="feedback-popup-image-wrap">
+                    <img class="feedback-popup-image" src="worng-pop.png" alt="Jungle timer ran out">
+                </div>
+                <div class="feedback-title">Time's up!</div>
                 <div class="feedback-text">The correct answer is: <strong>${correct}</strong></div>
                 <div class="feedback-text">${explanation}</div>
             `;
@@ -304,12 +611,19 @@
         });
 
         document.getElementById("playAgainBtn").addEventListener("click", function() {
+            clearQuestionTimer();
             window.currentQuestionIndex = 0;
             window.score = 0;
             window.answered = false;
+            questionTimeLeft = 30;
+            livesRemaining = 3;
             document.getElementById("scoreDisplay").textContent = "0";
+            document.getElementById("scoreTotal").textContent = String(window.currentQuiz.questions.length);
+            updateTimerDisplay();
+            updateLivesDisplay();
             document.getElementById("quizScreen").classList.remove("hidden");
             document.getElementById("resultsScreen").classList.add("hidden");
+            document.getElementById("quizTitle").textContent = window.currentQuiz.title;
             loadQuestionJungle();
         });
 
@@ -319,32 +633,34 @@
 
         function showResultsJungle() {
             window.quizActive = false;
+            clearQuestionTimer();
 
             document.getElementById("quizScreen").classList.add("hidden");
             document.getElementById("resultsScreen").classList.remove("hidden");
 
-            const percentage = (window.score / 5) * 100;
+            const totalQuestions = window.currentQuiz.questions.length;
+            const percentage = (window.score / totalQuestions) * 100;
             let emoji = "🎉";
             let title = "Awesome Job!";
             let message = "";
 
-            if (window.score === 5) {
+            if (window.score === totalQuestions) {
                 emoji = "🏆";
                 title = "PERFECT SCORE! 🌟";
                 message = "You're a quiz champion! You got every single one right! You're incredible!";
                 createConfetti();
-            } else if (window.score >= 4) {
+            } else if (window.score >= Math.ceil(totalQuestions * 0.8)) {
                 emoji = "🌟";
                 title = "Excellent Work!";
-                message = "You got 4 out of 5! That's amazing! Keep practicing!";
-            } else if (window.score >= 3) {
+                message = `You got ${window.score} out of ${totalQuestions}! That's amazing! Keep practicing!`;
+            } else if (window.score >= Math.ceil(totalQuestions * 0.6)) {
                 emoji = "😊";
                 title = "Great Job!";
-                message = "You got 3 out of 5! Good effort! Play again to improve!";
-            } else if (window.score >= 2) {
+                message = `You got ${window.score} out of ${totalQuestions}! Good effort! Play again to improve!`;
+            } else if (window.score >= Math.ceil(totalQuestions * 0.4)) {
                 emoji = "💪";
                 title = "Good Try!";
-                message = "You got 2 out of 5. Keep learning and try again!";
+                message = `You got ${window.score} out of ${totalQuestions}. Keep learning and try again!`;
             } else {
                 emoji = "📚";
                 title = "Learning Adventure!";
@@ -353,8 +669,55 @@
 
             document.getElementById("resultsEmoji").textContent = emoji;
             document.getElementById("resultsTitle").textContent = title;
-            document.getElementById("finalScore").textContent = `You got ${window.score} out of 5 correct!`;
+            document.getElementById("finalScore").textContent = `You got ${window.score} out of ${totalQuestions} correct!`;
             document.getElementById("resultsMessage").textContent = message;
+
+            // If the player came from a map level (requestedLevel), and passed,
+            // mark the level cleared in localStorage and return to the map.
+            const passThreshold = Math.ceil(totalQuestions * 0.7); // score needed to clear a normal level
+            const lvl = window.requestedLevel ? parseInt(window.requestedLevel, 10) : null;
+            if (lvl) {
+                if (lvl === 99) {
+                    // Final boss requires a perfect score to win
+                    if (window.score === totalQuestions) {
+                        // Winner
+                        try {
+                            const key = 'cleared_jungle';
+                            const cur = parseInt(localStorage.getItem(key) || '0', 10) || 0;
+                            if (99 > cur) localStorage.setItem(key, String(99));
+                        } catch (e) { }
+
+                        document.getElementById("resultsEmoji").textContent = "🏅";
+                        document.getElementById("resultsTitle").textContent = "CHAMPION!";
+                        document.getElementById("resultsMessage").textContent = "You defeated the Final Boss and won the game! 🎉";
+                        createConfetti();
+                    } else {
+                        // Not perfect: did not beat boss
+                        document.getElementById("resultsEmoji").textContent = "😅";
+                        document.getElementById("resultsTitle").textContent = "Almost There";
+                        document.getElementById("resultsMessage").textContent = "You need to get all questions correct to beat the Final Boss. Try again!";
+                    }
+
+                    // Return to map in either case so they can retry or celebrate
+                    setTimeout(() => {
+                        window.location.href = 'quiz-adventure.html?world=jungle';
+                    }, 2000);
+                } else {
+                    // Normal level clearing
+                    if (window.score >= passThreshold) {
+                        try {
+                            const key = 'cleared_jungle';
+                            const cur = parseInt(localStorage.getItem(key) || '0', 10) || 0;
+                            if (lvl > cur) localStorage.setItem(key, String(lvl));
+                        } catch (e) { /* ignore storage errors */ }
+
+                        // Return to map so user can proceed to next unlocked level
+                        setTimeout(() => {
+                            window.location.href = 'quiz-adventure.html?world=jungle';
+                        }, 1400);
+                    }
+                }
+            }
         }
 
         function createConfetti() {

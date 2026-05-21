@@ -25,6 +25,208 @@
 </head>
 
 <body>
+    <style>
+        /* Page background using the provided confetti image already in the project folder. */
+        html, body {
+            min-height: 100%;
+        }
+        body {
+            position: relative;
+            z-index: 0;
+            background: transparent !important;
+        }
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            z-index: -2;
+            background-image: url('download (6).jpeg');
+            background-size: cover;
+            background-position: center center;
+            background-repeat: no-repeat;
+        }
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            background: rgba(255, 255, 255, 0.12);
+        }
+        .main-content,
+        .footer,
+        .hero-bg {
+            background: transparent !important;
+        }
+        .hero-section,
+        .how-to-play-panel,
+        .features-section {
+            background: rgba(255, 255, 255, 0.22) !important;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        .header,
+        .footer {
+            background: rgba(255, 255, 255, 0.48) !important;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        .logo-text h1 {
+            font-size: 2rem !important;
+            line-height: 1.1;
+        }
+        .logo-text p {
+            font-size: 1rem !important;
+        }
+        .pill-label,
+        .pill-label-hover,
+        .nav-item,
+        .footer-section a {
+            font-size: 1rem !important;
+        }
+        .score-badge {
+            font-size: 1.05rem !important;
+        }
+        .logo-text h1,
+        .hero-title,
+        .section-title,
+        .features-title,
+        .card-title {
+            color: #1d2a78 !important;
+            text-shadow: 0 2px 10px rgba(255, 255, 255, 0.65);
+        }
+        .logo-text p,
+        .hero-description,
+        .section-subtitle,
+        .card-description,
+        .feature-item p,
+        .how-to-step p,
+        .footer-section p,
+        .footer-bottom p {
+            color: #5a4f8e !important;
+        }
+        p {
+            color: #2f2a55 !important;
+        }
+        .pill-label,
+        .pill-label-hover,
+        .nav-item,
+        .footer-section a {
+            color: #24306d !important;
+        }
+        .score-badge,
+        .badge,
+        .age-badge,
+        .how-to-play-badge,
+        .card-badge,
+        .tilted-card-caption {
+            color: #4a1469 !important;
+        }
+        .score-badge {
+            background: rgba(255, 255, 255, 0.72) !important;
+        }
+        .how-to-play-badge,
+        .how-to-spotlight-label,
+        .how-to-spotlight-title,
+        .how-to-step h3,
+        .how-to-step p,
+        .step-number,
+        .how-to-step::before {
+            color: #24306d !important;
+        }
+        .how-to-play-badge {
+            color: #ffffff !important;
+        }
+        .how-to-spotlight-title,
+        .how-to-step h3 {
+            color: #1d2a78 !important;
+        }
+        .how-to-spotlight-text,
+        .how-to-step p {
+            color: #5a4f8e !important;
+        }
+        .step-number {
+            color: #ffffff !important;
+            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+        }
+        .hero-title {
+            font-size: clamp(3rem, 6vw, 5rem) !important;
+            line-height: 1.05 !important;
+        }
+        .hero-description {
+            font-size: clamp(1.2rem, 2vw, 1.5rem) !important;
+            line-height: 1.7 !important;
+        }
+        .section-title {
+            font-size: clamp(2.4rem, 4vw, 3.6rem) !important;
+        }
+        .section-subtitle {
+            font-size: 1.2rem !important;
+            line-height: 1.65 !important;
+        }
+        .how-to-play-badge,
+        .badge,
+        .age-badge {
+            font-size: 1rem !important;
+        }
+        .how-to-header {
+            gap: 22px;
+            align-items: center;
+        }
+        .how-to-copy {
+            padding: 12px 10px 8px 0;
+        }
+        .how-to-main-title {
+            max-width: 18ch;
+            margin: 0 auto 12px auto !important;
+            font-size: clamp(2.4rem, 4vw, 3.6rem) !important;
+            line-height: 1.12 !important;
+            text-wrap: balance;
+            color: #10214f !important;
+            text-shadow: none !important;
+        }
+        .how-to-spotlight-label,
+        .how-to-step h3,
+        .card-title {
+            font-size: 1.25rem !important;
+        }
+        .how-to-spotlight-title {
+            font-size: 1.9rem !important;
+        }
+        .how-to-spotlight-text,
+        .how-to-step p,
+        .card-description,
+        .feature-item p,
+        .footer-section p,
+        .footer-bottom p {
+            font-size: 1.05rem !important;
+            line-height: 1.7 !important;
+        }
+        .how-to-play-panel {
+            padding: 34px 28px !important;
+        }
+        .how-to-spotlight {
+            min-height: 100%;
+        }
+        /* Center-align hero text so the lines stack and align neatly */
+        .hero-left {
+            text-align: center;
+        }
+        .hero-line {
+            display: block;
+        }
+        .hero-accent {
+            color: #ff6b6b !important;
+            font-weight: 700 !important;
+        }
+        .age-badge {
+            display: inline-block;
+            margin-bottom: 12px;
+        }
+        .hero-title {
+            margin-left: 0;
+            margin-right: 0;
+        }
+    </style>
     <!-- HEADER / NAVIGATION -->
     <header class="header">
         <div class="header-container">
@@ -113,7 +315,7 @@
             <div class="hero-wrapper">
                 <div class="hero-left">
                     <span class="age-badge">Ages 5-12</span>
-                    <h2 class="hero-title scroll-float" data-start="top bottom-=20%" data-end="bottom center">Learn, Play, and<br>Level Up Every Day</h2>
+                    <h2 class="hero-title scroll-float" data-start="top bottom-=20%" data-end="bottom center"><span class="hero-line">Learn. Play.</span><span class="hero-line hero-accent">Level Up — Every Day</span></h2>
                     <p class="hero-description">Join Robo-Kid on a colorful learning adventure packed with mini quests, rewards, and brain-boosting challenges.</p>
                     <a class="btn btn-primary" id="startBtn" href="#how-to-play">
                         <i class="fas fa-play"></i> START LEARNING!
@@ -134,7 +336,7 @@
                 <div class="how-to-header">
                     <div class="how-to-copy">
                         <span class="badge how-to-play-badge">How to Play</span>
-                        <h2 class="section-title scroll-float" data-start="top bottom" data-end="bottom center+=20%">Your Learning Adventure Starts Here</h2>
+                        <h2 class="section-title how-to-main-title scroll-float" data-start="top bottom" data-end="bottom center+=20%">Your Learning Adventure Starts Here</h2>
                         <p class="section-subtitle">Pick a world, answer the questions, and collect stars as you learn.</p>
                     </div>
 
@@ -175,7 +377,7 @@
                         <div class="card-badge jungle-badge">🎯</div>
                         <h3 class="card-title">Jungle Adventure</h3>
                         <p class="card-description">Math & counting questions - Ages 4-7</p>
-                        <a href="jungle.html" class="btn btn-secondary btn-green">
+                        <a href="quiz-adventure.html?world=jungle" class="btn btn-secondary btn-green">
                             <i class="fas fa-arrow-right"></i> Explore Now
                         </a>
                     </div>
