@@ -1,0 +1,1794 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
+<title>Space Adventure – QuizQuest Kids</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;overflow:hidden;touch-action:manipulation}
+body{
+  font-family:'Fredoka',sans-serif;
+  background:
+    radial-gradient(ellipse 80% 50% at 15% 20%, rgba(167,139,250,0.3), transparent),
+    radial-gradient(ellipse 70% 60% at 85% 80%, rgba(249,168,212,0.25), transparent),
+    radial-gradient(ellipse 60% 70% at 50% 30%, rgba(103,232,249,0.2), transparent),
+    radial-gradient(ellipse 50% 60% at 70% 20%, rgba(251,191,36,0.15), transparent),
+    radial-gradient(ellipse 40% 50% at 30% 70%, rgba(110,231,183,0.12), transparent),
+    linear-gradient(180deg,#1e0b4a,#3d1e7d,#4a2d8a,#2d4a7a,#1e0b4a);
+  background-size: 200% 400%;
+  animation: nebulaDrift 25s ease-in-out infinite alternate;
+  color:#fff;overflow:hidden;
+  user-select:none;-webkit-user-select:none;
+}
+@keyframes nebulaDrift{
+  0%{background-position:0% 0%}
+  50%{background-position:100% 100%}
+  100%{background-position:0% 100%}
+}
+
+/* ─── Stars Background ─── */
+.stars{
+  position:fixed;inset:0;z-index:0;pointer-events:none;
+  overflow:hidden;
+}
+.star{
+  position:absolute;border-radius:50%;
+  animation:twinkle var(--d,3s) ease-in-out infinite alternate;
+}
+@keyframes twinkle{0%{opacity:0.15;transform:scale(0.6)}100%{opacity:1;transform:scale(1.3)}}
+.star-glow{
+  position:absolute;border-radius:50%;pointer-events:none;
+  animation:glowPulse 2s ease-in-out infinite alternate;
+}
+@keyframes glowPulse{0%{opacity:0.3;transform:scale(0.8)}100%{opacity:0.7;transform:scale(1.2)}}
+
+/* ─── Floating Planets Decor ─── */
+.floating-planet{
+  position:fixed;border-radius:50%;z-index:0;pointer-events:none;
+  opacity:0.25;animation:floatPlanet 20s ease-in-out infinite;
+  filter:blur(1px);
+}
+@keyframes floatPlanet{
+  0%,100%{transform:translateY(0) rotate(0deg)}
+  33%{transform:translateY(-20px) rotate(5deg)}
+  66%{transform:translateY(10px) rotate(-3deg)}
+}
+
+/* ─── Header Bar ─── */
+.header-bar{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:10px 16px;
+  background:linear-gradient(180deg,rgba(26,10,62,0.9),transparent);
+}
+.header-bar .logo{display:flex;align-items:center;gap:8px}
+.header-bar .logo-icon{
+  width:36px;height:36px;border-radius:50%;
+  background:linear-gradient(135deg,#fbbf24,#f59e0b);
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;box-shadow:0 4px 12px rgba(251,191,36,0.4);
+  animation:logoBounce 2s ease-in-out infinite;
+}
+@keyframes logoBounce{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
+.header-bar h1{
+  font-size:20px;font-weight:700;
+  background:linear-gradient(135deg,#ffcc02,#ff6b6b,#a78bfa);
+  background-size:200% 100%;
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+  animation:headerGlow 3s ease-in-out infinite alternate;
+}
+@keyframes headerGlow{0%{background-position:0% 50%}100%{background-position:100% 50%}}
+.star-display{
+  display:flex;align-items:center;gap:6px;
+  background:linear-gradient(135deg,rgba(255,204,2,0.2),rgba(255,107,107,0.15));
+  padding:8px 18px;
+  border-radius:999px;font-size:16px;font-weight:700;
+  backdrop-filter:blur(12px);
+  border:1px solid rgba(255,204,2,0.2);
+  box-shadow:0 4px 16px rgba(255,204,2,0.15);
+  color:#ffcc02;
+}
+.star-display .star-icon{font-size:20px;animation:starSpin 2s linear infinite;filter:drop-shadow(0 0 6px rgba(255,204,2,0.5))}
+@keyframes starSpin{0%{transform:rotate(0deg) scale(1)}50%{transform:rotate(180deg) scale(1.2)}100%{transform:rotate(360deg) scale(1)}}
+
+/* ─── Alien Guide ─── */
+.guide-container{
+  position:fixed;bottom:20px;right:16px;z-index:50;
+  display:flex;flex-direction:column;align-items:flex-end;gap:8px;
+  pointer-events:none;
+}
+.guide-bubble{
+  background:linear-gradient(135deg,rgba(167,139,250,0.25),rgba(249,168,212,0.2));
+  backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,0.2);
+  border-radius:20px 20px 4px 20px;
+  padding:14px 18px;max-width:220px;
+  font-size:14px;font-weight:600;line-height:1.4;
+  color:#fff;
+  animation:bubblePop 0.4s cubic-bezier(0.34,1.56,0.64,1);
+  pointer-events:auto;
+  box-shadow:0 8px 24px rgba(124,58,237,0.2);
+}
+@keyframes bubblePop{0%{opacity:0;transform:scale(0.8) translateY(10px)}100%{opacity:1;transform:scale(1) translateY(0)}}
+.guide-avatar{
+  width:120px;height:120px;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;pointer-events:auto;
+  box-shadow:0 8px 32px rgba(124,58,237,0.5);
+  animation:guideFloat 3s ease-in-out infinite;
+  position:relative;overflow:hidden;
+  padding:0;
+}
+.guide-avatar img{width:100%;height:100%;object-fit:contain;display:block}
+@keyframes guideFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.guide-avatar:active{transform:scale(0.9)}
+
+/* ─── Adventure Map ─── */
+.map-container{
+  position:fixed;inset:0;z-index:10;
+  overflow-y:auto;overflow-x:hidden;
+  -webkit-overflow-scrolling:touch;
+  padding:70px 0 100px;
+  scroll-behavior:smooth;
+}
+.map-title{
+  text-align:center;font-size:26px;font-weight:700;
+  margin:24px 0 6px;
+  background:linear-gradient(135deg,#ffcc02,#ff6b6b,#a78bfa,#67e8f9);
+  background-size:300% 100%;
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+  animation:titleRainbow 4s ease-in-out infinite alternate;
+  filter:drop-shadow(0 2px 12px rgba(255,204,2,0.3));
+}
+@keyframes titleRainbow{0%{background-position:0% 50%}100%{background-position:100% 50%}}
+.map-subtitle{
+  text-align:center;font-size:14px;color:rgba(255,255,255,0.7);
+  margin-bottom:28px;font-family:'Quicksand',sans-serif;
+  text-shadow:0 2px 12px rgba(0,0,0,0.3);
+}
+
+/* ─── Path SVG ─── */
+.path-svg{
+  position:absolute;top:0;left:0;width:100%;height:100%;
+  z-index:1;pointer-events:none;
+}
+
+/* ─── Planet Node ─── */
+.planet-node{
+  position:relative;z-index:5;
+  display:flex;flex-direction:column;align-items:center;
+  margin:14px auto;width:fit-content;
+  cursor:pointer;transition:transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
+  -webkit-tap-highlight-color:transparent;
+}
+.planet-node:active{transform:scale(0.88)}
+.planet-node.disabled{opacity:0.45;pointer-events:none;filter:grayscale(0.7)}
+.planet-node.completed{opacity:1}
+.planet-node.completed .planet-body{box-shadow:0 0 40px rgba(251,191,36,0.4)}
+.planet-node:not(.disabled):hover .planet-body{transform:scale(1.12) rotate(5deg)}
+.planet-node:not(.disabled) .planet-body{animation:planetBob 4s ease-in-out infinite}
+@keyframes planetBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+
+.planet-body{
+  width:90px;height:90px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:36px;position:relative;
+  transition:all 0.4s cubic-bezier(0.34,1.56,0.64,1);
+  box-shadow:0 8px 32px rgba(0,0,0,0.3);
+}
+
+.planet-ring{
+  position:absolute;inset:-8px;border-radius:50%;
+  border:3px solid rgba(255,255,255,0.25);
+  animation:ringSpin 6s linear infinite;
+}
+@keyframes ringSpin{to{transform:rotate(360deg)}}
+.planet-node.completed .planet-ring{border-color:rgba(251,191,36,0.5);animation-duration:3s}
+.planet-node:not(.disabled):not(.completed) .planet-ring{border-color:rgba(255,255,255,0.35);animation-duration:4s}
+.planet-node:not(.disabled) .planet-ring::after{
+  content:'';position:absolute;inset:2px;border-radius:50%;
+  border:2px solid transparent;
+  background:linear-gradient(135deg,var(--ring-color,rgba(255,255,255,0.4)),transparent) border-box;
+  -webkit-mask:linear-gradient(#fff 0 0) padding-box,linear-gradient(#fff 0 0);
+  -webkit-mask-composite:destination-out;
+  mask-composite:exclude;
+  animation:ringGlow 2s ease-in-out infinite alternate;
+}
+@keyframes ringGlow{0%{opacity:0.4}100%{opacity:1}}
+
+.planet-label{
+  margin-top:10px;font-size:14px;font-weight:700;
+  text-align:center;color:#fff;
+  text-shadow:0 2px 12px rgba(0,0,0,0.4),0 0 20px rgba(167,139,250,0.2);
+}
+.planet-node.disabled .planet-label{color:rgba(255,255,255,0.4)}
+.planet-node.completed .planet-label{text-shadow:0 2px 12px rgba(0,0,0,0.4),0 0 20px rgba(251,191,36,0.3)}
+
+.planet-status{
+  position:absolute;top:-6px;right:-6px;
+  width:28px;height:28px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;z-index:3;font-weight:700;
+}
+.planet-status.completed{
+  background:linear-gradient(135deg,#fbbf24,#f59e0b);
+  color:#1a0a3e;
+  box-shadow:0 4px 12px rgba(251,191,36,0.5);
+}
+.planet-status.locked{
+  background:rgba(255,255,255,0.15);
+  color:rgba(255,255,255,0.4);
+  backdrop-filter:blur(4px);
+}
+.planet-status.current{
+  background:linear-gradient(135deg,#ffcc02,#ff6b6b);
+  color:#fff;
+  animation:pulseStatus 1.2s ease-in-out infinite;
+  box-shadow:0 4px 16px rgba(255,107,107,0.5);
+}
+@keyframes pulseStatus{0%,100%{box-shadow:0 0 0 0 rgba(255,107,107,0.6);transform:scale(1)}50%{box-shadow:0 0 0 12px rgba(255,107,107,0);transform:scale(1.1)}}
+
+/* ─── Planet Glow Orbs ─── */
+.planet-glow{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:120px;height:120px;border-radius:50%;z-index:0;
+  pointer-events:none;opacity:0.3;
+  animation:glowOrb 3s ease-in-out infinite alternate;
+}
+@keyframes glowOrb{0%{transform:translate(-50%,-50%) scale(0.8);opacity:0.2}100%{transform:translate(-50%,-50%) scale(1.2);opacity:0.4}}
+.planet-node.completed .planet-glow{opacity:0.5;animation-duration:2s}
+
+/* ─── Path Connector ─── */
+.path-connector{
+  width:5px;height:44px;margin:0 auto;border-radius:3px;
+  background:linear-gradient(180deg,var(--c1,rgba(255,255,255,0.25)),var(--c2,rgba(255,255,255,0.08)));
+  z-index:2;position:relative;overflow:hidden;
+}
+.path-connector.completed{
+  background:linear-gradient(180deg,#fbbf24,#ff6b6b);
+  box-shadow:0 0 12px rgba(251,191,36,0.3);
+}
+.path-connector:not(.completed):not(.locked){
+  background:linear-gradient(180deg,rgba(167,139,250,0.4),rgba(103,232,249,0.2));
+  animation:pathGlow 2s ease-in-out infinite alternate;
+}
+@keyframes pathGlow{0%{opacity:0.5}100%{opacity:1}}
+.path-connector .connector-dot{
+  position:absolute;left:50%;transform:translateX(-50%);
+  width:10px;height:10px;border-radius:50%;z-index:2;
+}
+.path-connector.completed .connector-dot{
+  background:#fff;box-shadow:0 0 10px rgba(255,255,255,0.6);
+  animation:dotDrop 1.5s ease-in-out infinite;
+}
+.path-connector:not(.completed) .connector-dot{
+  background:rgba(255,255,255,0.3);
+  animation:dotDrop 2.5s ease-in-out infinite;
+}
+@keyframes dotDrop{0%,100%{top:0;opacity:0}10%{opacity:1}90%{opacity:1}100%{top:100%;opacity:0}}
+
+/* ─── Planet Colors ─── */
+.planet-color .planet-body{
+  background:linear-gradient(135deg,#f9a8d4,#ec4899);
+  box-shadow:0 8px 32px rgba(236,72,153,0.4),inset 0 -4px 12px rgba(0,0,0,0.15);
+}
+.planet-color .planet-glow{background:radial-gradient(circle,rgba(236,72,153,0.4),transparent)}
+.planet-color .planet-ring{--ring-color:rgba(236,72,153,0.6)}
+.planet-letter .planet-body{
+  background:linear-gradient(135deg,#a78bfa,#7c3aed);
+  box-shadow:0 8px 32px rgba(124,58,237,0.4),inset 0 -4px 12px rgba(0,0,0,0.15);
+}
+.planet-letter .planet-glow{background:radial-gradient(circle,rgba(124,58,237,0.4),transparent)}
+.planet-letter .planet-ring{--ring-color:rgba(124,58,237,0.6)}
+.planet-shape .planet-body{
+  background:linear-gradient(135deg,#6ee7b7,#10b981);
+  box-shadow:0 8px 32px rgba(16,185,129,0.4),inset 0 -4px 12px rgba(0,0,0,0.15);
+}
+.planet-shape .planet-glow{background:radial-gradient(circle,rgba(16,185,129,0.4),transparent)}
+.planet-shape .planet-ring{--ring-color:rgba(16,185,129,0.6)}
+.planet-rocket .planet-body{
+  background:linear-gradient(135deg,#67e8f9,#06b6d4);
+  box-shadow:0 8px 32px rgba(6,182,212,0.4),inset 0 -4px 12px rgba(0,0,0,0.15);
+}
+.planet-rocket .planet-glow{background:radial-gradient(circle,rgba(6,182,212,0.4),transparent)}
+.planet-rocket .planet-ring{--ring-color:rgba(6,182,212,0.6)}
+.planet-alien .planet-body{
+  background:linear-gradient(135deg,#fde68a,#f59e0b);
+  box-shadow:0 8px 32px rgba(245,158,11,0.4),inset 0 -4px 12px rgba(0,0,0,0.15);
+}
+.planet-alien .planet-glow{background:radial-gradient(circle,rgba(245,158,11,0.4),transparent)}
+.planet-alien .planet-ring{--ring-color:rgba(245,158,11,0.6)}
+.planet-moon .planet-body{
+  background:linear-gradient(135deg,#fbcfe8,#ec4899);
+  box-shadow:0 8px 32px rgba(236,72,153,0.4),inset 0 -4px 12px rgba(0,0,0,0.15);
+}
+.planet-moon .planet-glow{background:radial-gradient(circle,rgba(236,72,153,0.4),transparent)}
+.planet-moon .planet-ring{--ring-color:rgba(236,72,153,0.6)}
+
+/* ─── Stars Burst ─── */
+.stars-burst{
+  position:fixed;pointer-events:none;z-index:200;
+  animation:burstOut 0.8s ease-out forwards;
+}
+@keyframes burstOut{0%{opacity:1;transform:scale(0)}100%{opacity:0;transform:scale(2)}}
+
+/* ─── Celebrations ─── */
+.confetti-piece{
+  position:fixed;width:10px;height:10px;z-index:300;
+  pointer-events:none;border-radius:2px;
+  animation:confettiFall var(--d,2s) linear forwards;
+}
+@keyframes confettiFall{
+  0%{opacity:1;transform:translateY(-20px) rotate(0deg)}
+  100%{opacity:0;transform:translateY(100vh) rotate(720deg)}
+}
+
+/* ─── Game Overlay ─── */
+.game-overlay{
+  position:fixed;inset:0;z-index:500;
+  background:linear-gradient(180deg,#1a0a3e,#2d1b69);
+  display:none;flex-direction:column;
+  overflow-y:auto;-webkit-overflow-scrolling:touch;
+}
+.game-overlay.active{display:flex}
+.game-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:12px 16px;flex-shrink:0;
+}
+.game-back-btn{
+  width:40px;height:40px;border-radius:50%;
+  background:rgba(255,255,255,0.1);
+  border:1px solid rgba(255,255,255,0.15);
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;cursor:pointer;color:#fff;
+  transition:all 0.2s;
+  -webkit-tap-highlight-color:transparent;
+}
+.game-back-btn:active{transform:scale(0.9);background:rgba(255,255,255,0.2)}
+.game-title{font-size:18px;font-weight:700}
+.game-body{
+  flex:1;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;padding:16px;gap:16px;
+}
+
+.hunt-mission{
+  background:rgba(255,255,255,0.1);
+  backdrop-filter:blur(12px);
+  border:1px solid rgba(255,255,255,0.15);
+  border-radius:16px;padding:14px 20px;
+  text-align:center;font-size:16px;font-weight:600;
+  margin-bottom:12px;width:100%;max-width:400px;
+}
+.hunt-mission .highlight{
+  display:inline-block;padding:2px 12px;border-radius:8px;
+  font-weight:700;color:#fff;
+}
+
+/* ─── LETTER GALAXY QUIZ ─── */
+.timer-bar-container{
+  position:relative;width:100%;max-width:400px;height:20px;
+  background:rgba(255,255,255,0.1);border-radius:999px;
+  overflow:hidden;margin-bottom:8px;
+}
+.timer-bar{
+  height:100%;background:linear-gradient(90deg,#6ee7b7,#fbbf24);
+  border-radius:999px;transition:width 0.1s linear;
+  width:100%;
+}
+.timer-text{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  font-size:12px;font-weight:700;color:#fff;
+  text-shadow:0 1px 4px rgba(0,0,0,0.5);
+}
+.lives-display{
+  display:flex;gap:4px;align-items:center;
+}
+.life-heart{font-size:20px;transition:all 0.3s}
+@keyframes heartPop{0%{transform:scale(0)}50%{transform:scale(1.3)}100%{transform:scale(1)}}
+.question-counter{
+  font-size:14px;color:rgba(255,255,255,0.6);text-align:center;margin-bottom:8px;
+}
+.fill-sentence{
+  font-size:20px;font-weight:700;text-align:center;
+  padding:24px 20px;margin:0 auto 16px;
+  max-width:400px;width:100%;
+  background:linear-gradient(135deg,rgba(167,139,250,0.15),rgba(249,168,212,0.1));
+  border-radius:20px;border:1px solid rgba(255,255,255,0.2);
+  line-height:1.7;word-spacing:2px;
+}
+.fill-blank{
+  display:inline-block;min-width:48px;
+  border-bottom:4px solid #fbbf24;
+  color:#fbbf24;font-weight:700;font-size:28px;
+  margin:0 4px;
+  animation:blankPulse 0.8s ease-in-out infinite alternate;
+  text-shadow:0 0 16px rgba(251,191,36,0.4);
+  text-align:center;
+}
+@keyframes blankPulse{0%{opacity:0.5;transform:translateY(0)}100%{opacity:1;transform:translateY(-3px)}}
+/* ─── Fill-in option buttons ─── */
+.quiz-options{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:12px;max-width:380px;width:100%;
+}
+.quiz-option{
+  padding:16px 8px;border-radius:18px;
+  font-family:'Fredoka',sans-serif;font-weight:600;font-size:15px;
+  border:2px solid rgba(255,255,255,0.2);
+  background:linear-gradient(145deg,rgba(255,255,255,0.12),rgba(255,255,255,0.04));
+  color:#fff;cursor:pointer;
+  transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);
+  -webkit-tap-highlight-color:transparent;
+  text-align:center;
+  display:flex;flex-direction:column;align-items:center;gap:4px;
+  transform:perspective(600px) rotateX(2deg);
+  box-shadow:0 6px 20px rgba(0,0,0,0.2),inset 0 1px 0 rgba(255,255,255,0.15);
+  text-transform:lowercase;
+}
+.quiz-option:active{
+  transform:perspective(600px) rotateX(0deg) scale(0.93);
+  background:rgba(255,255,255,0.18);
+}
+.quiz-option .opt-emoji{
+  font-size:36px;line-height:1;
+  filter:drop-shadow(0 4px 8px rgba(0,0,0,0.3));
+  transition:transform 0.3s;
+}
+.quiz-option:not(.correct):not(.wrong):hover .opt-emoji{
+  transform:translateY(-4px) scale(1.1);
+}
+.quiz-option .opt-label{
+  font-size:13px;color:rgba(255,255,255,0.8);
+  font-weight:600;
+}
+.quiz-option.correct{
+  background:linear-gradient(145deg,rgba(16,185,129,0.4),rgba(16,185,129,0.2))!important;
+  border-color:#6ee7b7!important;
+  animation:optPop 0.4s ease;
+  transform:perspective(600px) rotateX(0deg) scale(1.05);
+  box-shadow:0 8px 24px rgba(16,185,129,0.3),inset 0 1px 0 rgba(255,255,255,0.2);
+}
+@keyframes optPop{0%{transform:perspective(600px) rotateX(2deg) scale(1)}50%{transform:perspective(600px) rotateX(0deg) scale(1.1)}100%{transform:perspective(600px) rotateX(0deg) scale(1.05)}}
+.quiz-option.wrong{
+  background:linear-gradient(145deg,rgba(239,68,68,0.35),rgba(239,68,68,0.15))!important;
+  border-color:#ef4444!important;
+  animation:optShake 0.4s ease;
+  transform:perspective(600px) rotateX(0deg);
+}
+@keyframes optShake{0%,100%{transform:perspective(600px) rotateX(0deg) translateX(0)}25%{transform:perspective(600px) rotateX(0deg) translateX(-8px)}75%{transform:perspective(600px) rotateX(0deg) translateX(8px)}}
+
+/* ─── COLOR PLANET ─── */
+.color-planet-container{
+  position:relative;width:220px;height:220px;border-radius:50%;
+  margin:0 auto;overflow:hidden;
+  box-shadow:0 8px 40px rgba(0,0,0,0.4),inset 0 -8px 24px rgba(0,0,0,0.2);
+  border:3px solid rgba(255,255,255,0.18);
+  flex-shrink:0;background:transparent;
+}
+/* Color pick palette */
+.color-pick-palette{
+  display:flex;flex-wrap:wrap;gap:10px;justify-content:center;
+  padding:8px 4px;max-width:380px;width:100%;
+}
+.pick-swatch{
+  width:56px;height:56px;border-radius:50%;
+  border:3px solid rgba(255,255,255,0.2);
+  cursor:pointer;transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);
+  box-shadow:0 4px 16px rgba(0,0,0,0.2);
+}
+.pick-swatch:active{transform:scale(0.88)}
+.pick-swatch.selected-pick{
+  border-color:#fbbf24 !important;
+  transform:scale(1.15);
+  box-shadow:0 0 24px rgba(251,191,36,0.4);
+}
+
+.color-swatch{
+  width:44px;height:44px;border-radius:50%;
+  border:3px solid rgba(255,255,255,0.15);
+  cursor:pointer;transition:all 0.25s cubic-bezier(0.34,1.56,0.64,1);
+  box-shadow:0 4px 12px rgba(0,0,0,0.2);
+}
+.color-swatch:active{transform:scale(0.9)}
+.color-swatch.selected{border-color:#fff;transform:scale(1.15);box-shadow:0 0 20px rgba(255,255,255,0.3)}
+.color-swatch.used{opacity:0.35;transform:scale(0.85);pointer-events:none}
+.answer-feedback{
+  text-align:center;font-size:16px;font-weight:600;
+  min-height:24px;margin-top:12px;
+  transition:all 0.3s;
+}
+.feedback-correct{color:#6ee7b7}
+.feedback-wrong{color:#ef4444}
+.gameover-screen{
+  display:none;flex-direction:column;align-items:center;
+  justify-content:center;gap:16px;padding:32px;text-align:center;
+  animation:fadeIn 0.5s ease;
+}
+.gameover-screen.active{display:flex}
+.gameover-emoji{font-size:72px;animation:successBounce 0.6s cubic-bezier(0.34,1.56,0.64,1)}
+.gameover-title{font-size:24px;font-weight:700;color:#ef4444}
+.gameover-text{font-size:16px;color:rgba(255,255,255,0.7);max-width:300px}
+
+/* ─── MINI GAME: Alien Feeding ─── */
+.alien-area{
+  display:flex;flex-direction:column;align-items:center;gap:16px;
+  width:100%;max-width:400px;
+}
+.alien-character{
+  width:100px;height:100px;border-radius:50%;
+  background:linear-gradient(135deg,#a78bfa,#7c3aed);
+  display:flex;align-items:center;justify-content:center;
+  font-size:44px;animation:alienBounce 2s ease-in-out infinite;
+  border:3px solid rgba(255,255,255,0.2);
+  box-shadow:0 8px 24px rgba(124,58,237,0.3);
+}
+@keyframes alienBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.alien-thought{
+  background:rgba(255,255,255,0.1);border-radius:16px;padding:12px 16px;
+  font-size:15px;text-align:center;max-width:300px;
+  border:1px solid rgba(255,255,255,0.1);
+}
+.feed-items{
+  display:flex;flex-wrap:wrap;gap:12px;justify-content:center;
+}
+.feed-item{
+  width:64px;height:64px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:28px;cursor:pointer;
+  transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);
+  box-shadow:0 4px 12px rgba(0,0,0,0.2);
+  -webkit-tap-highlight-color:transparent;
+}
+.feed-item:active{transform:scale(1.3)}
+.feed-item.hidden{opacity:0;pointer-events:none;transform:scale(0.5)}
+.feed-item.wrong{animation:feedWrong 0.4s ease}
+@keyframes feedWrong{0%,100%{transform:translateX(0)}25%{transform:translateX(-10px)}75%{transform:translateX(10px)}}
+
+/* ─── MINI GAME: Memory ─── */
+.memory-grid{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  gap:10px;width:100%;max-width:340px;
+}
+.memory-card{
+  aspect-ratio:1;border-radius:16px;
+  background:linear-gradient(135deg,rgba(167,139,250,0.3),rgba(124,58,237,0.2));
+  border:2px solid rgba(255,255,255,0.1);
+  display:flex;align-items:center;justify-content:center;
+  font-size:28px;cursor:pointer;
+  transition:all 0.4s cubic-bezier(0.34,1.56,0.64,1);
+  -webkit-tap-highlight-color:transparent;
+  transform-style:preserve-3d;
+}
+.memory-card.flipped{
+  background:linear-gradient(135deg,rgba(167,139,250,0.6),rgba(124,58,237,0.5));
+  border-color:rgba(167,139,250,0.4);
+  transform:scale(1.02);
+}
+.memory-card.matched{
+  background:linear-gradient(135deg,#6ee7b7,#10b981);
+  border-color:rgba(16,185,129,0.4);
+  pointer-events:none;opacity:0.7;
+  animation:matchPop 0.5s ease;
+}
+@keyframes matchPop{0%{transform:scale(1)}50%{transform:scale(1.15)}100%{transform:scale(1)}}
+
+/* ─── Buttons ─── */
+.btn-game{
+  padding:14px 32px;border-radius:999px;
+  font-family:'Fredoka',sans-serif;font-weight:700;font-size:16px;
+  border:none;cursor:pointer;color:#fff;
+  transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);
+  -webkit-tap-highlight-color:transparent;
+}
+.btn-game:active{transform:scale(0.92)}
+.btn-play{background:linear-gradient(135deg,#fbbf24,#f59e0b);box-shadow:0 8px 20px rgba(251,191,36,0.3)}
+.btn-play:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(251,191,36,0.4)}
+.btn-next{background:linear-gradient(135deg,#a78bfa,#7c3aed);box-shadow:0 8px 20px rgba(124,58,237,0.3)}
+.btn-purple{background:linear-gradient(135deg,#a78bfa,#7c3aed);box-shadow:0 8px 20px rgba(124,58,237,0.3)}
+
+/* ─── Success Screen ─── */
+.success-screen{
+  display:none;flex-direction:column;align-items:center;justify-content:center;
+  gap:16px;padding:32px;text-align:center;
+  animation:fadeIn 0.5s ease;
+}
+.success-screen.active{display:flex}
+@keyframes fadeIn{0%{opacity:0;transform:scale(0.9)}100%{opacity:1;transform:scale(1)}}
+.success-emoji{font-size:72px;animation:successBounce 0.6s cubic-bezier(0.34,1.56,0.64,1)}
+@keyframes successBounce{0%{transform:scale(0)}50%{transform:scale(1.2)}100%{transform:scale(1)}}
+.success-title{font-size:24px;font-weight:700;background:linear-gradient(135deg,#fbbf24,#f59e0b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.success-stars{font-size:18px;color:#fbbf24}
+
+/* ─── Progress dots ─── */
+.progress-dots{display:flex;gap:6px;justify-content:center;margin:8px 0}
+.progress-dot{
+  width:10px;height:10px;border-radius:50%;
+  background:rgba(255,255,255,0.15);transition:all 0.3s;
+}
+.progress-dot.active{background:#fbbf24;transform:scale(1.3)}
+.progress-dot.done{background:#6ee7b7}
+
+/* ─── Win celebration overlay ─── */
+.win-celebration{
+  position:fixed;inset:0;z-index:600;
+  background:rgba(26,10,62,0.9);
+  display:none;flex-direction:column;align-items:center;justify-content:center;
+  gap:20px;backdrop-filter:blur(8px);
+}
+.win-celebration.active{display:flex}
+.win-celebration .big-emoji{font-size:96px;animation:winFloat 2s ease-in-out infinite}
+@keyframes winFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-16px)}}
+.win-celebration .big-title{font-size:32px;font-weight:700;text-align:center}
+.win-celebration .big-stars{font-size:24px;color:#fbbf24}
+
+/* ─── Responsive ─── */
+@media(min-width:600px){
+  .planet-body{width:96px;height:96px;font-size:38px}
+  .path-connector{height:52px}
+}
+@media(min-width:900px){
+  .planet-body{width:110px;height:110px;font-size:44px}
+  .path-connector{height:60px}
+}
+
+/* ─── Scrollbar ─── */
+.map-container::-webkit-scrollbar{width:4px}
+.map-container::-webkit-scrollbar-track{background:transparent}
+.map-container::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.2);border-radius:4px}
+
+/* ─── Rocket Builder ─── */
+.rocket-area{
+  display:flex;flex-direction:column;align-items:center;gap:16px;
+  width:100%;max-width:400px;
+}
+.rocket-parts{
+  display:flex;gap:8px;flex-wrap:wrap;justify-content:center;
+}
+.rocket-part{
+  width:56px;height:56px;border-radius:12px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:24px;cursor:pointer;
+  transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);
+  background:rgba(255,255,255,0.1);
+  border:2px solid rgba(255,255,255,0.1);
+  -webkit-tap-highlight-color:transparent;
+}
+.rocket-part:active{transform:scale(1.2)}
+.rocket-part.collected{
+  opacity:0.4;pointer-events:none;transform:scale(0.8);
+}
+.rocket-part.wrong{animation:feedWrong 0.4s ease}
+.rocket-display{
+  width:120px;height:160px;
+  background:rgba(255,255,255,0.05);
+  border-radius:24px;display:flex;align-items:center;justify-content:center;
+  font-size:64px;border:2px dashed rgba(255,255,255,0.15);
+  transition:all 0.5s ease;
+}
+.rocket-display.built{
+  border-color:rgba(251,191,36,0.4);
+  background:rgba(251,191,36,0.05);
+  animation:rocketBuild 0.6s ease;
+}
+@keyframes rocketBuild{0%{transform:scale(0.8)}50%{transform:scale(1.1)}100%{transform:scale(1)}}
+
+/* ─── Planet Jump ─── */
+.jump-track{
+  display:flex;flex-direction:column;align-items:center;gap:16px;
+  padding:20px 0;
+}
+.jump-planets{
+  display:flex;gap:12px;align-items:center;flex-wrap:wrap;justify-content:center;
+}
+.jump-planet-node{
+  width:56px;height:56px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:24px;cursor:pointer;
+  transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);
+  border:2px solid rgba(255,255,255,0.1);
+  -webkit-tap-highlight-color:transparent;
+  position:relative;
+}
+.jump-planet-node.visited{background:linear-gradient(135deg,#fbbf24,#f59e0b);border-color:transparent}
+.jump-planet-node.current{
+  background:linear-gradient(135deg,#a78bfa,#7c3aed);border-color:#fbbf24;
+  animation:currentPulse 1s ease-in-out infinite;
+  transform:scale(1.15);
+}
+@keyframes currentPulse{0%,100%{box-shadow:0 0 0 0 rgba(251,191,36,0.4)}50%{box-shadow:0 0 0 12px rgba(251,191,36,0)}}
+.jump-planet-node.locked{opacity:0.3;pointer-events:none}
+.jump-astronaut{
+  font-size:48px;animation:astroFloat 1s ease-in-out infinite;
+  transition:all 0.5s cubic-bezier(0.34,1.56,0.64,1);
+}
+@keyframes astroFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+
+/* ─── Sparkle decorations ─── */
+.sparkle{
+  position:fixed;width:6px;height:6px;border-radius:50%;z-index:1;pointer-events:none;
+  background:#fff;box-shadow:0 0 8px #fff,0 0 16px rgba(255,255,255,0.3);
+  animation:sparklePop var(--s,2s) ease-in-out infinite alternate;
+  animation-delay:var(--d,0s);
+}
+@keyframes sparklePop{0%{opacity:0;transform:scale(0.3)}50%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(0.3)}}
+
+/* ─── Shooting stars ─── */
+.shooting-star{
+  position:fixed;width:80px;height:2px;z-index:2;pointer-events:none;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,0.6));
+  border-radius:1px;
+  animation:shoot 6s ease-in-out infinite;
+  animation-delay:var(--sd,0s);
+  opacity:0;
+}
+@keyframes shoot{
+  0%{transform:translate(0,0) rotate(-35deg);opacity:0}
+  5%{opacity:1}
+  15%{transform:translate(-300px,200px) rotate(-35deg);opacity:0}
+  100%{opacity:0}
+}
+
+/* ─── Cinematic particles ─── */
+.cinematic-particle{
+  position:fixed;border-radius:50%;pointer-events:none;z-index:1;
+  animation:particleDrift var(--d,12s) ease-in-out infinite alternate;
+}
+@keyframes orbFloat{0%{transform:translate(0,0) scale(1)}100%{transform:translate(30px,-30px) scale(1.1)}}
+@keyframes particleDrift{
+  0%{transform:translate(0,0) scale(1);opacity:0}
+  20%{opacity:var(--o,0.5)}
+  80%{opacity:var(--o,0.5)}
+  100%{transform:translate(var(--tx,60px),var(--ty,-60px)) scale(1.3);opacity:0}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ Stars Background ═══ -->
+<div class="stars" id="stars"></div>
+
+<!-- ═══ Floating Planets ═══ -->
+<div class="floating-planet" style="width:120px;height:120px;top:10%;right:-30px;background:radial-gradient(circle,rgba(167,139,250,0.3),transparent);animation-delay:0s"></div>
+<div class="floating-planet" style="width:80px;height:80px;bottom:20%;left:-20px;background:radial-gradient(circle,rgba(249,168,212,0.2),transparent);animation-delay:-5s"></div>
+<div class="floating-planet" style="width:160px;height:160px;top:40%;left:-50px;background:radial-gradient(circle,rgba(110,231,183,0.15),transparent);animation-delay:-10s"></div>
+
+<!-- ═══ Cinematic ambient orbs ═══ -->
+<div style="position:fixed;width:500px;height:500px;top:-150px;right:-100px;border-radius:50%;background:radial-gradient(circle,rgba(167,139,250,0.18),transparent);pointer-events:none;z-index:0;animation:orbFloat 10s ease-in-out infinite alternate"></div>
+<div style="position:fixed;width:400px;height:400px;bottom:-120px;left:-80px;border-radius:50%;background:radial-gradient(circle,rgba(249,168,212,0.15),transparent);pointer-events:none;z-index:0;animation:orbFloat 12s ease-in-out infinite alternate-reverse"></div>
+<div style="position:fixed;width:350px;height:350px;top:50%;left:60%;border-radius:50%;background:radial-gradient(circle,rgba(103,232,249,0.1),transparent);pointer-events:none;z-index:0;animation:orbFloat 8s ease-in-out infinite alternate;animation-delay:-4s"></div>
+<div style="position:fixed;width:280px;height:280px;top:25%;right:10%;border-radius:50%;background:radial-gradient(circle,rgba(251,191,36,0.08),transparent);pointer-events:none;z-index:0;animation:orbFloat 14s ease-in-out infinite alternate-reverse;animation-delay:-7s"></div>
+
+<!-- ═══ Shooting stars ═══ -->
+<div class="shooting-star" style="top:12%;right:20%;--sd:0s"></div>
+<div class="shooting-star" style="top:30%;right:50%;--sd:3s"></div>
+<div class="shooting-star" style="top:50%;right:35%;--sd:6s"></div>
+
+<!-- ═══ Sparkle trail decorations ═══ -->
+<div class="sparkle" style="top:18%;left:15%;--s:2s;--d:0s"></div>
+<div class="sparkle" style="top:35%;left:75%;--s:2.5s;--d:-1s"></div>
+<div class="sparkle" style="top:52%;left:20%;--s:3s;--d:-2s"></div>
+<div class="sparkle" style="top:68%;left:80%;--s:2s;--d:-0.5s"></div>
+<div class="sparkle" style="top:82%;left:35%;--s:2.8s;--d:-1.5s"></div>
+
+<!-- ═══ Header ═══ -->
+<div class="header-bar">
+  <div class="logo">
+    <div class="logo-icon">🚀</div>
+    <h1>Space Quest</h1>
+  </div>
+  <div class="star-display">
+    <span class="star-icon">⭐</span>
+    <span id="totalStars">0</span>
+  </div>
+</div>
+
+<!-- ═══ Adventure Map ═══ -->
+<div class="map-container" id="mapContainer">
+  <div class="map-title">🌌 Galaxy Adventure</div>
+  <div class="map-subtitle">Tap a planet to start your mission!</div>
+
+  <div style="display:flex;flex-direction:column;align-items:center;padding:0 20px 40px;position:relative;">
+
+    <!-- Planet 1: Color Planet -->
+    <div class="planet-node planet-color" data-planet="color" onclick="openGame('color')">
+      <div class="planet-glow"></div>
+      <div class="planet-body">
+        🌈
+        <div class="planet-ring"></div>
+        <div class="planet-status current">🎨</div>
+      </div>
+      <div class="planet-label">Color Planet</div>
+    </div>
+    <div class="path-connector completed"><div class="connector-dot"></div></div>
+
+    <!-- Planet 2: Letter Galaxy -->
+    <div class="planet-node planet-letter" data-planet="letter" onclick="openGame('letter')">
+      <div class="planet-glow"></div>
+      <div class="planet-body">
+        🔤
+        <div class="planet-ring"></div>
+        <div class="planet-status current">▶</div>
+      </div>
+      <div class="planet-label">Letter Galaxy</div>
+    </div>
+    <div class="path-connector current" style="--c1:rgba(167,139,250,0.5);--c2:rgba(103,232,249,0.25)"><div class="connector-dot"></div></div>
+
+    <!-- Planet 3: Shape Station -->
+    <div class="planet-node planet-shape disabled" data-planet="shape" onclick="openGame('shape')">
+      <div class="planet-body">
+        🔷
+        <div class="planet-ring"></div>
+        <div class="planet-status locked">🔒</div>
+      </div>
+      <div class="planet-label">Shape Station</div>
+    </div>
+    <div class="path-connector locked" style="--c1:rgba(255,255,255,0.08);--c2:rgba(255,255,255,0.03)"><div class="connector-dot"></div></div>
+
+    <!-- Planet 4: Rocket Lab -->
+    <div class="planet-node planet-rocket disabled" data-planet="rocket" onclick="openGame('rocket')">
+      <div class="planet-body">
+        🚀
+        <div class="planet-ring"></div>
+        <div class="planet-status locked">🔒</div>
+      </div>
+      <div class="planet-label">Rocket Lab</div>
+    </div>
+    <div class="path-connector locked" style="--c1:rgba(255,255,255,0.05);--c2:rgba(255,255,255,0.02)"><div class="connector-dot"></div></div>
+
+    <!-- Planet 5: Alien Garden -->
+    <div class="planet-node planet-alien disabled" data-planet="alien" onclick="openGame('alien')">
+      <div class="planet-body">
+        👽
+        <div class="planet-ring"></div>
+        <div class="planet-status locked">🔒</div>
+      </div>
+      <div class="planet-label">Alien Garden</div>
+    </div>
+    <div class="path-connector locked" style="--c1:rgba(255,255,255,0.02);--c2:rgba(255,255,255,0)"><div class="connector-dot"></div></div>
+
+    <!-- Planet 6: Rainbow Moon -->
+    <div class="planet-node planet-moon disabled" data-planet="moon" onclick="openGame('moon')">
+      <div class="planet-body">
+        🌙
+        <div class="planet-ring"></div>
+        <div class="planet-status locked">🔒</div>
+      </div>
+      <div class="planet-label">Rainbow Moon</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══ Alien Guide ═══ -->
+<div class="guide-container">
+  <div class="guide-bubble" id="guideBubble">Hi! I'm Luna!<br>Tap a planet to play! 🚀</div>
+  <div class="guide-avatar" onclick="guideTap()"><img src="image_2026-05-23_150811711-removebg-preview.png" alt="Guide"></div>
+</div>
+
+<!-- ═══ Game Overlay: Letter Galaxy Quiz ═══ -->
+<div class="game-overlay" id="gameLetter">
+  <div class="game-header">
+    <button class="game-back-btn" onclick="closeGame('letter')">✕</button>
+    <span class="game-title">🔤 Letter Galaxy</span>
+    <div class="lives-display" id="letterLives">
+      <span class="life-heart">❤️</span>
+      <span class="life-heart">❤️</span>
+      <span class="life-heart">❤️</span>
+    </div>
+  </div>
+  <div class="game-body">
+    <div id="letterGameArea">
+      <div class="timer-bar-container">
+        <div class="timer-bar" id="letterTimerBar"></div>
+        <span class="timer-text" id="letterTimerText">30</span>
+      </div>
+      <div class="question-counter" id="letterQCounter">Question 1 / 10</div>
+      <div class="fill-sentence" id="letterQuestion"></div>
+      
+      <div class="quiz-options" id="letterOptions"></div>
+      <div class="answer-feedback" id="letterFeedback"></div>
+    </div>
+    <div class="success-screen" id="letterSuccess">
+      <div class="success-emoji">🎉</div>
+      <div class="success-title">Galaxy Champion!</div>
+      <div class="success-stars" id="letterFinalStars">⭐ +10 stars</div>
+      <button class="btn-game btn-next" onclick="closeGame('letter',true)">Back to Map</button>
+    </div>
+    <div class="gameover-screen" id="letterGameOver">
+      <div class="gameover-emoji">😢</div>
+      <div class="gameover-title">Oh no! Out of lives!</div>
+      <div class="gameover-text" id="letterGameOverText"></div>
+      <button class="btn-game btn-play" onclick="initLetterQuiz()">🔄 Try Again</button>
+      <button class="btn-game btn-next" onclick="closeGame('letter')">Back to Map</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ Game Overlay: Color Planet ═══ -->
+<div class="game-overlay" id="gameColor">
+  <div class="game-header">
+    <button class="game-back-btn" onclick="closeGame('color')">✕</button>
+    <span class="game-title" id="colorTitle">🌈 Color Planet</span>
+    <div style="font-size:14px;color:rgba(255,255,255,0.6)" id="colorScore">Pick 3 colors</div>
+  </div>
+  <div class="game-body">
+    <div id="colorObserve">
+      <div style="font-size:16px;font-weight:600;text-align:center;margin-bottom:4px">👀 Study this planet carefully!</div>
+      <div style="font-size:14px;text-align:center;color:rgba(255,255,255,0.6);margin-bottom:12px" id="colorPlanetName"></div>
+      <div class="color-planet-container" id="colorObservePlanet"></div>
+      <div style="font-size:13px;text-align:center;color:rgba(255,255,255,0.5);margin-top:8px">Remember the colors!</div>
+      <button class="btn-game btn-play" style="margin-top:12px" onclick="showColorPick()">I'm Ready! ✨</button>
+      <div style="font-size:12px;text-align:center;color:rgba(255,255,255,0.3);margin-top:8px">or wait <span id="colorCountdown">5</span>s</div>
+    </div>
+    <div id="colorPickArea" style="display:none;flex-direction:column;align-items:center;width:100%">
+      <div style="font-size:16px;font-weight:600;text-align:center;margin-bottom:4px" id="colorPickTitle">Which colors are on this planet?</div>
+      <div class="color-planet-container" id="colorPickMiniPlanet" style="width:100px;height:100px;margin-bottom:8px;display:none"></div>
+      <div class="color-pick-palette" id="colorPickPalette"></div>
+      <div class="answer-feedback" id="colorFeedback"></div>
+      <button class="btn-game btn-play" style="margin-top:12px" onclick="submitColorPicks()">Check My Colors! ✓</button>
+    </div>
+    <div class="success-screen" id="colorSuccess">
+      <div class="success-emoji" id="colorScoreEmoji">🎉</div>
+      <div class="success-title" id="colorSuccessTitle">Great Job!</div>
+      <div id="colorResultText" style="font-size:18px;color:rgba(255,255,255,0.8);margin:4px 0"></div>
+      <div class="success-stars" id="colorSuccessStars">⭐ +3 stars</div>
+      <button class="btn-game btn-next" onclick="closeGame('color',true)">Back to Map</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ Game Overlay: Alien Feeding ═══ -->
+<div class="game-overlay" id="gameAlien">
+  <div class="game-header">
+    <button class="game-back-btn" onclick="closeGame('alien')">✕</button>
+    <span class="game-title">👽 Alien Garden</span>
+    <div style="font-size:14px;color:rgba(255,255,255,0.6)" id="alienScore">0/3</div>
+  </div>
+  <div class="game-body">
+    <div id="alienGameArea">
+      <div class="alien-area">
+        <div class="alien-character" id="alienChar" style="animation-delay:0s">👽</div>
+        <div class="alien-thought" id="alienThought">I want <strong>red stars</strong>! ✨</div>
+        <div class="feed-items" id="feedItems"></div>
+      </div>
+    </div>
+    <div class="success-screen" id="alienSuccess">
+      <div class="success-emoji">🎉</div>
+      <div class="success-title">Yummy! Thank you!</div>
+      <div class="success-stars">⭐ +3 stars</div>
+      <button class="btn-game btn-next" onclick="closeGame('alien',true)">Back to Map</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ Game Overlay: Rocket Builder ═══ -->
+<div class="game-overlay" id="gameRocket">
+  <div class="game-header">
+    <button class="game-back-btn" onclick="closeGame('rocket')">✕</button>
+    <span class="game-title">🚀 Rocket Lab</span>
+    <div style="font-size:14px;color:rgba(255,255,255,0.6)" id="rocketScore">0/3</div>
+  </div>
+  <div class="game-body">
+    <div id="rocketGameArea">
+      <div class="rocket-area">
+        <div class="rocket-display" id="rocketDisplay">🚀</div>
+        <div class="hunt-mission" id="rocketMission">Collect <strong>3 yellow circles</strong> to power the rocket!</div>
+        <div class="rocket-parts" id="rocketParts"></div>
+      </div>
+    </div>
+    <div class="success-screen" id="rocketSuccess">
+      <div class="success-emoji">🚀</div>
+      <div class="success-title">Rocket Powered!</div>
+      <div class="success-stars">⭐ +3 stars</div>
+      <button class="btn-game btn-next" onclick="closeGame('rocket',true)">Back to Map</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ Game Overlay: Memory ═══ -->
+<div class="game-overlay" id="gameMemory">
+  <div class="game-header">
+    <button class="game-back-btn" onclick="closeGame('memory')">✕</button>
+    <span class="game-title">🧠 Shape Station</span>
+    <div style="font-size:14px;color:rgba(255,255,255,0.6)" id="memoryScore">0/6</div>
+  </div>
+  <div class="game-body">
+    <div id="memoryGameArea">
+      <div class="hunt-mission" style="margin-bottom:16px">Match the pairs! 🃏</div>
+      <div class="memory-grid" id="memoryGrid"></div>
+    </div>
+    <div class="success-screen" id="memorySuccess">
+      <div class="success-emoji">🧠</div>
+      <div class="success-title">Super Memory!</div>
+      <div class="success-stars">⭐ +3 stars</div>
+      <button class="btn-game btn-next" onclick="closeGame('memory',true)">Back to Map</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ Game Overlay: Planet Jump ═══ -->
+<div class="game-overlay" id="gameJump">
+  <div class="game-header">
+    <button class="game-back-btn" onclick="closeGame('jump')">✕</button>
+    <span class="game-title">🌙 Rainbow Moon</span>
+    <div style="font-size:14px;color:rgba(255,255,255,0.6)" id="jumpScore">0/4</div>
+  </div>
+  <div class="game-body">
+    <div id="jumpGameArea">
+      <div class="jump-track">
+        <div class="jump-astronaut" id="astroChar">🧑‍🚀</div>
+        <div class="jump-planets" id="jumpPlanets"></div>
+        <div class="hunt-mission" style="margin-top:8px" id="jumpMission">Tap the planets to reach the moon! 🌙</div>
+      </div>
+    </div>
+    <div class="success-screen" id="jumpSuccess">
+      <div class="success-emoji">🌙</div>
+      <div class="success-title">You Reached the Moon!</div>
+      <div class="success-stars">⭐ +5 stars</div>
+      <button class="btn-game btn-next" onclick="closeGame('jump',true)">Back to Map</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ Win Celebration ═══ -->
+<div class="win-celebration" id="winCelebration">
+  <div class="big-emoji">🏆</div>
+  <div class="big-title">Galaxy Champion!</div>
+  <div class="big-stars">⭐⭐⭐⭐⭐</div>
+  <button class="btn-game btn-play" onclick="document.getElementById('winCelebration').classList.remove('active')">Yay!</button>
+</div>
+
+<script>
+// ─── Stars Background ───
+(function(){
+  const container = document.getElementById('stars');
+  const starColors=['#fff','#ffeb3b','#ff80ab','#80d8ff','#b9f6ca','#ea80fc','#ffab40'];
+  for(let i=0;i<150;i++){
+    const s=document.createElement('div');
+    s.className='star';
+    const size=Math.random()*3.5+1;
+    const c=starColors[Math.floor(Math.random()*starColors.length)];
+    s.style.cssText=`width:${size}px;height:${size}px;left:${Math.random()*100}%;top:${Math.random()*100}%;background:${c};--d:${(Math.random()*4+2).toFixed(1)}s;animation-delay:${(Math.random()*6).toFixed(1)}s;opacity:${Math.random()*0.6+0.3};box-shadow:0 0 ${size*2}px ${c}`;
+    container.appendChild(s);
+  }
+  // Add a few larger glowing stars
+  for(let i=0;i<8;i++){
+    const g=document.createElement('div');
+    g.className='star-glow';
+    const size=Math.random()*20+12;
+    const colors=['rgba(255,235,59,','rgba(255,128,171,','rgba(128,216,255,','rgba(234,128,252,','rgba(255,171,64,'];
+    const c=colors[Math.floor(Math.random()*colors.length)];
+    g.style.cssText=`width:${size}px;height:${size}px;left:${Math.random()*90+5}%;top:${Math.random()*90+5}%;background:radial-gradient(circle,${c}0.3) 0%,${c}0) 70%);animation-delay:${(Math.random()*3).toFixed(1)}s`;
+    container.appendChild(g);
+  }
+})();
+
+// ─── State ───
+let gameState={
+  stars:parseInt(localStorage.getItem('qqStars'))||0,
+  planets:{color:true,letter:false,shape:false,rocket:false,alien:false,moon:false}
+};
+try{const saved=JSON.parse(localStorage.getItem('qqPlanets'));if(saved)Object.assign(gameState.planets,saved)}catch(e){}
+
+function saveState(){
+  localStorage.setItem('qqStars',gameState.stars);
+  localStorage.setItem('qqPlanets',JSON.stringify(gameState.planets));
+  document.getElementById('totalStars').textContent=gameState.stars;
+  updatePlanetUI();
+}
+
+function updatePlanetUI(){
+  document.querySelectorAll('.planet-node').forEach(n=>{
+    const p=n.dataset.planet;
+    if(gameState.planets[p]){
+      n.classList.remove('disabled');
+      n.classList.add('completed');
+      n.querySelector('.planet-status').className='planet-status completed';
+      n.querySelector('.planet-status').textContent='⭐';
+    }
+  });
+  // Find first uncompleted for "current"
+  let foundCurrent=false;
+  document.querySelectorAll('.planet-node').forEach(n=>{
+    const p=n.dataset.planet;
+    if(!gameState.planets[p]&&!foundCurrent){
+      n.classList.remove('disabled');
+      n.querySelector('.planet-status').className='planet-status current';
+      n.querySelector('.planet-status').textContent='▶';
+      foundCurrent=true;
+    }
+  });
+}
+
+// ─── Guide ───
+const guideMessages=[
+  "Hi! I'm Luna! Let's explore space! 🚀",
+  "Tap a planet to start a mission! 🌟",
+  "Collect stars to unlock new planets! ⭐",
+  "You're doing great! Keep going! 💪",
+  "Wow! Amazing job! 🎉"
+];
+let guideIdx=0;
+function guideTap(){
+  const bubble=document.getElementById('guideBubble');
+  guideIdx=(guideIdx+1)%guideMessages.length;
+  bubble.textContent=guideMessages[guideIdx];
+  bubble.style.animation='none';
+  void bubble.offsetWidth;
+  bubble.style.animation='bubblePop 0.4s cubic-bezier(0.34,1.56,0.64,1)';
+}
+
+// ─── Game Overlay ───
+let currentGame=null;
+
+function openGame(planet){
+  if(currentGame)return;
+  currentGame=planet;
+  if(planet==='color'){initColorPlanet();}
+  if(planet==='letter')initLetterQuiz();
+  else if(planet==='alien')initAlienFeed();
+  else if(planet==='rocket')initRocketBuild();
+  else if(planet==='shape')initMemory();
+  else if(planet==='moon')initJump();
+  else return;
+  const el=document.getElementById('game'+planet.charAt(0).toUpperCase()+planet.slice(1));
+  if(el){
+    el.classList.add('active');
+    document.getElementById('mapContainer').style.display='none';
+  }
+}
+
+function closeGame(planet,gaveUp){
+  const el=document.getElementById('game'+planet.charAt(0).toUpperCase()+planet.slice(1));
+  if(el)el.classList.remove('active');
+  document.getElementById('mapContainer').style.display='';
+  currentGame=null;
+  if(gaveUp){
+    addStars(3);
+    gameState.planets[planet]=true;
+    saveState();
+    spawnConfetti();
+  }
+}
+
+// ─── Add Stars ───
+function addStars(n){
+  gameState.stars+=n;
+  const el=document.getElementById('totalStars');
+  el.textContent=gameState.stars;
+  el.style.transform='scale(1.4)';
+  setTimeout(()=>el.style.transform='',300);
+  saveState();
+}
+
+// ─── Confetti ───
+function spawnConfetti(count=30){
+  const colors=['#f9a8d4','#a78bfa','#fbbf24','#6ee7b7','#67e8f9','#fbcfe8'];
+  for(let i=0;i<count;i++){
+    const c=document.createElement('div');
+    c.className='confetti-piece';
+    c.style.cssText=`left:${Math.random()*100}%;background:${colors[Math.floor(Math.random()*colors.length)]};width:${Math.random()*8+4}px;height:${Math.random()*8+4}px;border-radius:${Math.random()>0.5?'50%':'2px'};--d:${(Math.random()*2+1.5).toFixed(1)}s;animation-delay:${(Math.random()*0.5).toFixed(1)}s`;
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),3500);
+  }
+}
+
+// ═══════════════════════════════════════
+// MINI GAME 1: LETTER GALAXY QUIZ
+// ═══════════════════════════════════════
+const wordEmojis={
+  sun:'☀️',moon:'🌙',earth:'🌍',star:'⭐',comet:'☄️',
+  rocket:'🚀',planets:'🪐',mars:'🔴',astronaut:'🧑‍🚀',
+  stars:'✨',cloud:'☁️',venus:'🟡',jupiter:'🟣',plane:'✈️',
+  boat:'🚢',car:'🚗',alien:'👽',pilot:'👨‍✈️',artist:'🎨',
+  comets:'☄️',moons:'🌙'
+};
+const letterQuestions=[
+  {sentence:'The ___ is a big hot star.',blank:'___',word:'sun',options:['sun','moon','star','earth']},
+  {sentence:'We live on planet ___.',blank:'___',word:'earth',options:['mars','earth','venus','moon']},
+  {sentence:'The ___ lights up the night.',blank:'___',word:'moon',options:['sun','moon','star','cloud']},
+  {sentence:'A frozen ball with a tail is a ___.',blank:'___',word:'comet',options:['comet','planet','moon','star']},
+  {sentence:'An astronaut flies in a ___.',blank:'___',word:'rocket',options:['car','rocket','boat','plane']},
+  {sentence:'There are 8 ___ in our system.',blank:'___',word:'planets',options:['stars','moons','planets','comets']},
+  {sentence:'The red planet is called ___.',blank:'___',word:'mars',options:['mars','earth','venus','jupiter']},
+  {sentence:'A space traveler is an ___.',blank:'___',word:'astronaut',options:['artist','alien','pilot','astronaut']},
+  {sentence:'The ___ twinkle in the sky.',blank:'___',word:'stars',options:['moons','stars','clouds','planets']},
+  {sentence:'The sun is a big hot ___.',blank:'___',word:'star',options:['moon','planet','star','comet']},
+];
+let letterQIndex=0;
+let letterLives=3;
+let letterCorrect=0;
+let letterTimer=null;
+let letterSeconds=30;
+let letterLocked=false;
+
+function initLetterQuiz(){
+  letterQIndex=0;
+  letterLives=3;
+  letterCorrect=0;
+  letterLocked=false;
+  document.getElementById('letterGameArea').style.display='';
+  document.getElementById('letterSuccess').classList.remove('active');
+  document.getElementById('letterGameOver').classList.remove('active');
+  document.getElementById('letterFeedback').textContent='';
+  document.getElementById('letterFeedback').className='answer-feedback';
+  updateLetterHearts();
+  showLetterQuestion();
+}
+
+function showLetterQuestion(){
+  if(letterQIndex>=letterQuestions.length){
+    document.getElementById('letterGameArea').style.display='none';
+    document.getElementById('letterSuccess').classList.add('active');
+    document.getElementById('letterFinalStars').textContent='⭐ +'+(letterCorrect*2)+' stars';
+    spawnConfetti();
+    return;
+  }
+  letterLocked=false;
+  const q=letterQuestions[letterQIndex];
+  document.getElementById('letterQCounter').textContent='Question '+(letterQIndex+1)+' / 10';
+  // Render sentence with highlighted blank
+  const parts=q.sentence.split(q.blank);
+  const qEl=document.getElementById('letterQuestion');
+  qEl.innerHTML='';
+  parts.forEach((part,i)=>{
+    if(i>0){
+      const blank=document.createElement('span');
+      blank.className='fill-blank';
+      blank.textContent='?';
+      qEl.appendChild(blank);
+    }
+    if(part)qEl.appendChild(document.createTextNode(part));
+  });
+  // Render options
+  const opts=document.getElementById('letterOptions');
+  opts.innerHTML='';
+  const shuffled=[...q.options];
+  for(let i=shuffled.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [shuffled[i],shuffled[j]]=[shuffled[j],shuffled[i]];
+  }
+  shuffled.forEach((opt)=>{
+    const btn=document.createElement('button');
+    btn.className='quiz-option';
+    btn.dataset.word=opt;
+    const emoji=wordEmojis[opt]||'❓';
+    btn.innerHTML='<span class="opt-emoji">'+emoji+'</span><span class="opt-label">'+opt+'</span>';
+    btn.addEventListener('click',function(){handleLetterOption(opt);});
+    opts.appendChild(btn);
+  });
+  document.getElementById('letterFeedback').textContent='';
+  document.getElementById('letterFeedback').className='answer-feedback';
+  startLetterTimer();
+}
+
+function handleLetterOption(opt){
+  if(letterLocked)return;
+  letterLocked=true;
+  clearInterval(letterTimer);
+  const btns=document.querySelectorAll('#letterOptions .quiz-option');
+  btns.forEach(b=>{
+    b.style.pointerEvents='none';
+    if(b.dataset.word===letterQuestions[letterQIndex].word)b.classList.add('correct');
+    else if(b.dataset.word===opt)b.classList.add('wrong');
+  });
+  const q=letterQuestions[letterQIndex];
+  if(opt===q.word){
+    letterCorrect++;
+    document.getElementById('letterFeedback').textContent='✅ Correct! Well done!';
+    document.getElementById('letterFeedback').className='answer-feedback feedback-correct';
+    spawnConfetti(8);
+    setTimeout(()=>{letterQIndex++;showLetterQuestion();},1200);
+  }else{
+    letterLives--;
+    updateLetterHearts();
+    document.getElementById('letterFeedback').textContent='❌ Answer: '+(q.word)+'!';
+    document.getElementById('letterFeedback').className='answer-feedback feedback-wrong';
+    if(letterLives<=0){
+      setTimeout(()=>{showLetterGameOver();},1500);
+    }else{
+      setTimeout(()=>{letterQIndex++;showLetterQuestion();},1500);
+    }
+  }
+}
+
+function startLetterTimer(){
+  clearInterval(letterTimer);
+  letterSeconds=30;
+  const bar=document.getElementById('letterTimerBar');
+  const txt=document.getElementById('letterTimerText');
+  bar.style.width='100%';
+  txt.textContent='30';
+  let start=Date.now();
+  letterTimer=setInterval(function(){
+    let elapsed=Math.floor((Date.now()-start)/1000);
+    let left=30-elapsed;
+    if(left<=0){
+      clearInterval(letterTimer);
+      left=0;
+      bar.style.width='0%';
+      txt.textContent='0';
+      handleLetterTimeout();
+      return;
+    }
+    txt.textContent=left;
+    bar.style.width=(left/30*100)+'%';
+    if(left<=5)bar.style.background='#ff1744';
+    else if(left<=10)bar.style.background='#ff9100';
+  },100);
+}
+
+function handleLetterTimeout(){
+  if(letterLocked)return;
+  letterLocked=true;
+  const q=letterQuestions[letterQIndex];
+  const btns=document.querySelectorAll('#letterOptions .quiz-option');
+  btns.forEach(b=>{
+    b.style.pointerEvents='none';
+    if(b.dataset.word===q.word)b.classList.add('correct');
+  });
+  letterLives--;
+  updateLetterHearts();
+  document.getElementById('letterFeedback').textContent='⏰ Time\'s up! Answer: '+(q.word)+'!';
+  document.getElementById('letterFeedback').className='answer-feedback feedback-wrong';
+  if(letterLives<=0){
+    setTimeout(showLetterGameOver,1500);
+  }else{
+    setTimeout(()=>{letterQIndex++;showLetterQuestion();},1500);
+  }
+}
+
+function updateLetterHearts(){
+  const container=document.getElementById('letterLives');
+  container.innerHTML='';
+  for(let i=0;i<3;i++){
+    const h=document.createElement('span');
+    h.className='life-heart';
+    h.textContent=i<letterLives?'❤️':'🖤';
+    if(i<letterLives)h.style.animation='heartPop 0.3s cubic-bezier(0.34,1.56,0.64,1)';
+    container.appendChild(h);
+  }
+}
+
+function showLetterGameOver(){
+  clearInterval(letterTimer);
+  document.getElementById('letterGameArea').style.display='none';
+  document.getElementById('letterGameOver').classList.add('active');
+  document.getElementById('letterGameOverText').textContent='You got '+letterCorrect+' out of 10. Keep practicing! 💪';
+}
+
+// ═══════════════════════════════════════
+// COLOR PLANET: Observe → Pick Colors
+// ═══════════════════════════════════════
+const colorPlanets=[
+  {name:'Earth',emoji:'🌍',image:'eath.png.png',colors:['#1a73e8','#43a047','#ffffff']},
+  {name:'Mars',emoji:'🔴',image:'mars.png.jpeg',colors:['#d32f2f','#f5f5f5','#8d6e63']},
+  {name:'Jupiter',emoji:'🟠',image:'jupter.pmg.jpeg',colors:['#ff8a65','#bcaaa4','#e53935']},
+  {name:'Saturn',emoji:'🪐',image:'saturn.png.png',colors:['#ffd54f','#bcaaa4','#90a4ae']},
+  {name:'Neptune',emoji:'🌊',image:'netrpturn.png.png',colors:['#1565c0','#0d47a1','#64b5f6']},
+  {name:'Venus',emoji:'🟡',image:'venus.png.jpeg',colors:['#fff9c4','#fdd835','#ffab91']},
+  {name:'Mercury',emoji:'☿️',image:'mercury.png.png',colors:['#9e9e9e','#e0e0e0','#616161']}
+];
+let colorPlanetIdx=0;
+let colorSelected=[];
+let colorCountdownTimer=null;
+
+function initColorPlanet(){
+  colorPlanetIdx=Math.floor(Math.random()*colorPlanets.length);
+  colorSelected=[];
+  const p=colorPlanets[colorPlanetIdx];
+  document.getElementById('colorTitle').textContent='🌈 '+p.name;
+  document.getElementById('colorPlanetName').textContent=p.emoji+' '+p.name;
+  document.getElementById('colorScore').textContent='Pick 3 colors';
+  document.getElementById('colorFeedback').textContent='';
+  document.getElementById('colorFeedback').className='answer-feedback';
+  // Show observe phase
+  document.getElementById('colorObserve').style.display='';
+  document.getElementById('colorPickArea').style.display='none';
+  document.getElementById('colorSuccess').classList.remove('active');
+  // Render the planet image
+  const container=document.getElementById('colorObservePlanet');
+  container.innerHTML='';
+  const img=document.createElement('img');
+  img.src=p.image;
+  img.alt=p.name;
+  img.style.cssText='position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block';
+  container.appendChild(img);
+  const hl=document.createElement('div');
+  hl.style.cssText='position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 35% 30%,rgba(255,255,255,0.15) 0%,transparent 50%);z-index:2;pointer-events:none';
+  container.appendChild(hl);
+  const sh=document.createElement('div');
+  sh.style.cssText='position:absolute;inset:0;border-radius:50%;background:radial-gradient(ellipse at 50% 100%,rgba(0,0,0,0.25) 0%,transparent 50%);z-index:2;pointer-events:none';
+  container.appendChild(sh);
+  startColorCountdown();
+  const el=document.getElementById('gameColor');
+  if(el){
+    el.classList.add('active');
+    document.getElementById('mapContainer').style.display='none';
+  }
+}
+
+function startColorCountdown(){
+  let sec=5;
+  document.getElementById('colorCountdown').textContent=sec;
+  clearInterval(colorCountdownTimer);
+  colorCountdownTimer=setInterval(function(){
+    sec--;
+    document.getElementById('colorCountdown').textContent=sec;
+    if(sec<=0){
+      clearInterval(colorCountdownTimer);
+      showColorPick();
+    }
+  },1000);
+}
+
+function showColorPick(){
+  clearInterval(colorCountdownTimer);
+  document.getElementById('colorObserve').style.display='none';
+  document.getElementById('colorPickArea').style.display='flex';
+  document.getElementById('colorFeedback').textContent='';
+  document.getElementById('colorFeedback').className='answer-feedback';
+  colorSelected=[];
+  const p=colorPlanets[colorPlanetIdx];
+  document.getElementById('colorPickTitle').textContent='Which colors are on '+p.name+'?';
+  // Show mini planet reference
+  const ref=document.getElementById('colorPickMiniPlanet');
+  ref.style.display='';
+  ref.innerHTML='';
+  const ri=document.createElement('img');
+  ri.src=p.image;ri.alt=p.name;
+  ri.style.cssText='position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;border-radius:50%';
+  ref.appendChild(ri);
+  // Build palette: 3 correct + 5 wrong, shuffled
+  const wrongColors=['#f44336','#9c27b0','#00bcd4','#e91e63','#3f51b5','#ff5722','#009688','#ffeb3b','#607d8b','#cddc39','#ff4081','#7c4dff'];
+  const wrongPick=[];
+  const shuffled=wrongColors.sort(()=>Math.random()-0.5);
+  for(let c of shuffled){
+    if(!p.colors.includes(c) && wrongPick.length<5)wrongPick.push(c);
+  }
+  const allColors=[...p.colors,...wrongPick].sort(()=>Math.random()-0.5);
+  const pal=document.getElementById('colorPickPalette');
+  pal.innerHTML='';
+  allColors.forEach(c=>{
+    const swatch=document.createElement('div');
+    swatch.className='color-swatch pick-swatch';
+    swatch.style.background=c;
+    swatch.dataset.color=c;
+    swatch.addEventListener('click',function(){
+      swatch.classList.toggle('selected-pick');
+      if(swatch.classList.contains('selected-pick')){
+        colorSelected.push(c);
+      }else{
+        colorSelected=colorSelected.filter(x=>x!==c);
+      }
+      document.getElementById('colorScore').textContent=colorSelected.length+' selected';
+    });
+    pal.appendChild(swatch);
+  });
+}
+
+function submitColorPicks(){
+  if(colorSelected.length===0)return;
+  const p=colorPlanets[colorPlanetIdx];
+  let correct=0;
+  for(let c of colorSelected){
+    if(p.colors.includes(c))correct++;
+  }
+  let wrong=colorSelected.length-correct;
+  const total=p.colors.length;
+  const score=Math.max(0,correct-wrong);
+  const pct=Math.round(score/total*100);
+  // Show result popup
+  document.getElementById('colorPickArea').style.display='none';
+  document.getElementById('colorSuccess').classList.add('active');
+  let msg='Keep practicing! 💪';
+  let stars=1;
+  let emoji='😊';
+  if(pct===100){msg='🎉 Perfect Color Match! 🌟';stars=5;emoji='🏆';}
+  else if(pct>=66){msg='✨ Amazing Color Sense!';stars=4;emoji='🌟';}
+  else if(pct>=50){msg='👏 Great Eye for Colors!';stars=3;emoji='🎉';}
+  else if(pct>=33){msg='👍 Good Try!';stars=2;emoji='👍';}
+  document.getElementById('colorSuccessTitle').textContent=msg;
+  document.getElementById('colorSuccessStars').textContent='⭐ +'+stars+' stars';
+  document.getElementById('colorScoreEmoji').textContent=emoji;
+  document.getElementById('colorResultText').textContent='Picked '+correct+'/'+total+' correct colors!';
+  if(pct>=33)spawnConfetti(25);
+}
+
+// ═══════════════════════════════════════
+// MINI GAME 2: ALIEN FEEDING
+// ═══════════════════════════════════════
+const alienLevels=[
+  {want:'red',emoji:'🔴',items:[{emoji:'🔴',name:'red'},{emoji:'🟡',name:'yellow'},{emoji:'🟢',name:'green'},{emoji:'🔵',name:'blue'},{emoji:'🟣',name:'purple'}]},
+  {want:'yellow',emoji:'🟡',items:[{emoji:'🟡',name:'yellow'},{emoji:'🔴',name:'red'},{emoji:'🟢',name:'green'},{emoji:'🟣',name:'purple'},{emoji:'🔵',name:'blue'}]},
+  {want:'green',emoji:'🟢',items:[{emoji:'🟢',name:'green'},{emoji:'🔴',name:'red'},{emoji:'🟡',name:'yellow'},{emoji:'🔵',name:'blue'},{emoji:'🟣',name:'purple'}]},
+];
+let alienRound=0;
+let alienScore=0;
+
+function initAlienFeed(){
+  alienRound=0;
+  alienScore=0;
+  document.getElementById('alienGameArea').style.display='';
+  document.getElementById('alienSuccess').classList.remove('active');
+  spawnAlienRound();
+}
+
+function spawnAlienRound(){
+  if(alienRound>=alienLevels.length){
+    document.getElementById('alienGameArea').style.display='none';
+    document.getElementById('alienSuccess').classList.add('active');
+    spawnConfetti();
+    return;
+  }
+  const level=alienLevels[alienRound];
+  document.getElementById('alienThought').innerHTML=`I want <strong>${level.want}</strong>! ${level.emoji}`;
+  document.getElementById('alienScore').textContent=`${alienRound+1}/${alienLevels.length}`;
+
+  // Shuffle items
+  const items=[...level.items];
+  for(let i=items.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [items[i],items[j]]=[items[j],items[i]];
+  }
+
+  const container=document.getElementById('feedItems');
+  container.innerHTML='';
+  items.forEach(item=>{
+    const el=document.createElement('div');
+    el.className='feed-item';
+    const colors={red:'#ef4444',yellow:'#fbbf24',green:'#6ee7b7',blue:'#67e8f9',purple:'#a78bfa'};
+    el.style.background=colors[item.name]||'rgba(255,255,255,0.2)';
+    el.textContent=item.emoji;
+    el.addEventListener('click',function(){
+      if(this.classList.contains('hidden'))return;
+      if(item.name===level.want){
+        this.classList.add('hidden');
+        alienScore++;
+        alienRound++;
+        document.getElementById('alienScore').textContent=`${alienRound+1}/${alienLevels.length}`;
+        spawnConfetti(8);
+        // Alien happy reaction
+        document.getElementById('alienChar').textContent='🥳';
+        setTimeout(()=>document.getElementById('alienChar').textContent='👽',600);
+        setTimeout(spawnAlienRound,700);
+      }else{
+        this.classList.add('wrong');
+        document.getElementById('alienChar').textContent='😕';
+        setTimeout(()=>{
+          this.classList.remove('wrong');
+          document.getElementById('alienChar').textContent='👽';
+        },500);
+      }
+    });
+    container.appendChild(el);
+  });
+}
+
+// ═══════════════════════════════════════
+// MINI GAME 3: ROCKET BUILDER
+// ═══════════════════════════════════════
+const rocketLevels=[
+  {want:'yellow',emoji:'🟡',shape:'circle',parts:[{emoji:'🟡',name:'yellow',shape:'circle'},{emoji:'🔵',name:'blue',shape:'square'},{emoji:'🔴',name:'red',shape:'triangle'},{emoji:'🟢',name:'green',shape:'circle'},{emoji:'🟣',name:'purple',shape:'star'}]},
+  {want:'blue',emoji:'🔵',shape:'square',parts:[{emoji:'🔵',name:'blue',shape:'square'},{emoji:'🟡',name:'yellow',shape:'circle'},{emoji:'🟢',name:'green',shape:'triangle'},{emoji:'🔴',name:'red',shape:'square'},{emoji:'🟣',name:'purple',shape:'circle'}]},
+  {want:'red',emoji:'🔴',shape:'triangle',parts:[{emoji:'🔴',name:'red',shape:'triangle'},{emoji:'🔵',name:'blue',shape:'square'},{emoji:'🟡',name:'yellow',shape:'circle'},{emoji:'🟢',name:'green',shape:'triangle'},{emoji:'🟣',name:'purple',shape:'star'}]},
+];
+let rocketRound=0;
+let rocketScore=0;
+
+function initRocketBuild(){
+  rocketRound=0;
+  rocketScore=0;
+  document.getElementById('rocketGameArea').style.display='';
+  document.getElementById('rocketSuccess').classList.remove('active');
+  document.getElementById('rocketDisplay').className='rocket-display';
+  spawnRocketRound();
+}
+
+function spawnRocketRound(){
+  if(rocketRound>=rocketLevels.length){
+    document.getElementById('rocketGameArea').style.display='none';
+    document.getElementById('rocketSuccess').classList.add('active');
+    document.getElementById('rocketDisplay').className='rocket-display built';
+    spawnConfetti();
+    return;
+  }
+  const level=rocketLevels[rocketRound];
+  document.getElementById('rocketMission').innerHTML=`Collect the <strong>${level.want} ${level.shape}</strong> for the rocket!`;
+  document.getElementById('rocketScore').textContent=`${rocketRound+1}/${rocketLevels.length}`;
+
+  const parts=[...level.parts];
+  for(let i=parts.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [parts[i],parts[j]]=[parts[j],parts[i]];
+  }
+
+  const container=document.getElementById('rocketParts');
+  container.innerHTML='';
+  parts.forEach(part=>{
+    const el=document.createElement('div');
+    el.className='rocket-part';
+    const colors={red:'rgba(239,68,68,0.3)',yellow:'rgba(251,191,36,0.3)',green:'rgba(110,231,183,0.3)',blue:'rgba(103,232,249,0.3)',purple:'rgba(167,139,250,0.3)'};
+    el.style.cssText=`background:${colors[part.name]||'rgba(255,255,255,0.1)'};border-color:${colors[part.name]?.replace('0.3','0.5')||'rgba(255,255,255,0.2)'}`;
+    el.textContent=part.emoji;
+    el.addEventListener('click',function(){
+      if(this.classList.contains('collected'))return;
+      if(part.name===level.want&&part.shape===level.shape){
+        this.classList.add('collected');
+        rocketScore++;
+        rocketRound++;
+        document.getElementById('rocketScore').textContent=`${rocketRound+1}/${rocketLevels.length}`;
+        document.getElementById('rocketDisplay').style.transform='scale(1.1)';
+        setTimeout(()=>document.getElementById('rocketDisplay').style.transform='',300);
+        spawnConfetti(8);
+        setTimeout(spawnRocketRound,700);
+      }else{
+        this.classList.add('wrong');
+        setTimeout(()=>this.classList.remove('wrong'),400);
+      }
+    });
+    container.appendChild(el);
+  });
+}
+
+// ═══════════════════════════════════════
+// MINI GAME 4: SPACE MEMORY
+// ═══════════════════════════════════════
+const memoryEmojis=['🚀','⭐','🌙','🪐','👽','🌈'];
+let memoryCards=[];
+let memoryFlipped=[];
+let memoryMatched=0;
+let memoryLocked=false;
+
+function initMemory(){
+  memoryCards=[...memoryEmojis,...memoryEmojis];
+  for(let i=memoryCards.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [memoryCards[i],memoryCards[j]]=[memoryCards[j],memoryCards[i]];
+  }
+  memoryFlipped=[];
+  memoryMatched=0;
+  memoryLocked=false;
+  document.getElementById('memoryGameArea').style.display='';
+  document.getElementById('memorySuccess').classList.remove('active');
+  document.getElementById('memoryScore').textContent=`0/${memoryEmojis.length}`;
+
+  const grid=document.getElementById('memoryGrid');
+  grid.innerHTML='';
+  memoryCards.forEach((emoji,i)=>{
+    const el=document.createElement('div');
+    el.className='memory-card';
+    el.dataset.index=i;
+    el.dataset.emoji=emoji;
+    el.textContent='❓';
+    el.addEventListener('click',()=>flipCard(el,i));
+    grid.appendChild(el);
+  });
+}
+
+function flipCard(el,i){
+  if(memoryLocked||memoryFlipped.includes(i)||el.classList.contains('matched')||el.classList.contains('flipped'))return;
+  el.classList.add('flipped');
+  el.textContent=memoryCards[i];
+  memoryFlipped.push(i);
+  if(memoryFlipped.length===2){
+    memoryLocked=true;
+    if(memoryCards[memoryFlipped[0]]===memoryCards[memoryFlipped[1]]){
+      setTimeout(()=>{
+        document.querySelectorAll('.memory-card.flipped').forEach(c=>{
+          c.classList.remove('flipped');
+          c.classList.add('matched');
+        });
+        memoryMatched++;
+        document.getElementById('memoryScore').textContent=`${memoryMatched}/${memoryEmojis.length}`;
+        memoryFlipped=[];
+        memoryLocked=false;
+        spawnConfetti(8);
+        if(memoryMatched===memoryEmojis.length){
+          document.getElementById('memoryGameArea').style.display='none';
+          document.getElementById('memorySuccess').classList.add('active');
+          spawnConfetti(30);
+        }
+      },500);
+    }else{
+      setTimeout(()=>{
+        document.querySelectorAll('.memory-card.flipped').forEach(c=>{
+          c.classList.remove('flipped');
+          c.textContent='❓';
+        });
+        memoryFlipped=[];
+        memoryLocked=false;
+      },800);
+    }
+  }
+}
+
+// ═══════════════════════════════════════
+// MINI GAME 5: PLANET JUMP
+// ═══════════════════════════════════════
+const jumpPlanets=['🌑','🌕','🌖','🌗','🌘','🌙'];
+let jumpCurrent=0;
+
+function initJump(){
+  jumpCurrent=0;
+  document.getElementById('jumpGameArea').style.display='';
+  document.getElementById('jumpSuccess').classList.remove('active');
+  document.getElementById('jumpScore').textContent=`0/${jumpPlanets.length}`;
+
+  const container=document.getElementById('jumpPlanets');
+  container.innerHTML='';
+  jumpPlanets.forEach((emoji,i)=>{
+    const el=document.createElement('div');
+    el.className='jump-planet-node'+(i===0?' current':'')+(i>0?' locked':'');
+    el.textContent=emoji;
+    el.dataset.index=i;
+    el.addEventListener('click',()=>jumpToPlanet(i));
+    container.appendChild(el);
+  });
+  updateJumpMission();
+}
+
+function jumpToPlanet(i){
+  if(i!==jumpCurrent+1)return;
+  jumpCurrent=i;
+  const nodes=document.querySelectorAll('.jump-planet-node');
+  nodes.forEach((n,idx)=>{
+    n.className='jump-planet-node';
+    if(idx<jumpCurrent)n.classList.add('visited');
+    else if(idx===jumpCurrent)n.classList.add('current');
+    else n.classList.add('locked');
+  });
+  document.getElementById('astroChar').style.transform=`translateX(${i*48}px)`;
+  document.getElementById('jumpScore').textContent=`${jumpCurrent}/${jumpPlanets.length-1}`;
+  spawnConfetti(10);
+  if(jumpCurrent===jumpPlanets.length-1){
+    document.getElementById('jumpGameArea').style.display='none';
+    document.getElementById('jumpSuccess').classList.add('active');
+    spawnConfetti(40);
+  }
+  updateJumpMission();
+}
+
+function updateJumpMission(){
+  const msgs=[
+    'Tap the next planet to jump! 🚀',
+    'Almost there! Keep going! ⭐',
+    'One more jump to the moon! 🌙',
+    'You made it to the moon! 🎉'
+  ];
+  const idx=Math.min(jumpCurrent,msgs.length-1);
+  document.getElementById('jumpMission').innerHTML=msgs[idx];
+}
+
+// ─── Init ───
+saveState();
+
+// Create "Color Planet" completed by default
+gameState.planets.color=true;
+saveState();
+
+// First visit message
+if(gameState.stars===0){
+  setTimeout(()=>{
+    document.getElementById('guideBubble').textContent='Welcome, little astronaut! Tap Letter Galaxy to start! 🌟';
+  },1000);
+}
+
+// ─── Cinematic floating particles ───
+(function(){
+  const colors = ['rgba(167,139,250,', 'rgba(249,168,212,', 'rgba(110,231,183,', 'rgba(103,232,249,', 'rgba(251,191,36,'];
+  for(let i=0;i<30;i++){
+    const p = document.createElement('div');
+    p.className = 'cinematic-particle';
+    const size = Math.random()*5+2;
+    const c = colors[Math.floor(Math.random()*colors.length)];
+    p.style.cssText = `width:${size}px;height:${size}px;left:${Math.random()*100}%;top:${Math.random()*100}%;background:${c}${Math.random()*0.25+0.1});--d:${(Math.random()*12+8).toFixed(1)}s;--tx:${(Math.random()*100-50).toFixed(0)}px;--ty:${(Math.random()*100-50).toFixed(0)}px;--o:${(Math.random()*0.3+0.15).toFixed(2)};animation-delay:${(Math.random()*8).toFixed(1)}s`;
+    document.body.appendChild(p);
+  }
+})();
+</script>
+</body>
+</html>

@@ -262,7 +262,7 @@ function showCorrectFeedback(explanation) {
   content.innerHTML = isJungleQuiz
     ? `
       <div class="feedback-popup-image-wrap">
-        <img class="feedback-popup-image" src="download__2_-removebg-preview.png" alt="Happy jungle monkey celebrating a correct answer">
+        <img class="feedback-popup-image" src="popup.png" alt="Happy jungle monkey celebrating a correct answer">
       </div>
     `
     : `

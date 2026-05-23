@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const ease = 'power3.easeOut';
+    const ease = 'power3.out';
     
     // Ensure GSAP is loaded
     if (typeof gsap === 'undefined') {
