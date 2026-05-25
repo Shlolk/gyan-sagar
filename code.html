@@ -10,22 +10,9 @@
 html,body{width:100%;height:100%;overflow:hidden;touch-action:manipulation}
 body{
   font-family:'Fredoka',sans-serif;
-  background:
-    radial-gradient(ellipse 80% 50% at 15% 20%, rgba(167,139,250,0.3), transparent),
-    radial-gradient(ellipse 70% 60% at 85% 80%, rgba(249,168,212,0.25), transparent),
-    radial-gradient(ellipse 60% 70% at 50% 30%, rgba(103,232,249,0.2), transparent),
-    radial-gradient(ellipse 50% 60% at 70% 20%, rgba(251,191,36,0.15), transparent),
-    radial-gradient(ellipse 40% 50% at 30% 70%, rgba(110,231,183,0.12), transparent),
-    linear-gradient(180deg,#1e0b4a,#3d1e7d,#4a2d8a,#2d4a7a,#1e0b4a);
-  background-size: 200% 400%;
-  animation: nebulaDrift 25s ease-in-out infinite alternate;
+  background:url("Slot BG อวกาศ.jpeg") center/cover no-repeat;
   color:#fff;overflow:hidden;
   user-select:none;-webkit-user-select:none;
-}
-@keyframes nebulaDrift{
-  0%{background-position:0% 0%}
-  50%{background-position:100% 100%}
-  100%{background-position:0% 100%}
 }
 
 /* ─── Stars Background ─── */
@@ -128,7 +115,7 @@ body{
 /* ─── Adventure Map ─── */
 .map-container{
   position:fixed;inset:0;z-index:10;
-  overflow-y:auto;overflow-x:hidden;
+  overflow-y:auto;overflow-x:visible;
   -webkit-overflow-scrolling:touch;
   padding:70px 0 100px;
   scroll-behavior:smooth;
@@ -308,6 +295,99 @@ body{
 .planet-moon .planet-glow{background:radial-gradient(circle,rgba(236,72,153,0.4),transparent)}
 .planet-moon .planet-ring{--ring-color:rgba(236,72,153,0.6)}
 
+/* ─── Game Cards Grid ─── */
+.game-cards{
+  display:flex;flex-direction:row;flex-wrap:wrap;gap:16px;
+  padding:10px 20px 30px;
+  width:100%;max-width:900px;margin:0 auto;
+  box-sizing:border-box;justify-content:center;
+}
+.game-card{
+  flex:0 0 calc(33.33% - 12px);min-height:110px;
+  position:relative;z-index:5;
+  border-radius:20px;overflow:hidden;cursor:pointer;
+  display:flex;align-items:center;gap:12px;
+  padding:14px 16px;
+  transition:all 0.4s cubic-bezier(0.34,1.56,0.64,1);
+  -webkit-tap-highlight-color:transparent;
+  border:2px solid rgba(255,255,255,0.15);
+}
+.game-card:active{transform:scale(0.95)}
+.game-card .card-bg{
+  position:absolute;inset:0;z-index:-1;border-radius:20px;
+}
+.game-card-completed .card-bg{opacity:1}
+.game-card-glow{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:100px;height:100px;border-radius:50%;z-index:-1;
+  pointer-events:none;opacity:0.15;
+  animation:cardGlow 3s ease-in-out infinite alternate;
+}
+@keyframes cardGlow{0%{transform:translate(-50%,-50%) scale(0.8);opacity:0.1}100%{transform:translate(-50%,-50%) scale(1.3);opacity:0.25}}
+.game-card-emoji{
+  font-size:38px;flex-shrink:0;
+  width:56px;height:56px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(255,255,255,0.12);
+  backdrop-filter:blur(4px);
+  border:2px solid rgba(255,255,255,0.2);
+  filter:drop-shadow(0 4px 12px rgba(0,0,0,0.2));
+  animation:cardEmojiBob 3s ease-in-out infinite;
+}
+@keyframes cardEmojiBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+.game-card-info{flex:1;min-width:0}
+.game-card-name{
+  font-size:16px;font-weight:700;color:#fff;
+  text-shadow:0 2px 8px rgba(0,0,0,0.3);
+  margin-bottom:3px;
+}
+.game-card-desc{
+  font-size:12px;color:rgba(255,255,255,0.7);
+  line-height:1.3;
+}
+.game-card-status{
+  position:absolute;top:-4px;right:-4px;
+  width:28px;height:28px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;z-index:3;font-weight:700;
+}
+.game-card-status.completed{
+  background:linear-gradient(135deg,#fbbf24,#f59e0b);
+  color:#1a0a3e;
+  box-shadow:0 4px 12px rgba(251,191,36,0.5);
+}
+.game-card-status.current{
+  background:linear-gradient(135deg,#ffcc02,#ff6b6b);
+  color:#fff;
+  animation:pulseCardStatus 1.2s ease-in-out infinite;
+  box-shadow:0 4px 16px rgba(255,107,107,0.5);
+}
+@keyframes pulseCardStatus{0%,100%{box-shadow:0 0 0 0 rgba(255,107,107,0.6);transform:scale(1)}50%{box-shadow:0 0 0 10px rgba(255,107,107,0);transform:scale(1.1)}}
+
+/* Card color themes */
+.card-color .card-bg{background:linear-gradient(135deg,#f9a8d4,#ec4899)}
+.card-color .game-card-glow{background:radial-gradient(circle,rgba(236,72,153,0.3),transparent)}
+.card-letter .card-bg{background:linear-gradient(135deg,#a78bfa,#7c3aed)}
+.card-letter .game-card-glow{background:radial-gradient(circle,rgba(124,58,237,0.3),transparent)}
+.card-shape .card-bg{background:linear-gradient(135deg,#6ee7b7,#10b981)}
+.card-shape .game-card-glow{background:radial-gradient(circle,rgba(16,185,129,0.3),transparent)}
+.card-rocket .card-bg{background:linear-gradient(135deg,#67e8f9,#06b6d4)}
+.card-rocket .game-card-glow{background:radial-gradient(circle,rgba(6,182,212,0.3),transparent)}
+.card-alien .card-bg{background:linear-gradient(135deg,#fde68a,#f59e0b)}
+.card-alien .game-card-glow{background:radial-gradient(circle,rgba(245,158,11,0.3),transparent)}
+.card-moon .card-bg{background:linear-gradient(135deg,#fbcfe8,#ec4899)}
+.card-moon .game-card-glow{background:radial-gradient(circle,rgba(236,72,153,0.3),transparent)}
+
+@media(max-width:820px){
+  .game-card{flex:0 0 calc(50% - 10px);min-height:100px;padding:12px 14px}
+  .game-card-emoji{font-size:30px;width:44px;height:44px}
+  .game-card-name{font-size:13px}
+  .game-card-desc{font-size:11px}
+}
+@media(max-width:480px){
+  .game-card{flex:0 0 100%;min-height:90px}
+}
+
 /* ─── Stars Burst ─── */
 .stars-burst{
   position:fixed;pointer-events:none;z-index:200;
@@ -460,57 +540,225 @@ body{
 }
 @keyframes optShake{0%,100%{transform:perspective(600px) rotateX(0deg) translateX(0)}25%{transform:perspective(600px) rotateX(0deg) translateX(-8px)}75%{transform:perspective(600px) rotateX(0deg) translateX(8px)}}
 
-/* ─── COLOR PLANET ─── */
-.color-planet-container{
-  position:relative;width:220px;height:220px;border-radius:50%;
-  margin:0 auto;overflow:hidden;
-  box-shadow:0 8px 40px rgba(0,0,0,0.4),inset 0 -8px 24px rgba(0,0,0,0.2);
-  border:3px solid rgba(255,255,255,0.18);
-  flex-shrink:0;background:transparent;
+/* ─── PLANET MATCH ─── */
+.pm-container{
+  position:relative;width:100%;height:100%;
+  display:flex;flex-direction:column;align-items:center;
+  background:radial-gradient(ellipse at 50% 30%,rgba(100,50,200,0.15),transparent 60%);
 }
-/* Color pick palette */
-.color-pick-palette{
-  display:flex;flex-wrap:wrap;gap:10px;justify-content:center;
-  padding:8px 4px;max-width:380px;width:100%;
+.pm-bg-particles{
+  position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:0;
 }
-.pick-swatch{
-  width:56px;height:56px;border-radius:50%;
-  border:3px solid rgba(255,255,255,0.2);
-  cursor:pointer;transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);
-  box-shadow:0 4px 16px rgba(0,0,0,0.2);
+.pm-bg-particle{
+  position:absolute;border-radius:50%;
+  animation:pmFloat 6s ease-in-out infinite alternate;
 }
-.pick-swatch:active{transform:scale(0.88)}
-.pick-swatch.selected-pick{
-  border-color:#fbbf24 !important;
-  transform:scale(1.15);
-  box-shadow:0 0 24px rgba(251,191,36,0.4);
+@keyframes pmFloat{
+  0%{transform:translateY(0) scale(1);opacity:0.3}
+  100%{transform:translateY(-40px) scale(1.4);opacity:0.8}
 }
-
-.color-swatch{
-  width:44px;height:44px;border-radius:50%;
-  border:3px solid rgba(255,255,255,0.15);
-  cursor:pointer;transition:all 0.25s cubic-bezier(0.34,1.56,0.64,1);
-  box-shadow:0 4px 12px rgba(0,0,0,0.2);
+.pm-header{
+  position:relative;z-index:3;width:100%;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:12px 16px 0;
 }
-.color-swatch:active{transform:scale(0.9)}
-.color-swatch.selected{border-color:#fff;transform:scale(1.15);box-shadow:0 0 20px rgba(255,255,255,0.3)}
-.color-swatch.used{opacity:0.35;transform:scale(0.85);pointer-events:none}
-.answer-feedback{
-  text-align:center;font-size:16px;font-weight:600;
-  min-height:24px;margin-top:12px;
+.pm-level-badge{
+  background:rgba(255,255,255,0.12);backdrop-filter:blur(8px);
+  padding:6px 16px;border-radius:30px;font-size:13px;font-weight:600;
+  border:1px solid rgba(255,255,255,0.15);
+}
+.pm-stars-badge{
+  display:flex;align-items:center;gap:4px;
+  background:rgba(255,255,255,0.12);backdrop-filter:blur(8px);
+  padding:6px 14px;border-radius:30px;font-size:14px;font-weight:600;
+  border:1px solid rgba(255,255,255,0.15);
+}
+.pm-timer-badge{
+  display:flex;align-items:center;gap:4px;
+  background:rgba(255,255,255,0.12);backdrop-filter:blur(8px);
+  padding:6px 14px;border-radius:30px;font-size:14px;font-weight:700;
+  border:1px solid rgba(255,255,255,0.15);
   transition:all 0.3s;
 }
-.feedback-correct{color:#6ee7b7}
-.feedback-wrong{color:#ef4444}
-.gameover-screen{
-  display:none;flex-direction:column;align-items:center;
-  justify-content:center;gap:16px;padding:32px;text-align:center;
-  animation:fadeIn 0.5s ease;
+.pm-timer-badge.pm-timer-low{background:rgba(255,50,50,0.3);border-color:rgba(255,50,50,0.5);color:#ff6b6b;animation:pmTimerPulse 0.5s ease-in-out infinite alternate;}
+@keyframes pmTimerPulse{0%{transform:scale(1)}100%{transform:scale(1.1)}}
+.pm-progress{
+  position:relative;z-index:3;width:100%;padding:10px 20px 4px;
 }
-.gameover-screen.active{display:flex}
-.gameover-emoji{font-size:72px;animation:successBounce 0.6s cubic-bezier(0.34,1.56,0.64,1)}
-.gameover-title{font-size:24px;font-weight:700;color:#ef4444}
-.gameover-text{font-size:16px;color:rgba(255,255,255,0.7);max-width:300px}
+.pm-progress-track{
+  width:100%;height:6px;background:rgba(255,255,255,0.12);border-radius:10px;overflow:hidden;
+}
+.pm-progress-fill{
+  height:100%;border-radius:10px;
+  background:linear-gradient(90deg,#fbbf24,#f59e0b,#f97316);
+  transition:width 0.6s cubic-bezier(0.34,1.56,0.64,1);
+  box-shadow:0 0 12px rgba(251,191,36,0.4);
+}
+.pm-round-label{
+  text-align:center;font-size:12px;color:rgba(255,255,255,0.5);margin-top:4px;
+}
+.pm-planet-area{
+  position:relative;z-index:2;flex:1;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  width:100%;padding:0 20px;
+}
+.pm-planet-wrapper{
+  position:relative;width:200px;height:200px;margin-bottom:16px;
+}
+.pm-planet-glow-ring{
+  position:absolute;inset:-20px;border-radius:50%;
+  border:2px solid rgba(255,255,255,0.08);
+  animation:pmRingSpin 8s linear infinite;
+}
+@keyframes pmRingSpin{to{transform:rotate(360deg)}}
+.pm-planet-glow-ring:nth-child(2){inset:-35px;animation-duration:12s;animation-direction:reverse;border-color:rgba(255,255,255,0.05)}
+.pm-planet{
+  position:absolute;inset:0;border-radius:50%;
+  animation:pmPlanetFloat 4s ease-in-out infinite alternate;
+  box-shadow:0 0 60px rgba(255,255,255,0.15),inset 0 -20px 40px rgba(0,0,0,0.3);
+  border:3px solid rgba(255,255,255,0.2);
+  display:flex;align-items:center;justify-content:center;
+  font-size:72px;overflow:hidden;
+}
+@keyframes pmPlanetFloat{
+  0%{transform:translateY(0) rotate(0deg)}
+  100%{transform:translateY(-12px) rotate(5deg)}
+}
+.pm-planet-highlight{
+  position:absolute;inset:0;border-radius:50%;
+  background:radial-gradient(circle at 30% 25%,rgba(255,255,255,0.25) 0%,transparent 50%);
+  pointer-events:none;z-index:1;
+}
+.pm-planet-shadow{
+  position:absolute;inset:0;border-radius:50%;
+  background:radial-gradient(ellipse at 50% 100%,rgba(0,0,0,0.3) 0%,transparent 50%);
+  pointer-events:none;z-index:1;
+}
+.pm-planet-emoji{
+  position:relative;z-index:2;font-size:72px;filter:drop-shadow(0 4px 12px rgba(0,0,0,0.2));
+  animation:pmEmojiBounce 3s ease-in-out infinite;
+}
+@keyframes pmEmojiBounce{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-6px)}
+}
+.pm-question{
+  text-align:center;font-size:20px;font-weight:700;margin-bottom:8px;
+  text-shadow:0 2px 12px rgba(0,0,0,0.3);
+  position:relative;z-index:2;
+  min-height:60px;display:flex;align-items:center;justify-content:center;
+}
+.pm-hint{
+  font-size:14px;color:rgba(255,255,255,0.5);margin-bottom:16px;
+  position:relative;z-index:2;min-height:20px;
+}
+.pm-options{
+  position:relative;z-index:3;
+  display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;
+  width:100%;max-width:400px;padding:0 16px 20px;
+}
+.pm-option{
+  background:rgba(255,255,255,0.1);backdrop-filter:blur(10px);
+  border:2px solid rgba(255,255,255,0.15);
+  border-radius:20px;padding:16px 8px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:8px;cursor:pointer;transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);
+  min-height:100px;text-align:center;
+  animation:pmOptionSlide 0.5s cubic-bezier(0.34,1.56,0.64,1) backwards;
+}
+@keyframes pmOptionSlide{
+  0%{opacity:0;transform:translateY(40px) scale(0.8)}
+  100%{opacity:1;transform:translateY(0) scale(1)}
+}
+.pm-option:nth-child(1){animation-delay:0.1s}
+.pm-option:nth-child(2){animation-delay:0.2s}
+.pm-option:nth-child(3){animation-delay:0.3s}
+.pm-option:active{transform:scale(0.92)!important}
+.pm-option-correct{
+  border-color:#6ee7b7!important;
+  background:rgba(110,231,183,0.2)!important;
+  transform:scale(1.05);
+  box-shadow:0 0 30px rgba(110,231,183,0.3);
+}
+.pm-option-wrong{
+  border-color:#ef4444!important;
+  background:rgba(239,68,68,0.15)!important;
+  animation:pmShake 0.5s ease;
+}
+@keyframes pmShake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
+.pm-option-emoji{
+  font-size:36px;line-height:1;
+}
+.pm-option-label{
+  font-size:15px;font-weight:600;line-height:1.2;
+}
+.pm-option-swatch{
+  width:40px;height:40px;border-radius:50%;border:2px solid rgba(255,255,255,0.15);
+}
+.pm-celebrate{
+  position:absolute;inset:0;z-index:10;
+  display:none;flex-direction:column;align-items:center;justify-content:center;
+  background:rgba(0,0,0,0.3);backdrop-filter:blur(4px);
+  animation:pmFadeIn 0.3s ease;
+}
+@keyframes pmFadeIn{from{opacity:0}to{opacity:1}}
+.pm-celebrate.active{display:flex}
+.pm-celebrate-emoji{font-size:80px;animation:pmCelebrateBounce 0.6s cubic-bezier(0.34,1.56,0.64,1)}
+@keyframes pmCelebrateBounce{0%{transform:scale(0) rotate(-20deg)}100%{transform:scale(1) rotate(0deg)}}
+.pm-celebrate-text{font-size:28px;font-weight:700;margin:8px 0 4px;text-shadow:0 2px 20px rgba(0,0,0,0.3)}
+.pm-celebrate-sub{font-size:16px;color:rgba(255,255,255,0.7)}
+.pm-celebrate-stars{font-size:22px;font-weight:700;color:#fbbf24;margin-top:8px}
+.pm-next-btn{
+  margin-top:16px;padding:10px 36px;border:none;border-radius:30px;
+  background:linear-gradient(135deg,#fbbf24,#f59e0b);
+  color:#1a0a3e;font-size:16px;font-weight:700;cursor:pointer;
+  font-family:'Fredoka',sans-serif;
+  box-shadow:0 4px 20px rgba(251,191,36,0.4);
+  transition:transform 0.2s;
+}
+.pm-next-btn:active{transform:scale(0.92)}
+.pm-result{
+  position:absolute;inset:0;z-index:10;
+  display:none;flex-direction:column;align-items:center;justify-content:center;
+  background:rgba(0,0,0,0.5);backdrop-filter:blur(8px);
+  animation:pmFadeIn 0.5s ease;
+  padding:24px;
+}
+.pm-result.active{display:flex}
+.pm-result-emoji{font-size:72px;animation:pmCelebrateBounce 0.6s cubic-bezier(0.34,1.56,0.64,1)}
+.pm-result-title{font-size:32px;font-weight:700;margin:8px 0;text-align:center}
+.pm-result-stars{font-size:28px;font-weight:700;color:#fbbf24;margin:8px 0}
+.pm-result-text{font-size:16px;color:rgba(255,255,255,0.7);text-align:center;margin-bottom:8px}
+.pm-result-btn{
+  margin-top:12px;padding:12px 40px;border:none;border-radius:30px;
+  background:linear-gradient(135deg,#a78bfa,#7c3aed);
+  color:#fff;font-size:18px;font-weight:700;cursor:pointer;
+  font-family:'Fredoka',sans-serif;
+  box-shadow:0 4px 20px rgba(124,58,237,0.4);
+  transition:transform 0.2s;
+}
+.pm-result-btn:active{transform:scale(0.92)}
+.pm-intro{
+  position:absolute;inset:0;z-index:5;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  background:rgba(0,0,0,0.2);
+  animation:pmFadeIn 0.5s ease;
+}
+.pm-intro.hidden{display:none}
+.pm-intro-emoji{font-size:64px;animation:pmPlanetFloat 3s ease-in-out infinite}
+.pm-intro-title{font-size:32px;font-weight:700;margin:12px 0 4px;text-shadow:0 2px 20px rgba(0,0,0,0.3)}
+.pm-intro-sub{font-size:16px;color:rgba(255,255,255,0.6);margin-bottom:20px}
+.pm-intro-btn{
+  padding:14px 48px;border:none;border-radius:30px;
+  background:linear-gradient(135deg,#fbbf24,#f59e0b);
+  color:#1a0a3e;font-size:20px;font-weight:700;cursor:pointer;
+  font-family:'Fredoka',sans-serif;
+  box-shadow:0 4px 30px rgba(251,191,36,0.5);
+  transition:transform 0.2s;
+  animation:pmPulse 2s ease-in-out infinite;
+}
+@keyframes pmPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+.pm-intro-btn:active{transform:scale(0.92);animation:none}
 
 /* ─── MINI GAME: Alien Feeding ─── */
 .alien-area{
@@ -548,32 +796,6 @@ body{
 @keyframes feedWrong{0%,100%{transform:translateX(0)}25%{transform:translateX(-10px)}75%{transform:translateX(10px)}}
 
 /* ─── MINI GAME: Memory ─── */
-.memory-grid{
-  display:grid;grid-template-columns:repeat(4,1fr);
-  gap:10px;width:100%;max-width:340px;
-}
-.memory-card{
-  aspect-ratio:1;border-radius:16px;
-  background:linear-gradient(135deg,rgba(167,139,250,0.3),rgba(124,58,237,0.2));
-  border:2px solid rgba(255,255,255,0.1);
-  display:flex;align-items:center;justify-content:center;
-  font-size:28px;cursor:pointer;
-  transition:all 0.4s cubic-bezier(0.34,1.56,0.64,1);
-  -webkit-tap-highlight-color:transparent;
-  transform-style:preserve-3d;
-}
-.memory-card.flipped{
-  background:linear-gradient(135deg,rgba(167,139,250,0.6),rgba(124,58,237,0.5));
-  border-color:rgba(167,139,250,0.4);
-  transform:scale(1.02);
-}
-.memory-card.matched{
-  background:linear-gradient(135deg,#6ee7b7,#10b981);
-  border-color:rgba(16,185,129,0.4);
-  pointer-events:none;opacity:0.7;
-  animation:matchPop 0.5s ease;
-}
-@keyframes matchPop{0%{transform:scale(1)}50%{transform:scale(1.15)}100%{transform:scale(1)}}
 
 /* ─── Buttons ─── */
 .btn-game{
@@ -601,6 +823,20 @@ body{
 @keyframes successBounce{0%{transform:scale(0)}50%{transform:scale(1.2)}100%{transform:scale(1)}}
 .success-title{font-size:24px;font-weight:700;background:linear-gradient(135deg,#fbbf24,#f59e0b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .success-stars{font-size:18px;color:#fbbf24}
+
+/* ─── Shape Station Card Styles ─── */
+.ss-card{aspect-ratio:1;perspective:1000px;cursor:pointer;-webkit-tap-highlight-color:transparent;position:relative;border-radius:14px}
+.ss-card-inner{position:absolute;inset:0;width:100%;height:100%;transition:transform 0.5s cubic-bezier(0.4,0,0.2,1);transform-style:preserve-3d;border-radius:14px}
+.ss-card.flipped .ss-card-inner{transform:rotateY(180deg)}
+.ss-card-face{position:absolute;inset:0;border-radius:14px;backface-visibility:hidden;-webkit-backface-visibility:hidden;display:flex;align-items:center;justify-content:center}
+.ss-card-back{background:linear-gradient(135deg,#191a4a,#1c1d4f);border:4px solid #2e3060;box-shadow:inset 0 -5px 0 rgba(0,0,0,0.3),inset 0 3px 8px rgba(0,0,0,0.3),0 3px 12px rgba(0,0,0,0.2)}
+.ss-card-back span{font-size:42px;opacity:0.4;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.4))}
+.ss-card-front{transform:rotateY(180deg);background:rgba(255,255,255,0.1);backdrop-filter:blur(8px);border:3px solid rgba(255,255,255,0.15);overflow:hidden}
+.ss-card-front img{width:80%;height:80%;object-fit:contain;filter:drop-shadow(0 2px 8px rgba(0,0,0,0.3))}
+.ss-card.matched .ss-card-front{border-color:#aeed00;box-shadow:0 0 20px rgba(174,237,0,0.3),inset 0 0 20px rgba(174,237,0,0.08);animation:ssPulse 1.5s infinite ease-in-out}
+@keyframes ssPulse{0%,100%{box-shadow:0 0 15px rgba(174,237,0,0.2),inset 0 0 10px rgba(174,237,0,0.05)}50%{box-shadow:0 0 30px rgba(174,237,0,0.4),inset 0 0 20px rgba(174,237,0,0.1)}}
+.ss-card.error .ss-card-inner{animation:ssShake 0.5s ease-in-out}
+@keyframes ssShake{0%,100%{transform:translateX(0)}20%{transform:translateX(-6px) rotate(-2deg)}40%{transform:translateX(6px) rotate(2deg)}60%{transform:translateX(-4px) rotate(-1deg)}80%{transform:translateX(4px) rotate(1deg)}}
 
 /* ─── Progress dots ─── */
 .progress-dots{display:flex;gap:6px;justify-content:center;margin:8px 0}
@@ -741,7 +977,196 @@ body{
   0%{transform:translate(0,0) scale(1);opacity:0}
   20%{opacity:var(--o,0.5)}
   80%{opacity:var(--o,0.5)}
-  100%{transform:translate(var(--tx,60px),var(--ty,-60px)) scale(1.3);opacity:0}
+   100%{transform:translate(var(--tx,60px),var(--ty,-60px)) scale(1.3);opacity:0}
+}
+
+/* ══════════════════════════════════
+   PREMIUM KIDS UI — Space Magic
+   ══════════════════════════════════ */
+
+/* ─── Floating Space Emojis ─── */
+.floating-space-emoji{
+  position:fixed;z-index:0;pointer-events:none;
+  animation:fSE 18s ease-in-out infinite;
+  font-size:var(--fs,28px);opacity:0.12;
+}
+@keyframes fSE{
+  0%,100%{transform:translateY(0) rotate(0deg) scale(1)}
+  25%{transform:translateY(-30px) rotate(8deg) scale(1.1)}
+  50%{transform:translateY(10px) rotate(-5deg) scale(0.95)}
+  75%{transform:translateY(-20px) rotate(4deg) scale(1.05)}
+}
+
+/* ─── Premium Card Entrance ─── */
+.game-card{
+  opacity:0;transform:translateY(40px) scale(0.92);
+  animation:cardEntrance 0.7s cubic-bezier(0.34,1.56,0.64,1) forwards;
+}
+.game-card:nth-child(1){animation-delay:0.1s}
+.game-card:nth-child(2){animation-delay:0.2s}
+.game-card:nth-child(3){animation-delay:0.3s}
+.game-card:nth-child(4){animation-delay:0.4s}
+.game-card:nth-child(5){animation-delay:0.5s}
+.game-card:nth-child(6){animation-delay:0.6s}
+@keyframes cardEntrance{
+  0%{opacity:0;transform:translateY(40px) scale(0.92)}
+  100%{opacity:1;transform:translateY(0) scale(1)}
+}
+
+/* ─── Animated Gradient Border ─── */
+.game-card::after{
+  content:'';position:absolute;inset:2px;border-radius:18px;
+  z-index:1;opacity:0;pointer-events:none;
+  background:linear-gradient(135deg,rgba(255,204,2,0.2),rgba(255,107,107,0.15),rgba(167,139,250,0.2),rgba(103,232,249,0.15));
+  background-size:400% 400%;
+  animation:borderRainbow 4s linear infinite;
+  transition:opacity 0.4s;
+}
+.game-card:hover::after,.game-card:active::after{opacity:1}
+@keyframes borderRainbow{0%{background-position:0% 50%}100%{background-position:400% 50%}}
+.game-card-completed::after{opacity:0.3}
+.game-card-completed:hover::after{opacity:0.8}
+
+/* ─── Card Shine Overlay ─── */
+.game-card::before{
+  content:'';position:absolute;inset:0;border-radius:20px;
+  z-index:1;opacity:0;pointer-events:none;
+  background:linear-gradient(135deg,rgba(255,255,255,0.3) 0%,transparent 40%,transparent 60%,rgba(255,255,255,0.1) 100%);
+  transition:opacity 0.5s;
+}
+.game-card:hover::before{opacity:1}
+
+/* ─── Card Premium Hover ─── */
+.game-card:hover{transform:translateY(-6px) scale(1.03);border-color:rgba(255,255,255,0.35)}
+.game-card:active{transform:translateY(-2px) scale(0.97)}
+
+/* ─── Play Button Premium ─── */
+.game-card-play{
+  flex-shrink:0;
+  width:40px;height:40px;border-radius:50%;
+  background:rgba(255,255,255,0.15);
+  backdrop-filter:blur(4px);
+  border:2px solid rgba(255,255,255,0.25);
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;transition:all 0.4s cubic-bezier(0.34,1.56,0.64,1);
+}
+.game-card:hover .game-card-play{
+  background:linear-gradient(135deg,#ffcc02,#ff6b6b);
+  border-color:#ffcc02;transform:scale(1.15) rotate(-10deg);
+  box-shadow:0 0 20px rgba(255,204,2,0.4);
+}
+
+/* ─── Emoji Hover Dance ─── */
+.game-card:hover .game-card-emoji{
+  animation:emojiDance 0.6s ease-in-out infinite;
+}
+@keyframes emojiDance{
+  0%,100%{transform:translateY(0) rotate(0deg)}
+  25%{transform:translateY(-6px) rotate(-8deg)}
+  75%{transform:translateY(-4px) rotate(8deg)}
+}
+
+/* ─── Map Title Premium ─── */
+.map-title{
+  font-size:28px;
+  text-shadow:0 0 30px rgba(255,204,2,0.3),0 0 60px rgba(255,107,107,0.15);
+  animation:titleRainbow 3s ease-in-out infinite alternate,titleFloat 4s ease-in-out infinite;
+}
+@keyframes titleFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.map-subtitle{font-size:15px;animation:subtitleFade 2s ease-in-out infinite alternate}
+@keyframes subtitleFade{0%{opacity:0.6}100%{opacity:1}}
+
+/* ─── Sparkle Burst ─── */
+.sparkle-burst{
+  position:fixed;pointer-events:none;z-index:999;
+  animation:sbFade 0.8s ease-out forwards;
+}
+.sparkle-burst span{
+  position:absolute;font-size:var(--sfs,16px);
+  animation:sbFly var(--sd,0.6s) cubic-bezier(0.25,0.46,0.45,0.94) forwards;
+}
+@keyframes sbFly{
+  0%{transform:translate(0,0) scale(0) rotate(0deg);opacity:1}
+  100%{transform:translate(var(--sx,40px),var(--sy,-60px)) scale(1.2) rotate(360deg);opacity:0}
+}
+@keyframes sbFade{0%{opacity:1}100%{opacity:0}}
+
+/* ─── Guide Premium ─── */
+.guide-bubble{
+  font-size:15px;line-height:1.5;
+  box-shadow:0 8px 32px rgba(124,58,237,0.3),0 0 40px rgba(167,139,250,0.1);
+  animation:bubblePop 0.5s cubic-bezier(0.34,1.56,0.64,1),bubbleGlow 2s ease-in-out infinite alternate;
+}
+@keyframes bubbleGlow{0%{box-shadow:0 8px 32px rgba(124,58,237,0.3)}100%{box-shadow:0 8px 40px rgba(167,139,250,0.5)}}
+.guide-avatar{animation:guideFloat 3s ease-in-out infinite;transition:transform 0.3s}
+.guide-avatar:hover{transform:scale(1.1) rotate(5deg)}
+
+/* ─── Star Display Premium ─── */
+.star-display #totalStars{
+  display:inline-block;transition:transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
+}
+.star-display #totalStars.burst{animation:starBurst 0.5s cubic-bezier(0.34,1.56,0.64,1)}
+@keyframes starBurst{0%{transform:scale(1)}50%{transform:scale(1.6)}100%{transform:scale(1)}}
+
+/* ─── Cinematic Particles Premium ─── */
+.cinematic-particle{
+  position:fixed;pointer-events:none;z-index:1;
+  border-radius:50%;
+  animation:particleFloat var(--d,12s) ease-in-out infinite alternate;
+}
+@keyframes particleFloat{
+  0%{transform:translate(0,0) scale(1);opacity:0}
+  10%{opacity:var(--o,0.3)}
+  90%{opacity:var(--o,0.3)}
+  100%{transform:translate(var(--tx,30px),var(--ty,-30px)) scale(1.5);opacity:0}
+}
+
+/* ─── Header Premium ─── */
+.header-bar h1{font-size:22px;filter:drop-shadow(0 0 20px rgba(167,139,250,0.3))}
+.star-display{
+  box-shadow:0 4px 20px rgba(255,204,2,0.2),0 0 40px rgba(255,204,2,0.05);
+}
+
+/* ─── Status Badge Pulse ─── */
+.game-card-status.completed{
+  animation:statusGlow 2s ease-in-out infinite alternate;
+}
+@keyframes statusGlow{0%{box-shadow:0 4px 12px rgba(251,191,36,0.5)}100%{box-shadow:0 4px 24px rgba(251,191,36,0.8)}}
+
+/* ─── Background Ambient Orbs ─── */
+.ambient-orb{
+  position:fixed;border-radius:50%;z-index:0;pointer-events:none;
+  filter:blur(60px);opacity:0.2;
+  animation:orbDrift 12s ease-in-out infinite alternate;
+}
+@keyframes orbDrift{0%{transform:translate(0,0) scale(1)}100%{transform:translate(40px,-30px) scale(1.2)}}
+
+/* ─── Mobile Tweaks ─── */
+@media(max-width:480px){
+  .map-title{font-size:22px}
+  .game-card-play{width:34px;height:34px;font-size:15px}
+  .guide-bubble{font-size:13px;max-width:180px}
+}
+
+/* ─── Shooting Stars Premium ─── */
+.shooting-star{
+  position:fixed;width:3px;height:3px;border-radius:50%;
+  background:#fff;z-index:2;pointer-events:none;
+  animation:shoot var(--sd,2s) ease-in-out infinite;
+  box-shadow:0 0 6px rgba(255,255,255,0.8),0 0 12px rgba(167,139,250,0.4);
+}
+.shooting-star::after{
+  content:'';position:absolute;top:50%;right:100%;
+  width:60px;height:1.5px;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,0.4));
+  transform:translateY(-50%);
+}
+@keyframes shoot{
+  0%{transform:translate(0,0) rotate(-35deg);opacity:0}
+  5%{opacity:1}
+  15%{opacity:1}
+  20%{transform:translate(-200px,140px) rotate(-35deg);opacity:0}
+  100%{opacity:0}
 }
 </style>
 </head>
@@ -765,6 +1190,23 @@ body{
 <div class="shooting-star" style="top:12%;right:20%;--sd:0s"></div>
 <div class="shooting-star" style="top:30%;right:50%;--sd:3s"></div>
 <div class="shooting-star" style="top:50%;right:35%;--sd:6s"></div>
+<div class="shooting-star" style="top:70%;right:65%;--sd:9s"></div>
+
+<!-- ═══ Ambient Glow Orbs ═══ -->
+<div class="ambient-orb" style="width:300px;height:300px;top:-50px;left:-50px;background:radial-gradient(circle,rgba(167,139,250,0.4),transparent);animation-delay:0s"></div>
+<div class="ambient-orb" style="width:250px;height:250px;bottom:10%;right:-30px;background:radial-gradient(circle,rgba(249,168,212,0.35),transparent);animation-delay:-3s"></div>
+<div class="ambient-orb" style="width:200px;height:200px;top:40%;left:60%;background:radial-gradient(circle,rgba(103,232,249,0.3),transparent);animation-delay:-6s"></div>
+<div class="ambient-orb" style="width:180px;height:180px;top:60%;left:10%;background:radial-gradient(circle,rgba(251,191,36,0.25),transparent);animation-delay:-9s"></div>
+
+<!-- ═══ Floating Space Emojis ═══ -->
+<div class="floating-space-emoji" style="top:8%;left:5%;--fs:32px;animation-delay:0s">🚀</div>
+<div class="floating-space-emoji" style="top:15%;right:8%;--fs:26px;animation-delay:-3s">⭐</div>
+<div class="floating-space-emoji" style="top:45%;left:2%;--fs:30px;animation-delay:-6s">🌍</div>
+<div class="floating-space-emoji" style="top:60%;right:3%;--fs:28px;animation-delay:-9s">🌙</div>
+<div class="floating-space-emoji" style="top:80%;left:8%;--fs:24px;animation-delay:-12s">🌟</div>
+<div class="floating-space-emoji" style="top:30%;left:90%;--fs:22px;animation-delay:-4s">🪐</div>
+<div class="floating-space-emoji" style="top:70%;right:10%;--fs:20px;animation-delay:-7s">☄️</div>
+<div class="floating-space-emoji" style="top:5%;left:50%;--fs:18px;animation-delay:-2s;opacity:0.08">✨</div>
 
 <!-- ═══ Sparkle trail decorations ═══ -->
 <div class="sparkle" style="top:18%;left:15%;--s:2s;--d:0s"></div>
@@ -790,73 +1232,84 @@ body{
   <div class="map-title">🌌 Galaxy Adventure</div>
   <div class="map-subtitle">Tap a planet to start your mission!</div>
 
-  <div style="display:flex;flex-direction:column;align-items:center;padding:0 20px 40px;position:relative;">
+  <div class="game-cards">
 
-    <!-- Planet 1: Color Planet -->
-    <div class="planet-node planet-color" data-planet="color" onclick="openGame('color')">
-      <div class="planet-glow"></div>
-      <div class="planet-body">
-        🌈
-        <div class="planet-ring"></div>
-        <div class="planet-status current">🎨</div>
+    <!-- Card 1: Color Planet -->
+    <div class="game-card card-color game-card-completed" data-planet="color" onclick="openGame('color')">
+      <div class="card-bg"></div>
+      <div class="game-card-glow"></div>
+      <div class="game-card-emoji">🌈</div>
+      <div class="game-card-info">
+        <div class="game-card-name">Color Planet</div>
+        <div class="game-card-desc">Match the planets and earn stars!</div>
       </div>
-      <div class="planet-label">Color Planet</div>
+      <div class="game-card-play">▶</div>
+      <div class="game-card-status completed">⭐</div>
     </div>
-    <div class="path-connector completed"><div class="connector-dot"></div></div>
 
-    <!-- Planet 2: Letter Galaxy -->
-    <div class="planet-node planet-letter" data-planet="letter" onclick="openGame('letter')">
-      <div class="planet-glow"></div>
-      <div class="planet-body">
-        🔤
-        <div class="planet-ring"></div>
-        <div class="planet-status current">▶</div>
+    <!-- Card 2: Letter Galaxy -->
+    <div class="game-card card-letter game-card-completed" data-planet="letter" onclick="openGame('letter')">
+      <div class="card-bg"></div>
+      <div class="game-card-glow"></div>
+      <div class="game-card-emoji">🔤</div>
+      <div class="game-card-info">
+        <div class="game-card-name">Letter Galaxy</div>
+        <div class="game-card-desc">Answer space questions and learn!</div>
       </div>
-      <div class="planet-label">Letter Galaxy</div>
+      <div class="game-card-play">▶</div>
+      <div class="game-card-status completed">⭐</div>
     </div>
-    <div class="path-connector current" style="--c1:rgba(167,139,250,0.5);--c2:rgba(103,232,249,0.25)"><div class="connector-dot"></div></div>
 
-    <!-- Planet 3: Shape Station -->
-    <div class="planet-node planet-shape disabled" data-planet="shape" onclick="openGame('shape')">
-      <div class="planet-body">
-        🔷
-        <div class="planet-ring"></div>
-        <div class="planet-status locked">🔒</div>
+    <!-- Card 3: Shape Station -->
+    <div class="game-card card-shape game-card-completed" data-planet="shape" onclick="openGame('shape')">
+      <div class="card-bg"></div>
+      <div class="game-card-glow"></div>
+      <div class="game-card-emoji">🔷</div>
+      <div class="game-card-info">
+        <div class="game-card-name">Shape Station</div>
+        <div class="game-card-desc">Match the pairs and train your memory!</div>
       </div>
-      <div class="planet-label">Shape Station</div>
+      <div class="game-card-play">▶</div>
+      <div class="game-card-status completed">⭐</div>
     </div>
-    <div class="path-connector locked" style="--c1:rgba(255,255,255,0.08);--c2:rgba(255,255,255,0.03)"><div class="connector-dot"></div></div>
 
-    <!-- Planet 4: Rocket Lab -->
-    <div class="planet-node planet-rocket disabled" data-planet="rocket" onclick="openGame('rocket')">
-      <div class="planet-body">
-        🚀
-        <div class="planet-ring"></div>
-        <div class="planet-status locked">🔒</div>
+    <!-- Card 4: Rocket Lab -->
+    <div class="game-card card-rocket game-card-completed" data-planet="rocket" onclick="window.location.href='rocket.html'">
+      <div class="card-bg"></div>
+      <div class="game-card-glow"></div>
+      <div class="game-card-emoji">🚀</div>
+      <div class="game-card-info">
+        <div class="game-card-name">Rocket Lab</div>
+        <div class="game-card-desc">Build your own rocket piece by piece!</div>
       </div>
-      <div class="planet-label">Rocket Lab</div>
+      <div class="game-card-play">▶</div>
+      <div class="game-card-status completed">⭐</div>
     </div>
-    <div class="path-connector locked" style="--c1:rgba(255,255,255,0.05);--c2:rgba(255,255,255,0.02)"><div class="connector-dot"></div></div>
 
-    <!-- Planet 5: Alien Garden -->
-    <div class="planet-node planet-alien disabled" data-planet="alien" onclick="openGame('alien')">
-      <div class="planet-body">
-        👽
-        <div class="planet-ring"></div>
-        <div class="planet-status locked">🔒</div>
+    <!-- Card 5: Alien Garden -->
+    <div class="game-card card-alien game-card-completed" data-planet="alien" onclick="openGame('alien')">
+      <div class="card-bg"></div>
+      <div class="game-card-glow"></div>
+      <div class="game-card-emoji">👽</div>
+      <div class="game-card-info">
+        <div class="game-card-name">Alien Garden</div>
+        <div class="game-card-desc">Feed the alien what it wants!</div>
       </div>
-      <div class="planet-label">Alien Garden</div>
+      <div class="game-card-play">▶</div>
+      <div class="game-card-status completed">⭐</div>
     </div>
-    <div class="path-connector locked" style="--c1:rgba(255,255,255,0.02);--c2:rgba(255,255,255,0)"><div class="connector-dot"></div></div>
 
-    <!-- Planet 6: Rainbow Moon -->
-    <div class="planet-node planet-moon disabled" data-planet="moon" onclick="openGame('moon')">
-      <div class="planet-body">
-        🌙
-        <div class="planet-ring"></div>
-        <div class="planet-status locked">🔒</div>
+    <!-- Card 6: Rainbow Moon -->
+    <div class="game-card card-moon game-card-completed" data-planet="moon" onclick="openGame('moon')">
+      <div class="card-bg"></div>
+      <div class="game-card-glow"></div>
+      <div class="game-card-emoji">🌙</div>
+      <div class="game-card-info">
+        <div class="game-card-name">Rainbow Moon</div>
+        <div class="game-card-desc">Jump across planets to reach the moon!</div>
       </div>
-      <div class="planet-label">Rainbow Moon</div>
+      <div class="game-card-play">▶</div>
+      <div class="game-card-status completed">⭐</div>
     </div>
 
   </div>
@@ -907,35 +1360,63 @@ body{
   </div>
 </div>
 
-<!-- ═══ Game Overlay: Color Planet ═══ -->
+<!-- ═══ Game Overlay: Planet Match ═══ -->
 <div class="game-overlay" id="gameColor">
-  <div class="game-header">
-    <button class="game-back-btn" onclick="closeGame('color')">✕</button>
-    <span class="game-title" id="colorTitle">🌈 Color Planet</span>
-    <div style="font-size:14px;color:rgba(255,255,255,0.6)" id="colorScore">Pick 3 colors</div>
-  </div>
-  <div class="game-body">
-    <div id="colorObserve">
-      <div style="font-size:16px;font-weight:600;text-align:center;margin-bottom:4px">👀 Study this planet carefully!</div>
-      <div style="font-size:14px;text-align:center;color:rgba(255,255,255,0.6);margin-bottom:12px" id="colorPlanetName"></div>
-      <div class="color-planet-container" id="colorObservePlanet"></div>
-      <div style="font-size:13px;text-align:center;color:rgba(255,255,255,0.5);margin-top:8px">Remember the colors!</div>
-      <button class="btn-game btn-play" style="margin-top:12px" onclick="showColorPick()">I'm Ready! ✨</button>
-      <div style="font-size:12px;text-align:center;color:rgba(255,255,255,0.3);margin-top:8px">or wait <span id="colorCountdown">5</span>s</div>
+  <div class="pm-container">
+    <!-- Background floating particles -->
+    <div class="pm-bg-particles" id="pmParticles"></div>
+    <!-- Intro Screen -->
+    <div class="pm-intro" id="pmIntro">
+      <div class="pm-intro-emoji">🪐</div>
+      <div class="pm-intro-title">Planet Match!</div>
+      <div class="pm-intro-sub">Match the planets and earn stars!</div>
+      <button class="pm-intro-btn" onclick="startPlanetMatch()">🚀 Let's Go!</button>
+      <button class="game-back-btn" style="position:absolute;top:16px;left:16px;z-index:20" onclick="closeGame('color')">✕</button>
     </div>
-    <div id="colorPickArea" style="display:none;flex-direction:column;align-items:center;width:100%">
-      <div style="font-size:16px;font-weight:600;text-align:center;margin-bottom:4px" id="colorPickTitle">Which colors are on this planet?</div>
-      <div class="color-planet-container" id="colorPickMiniPlanet" style="width:100px;height:100px;margin-bottom:8px;display:none"></div>
-      <div class="color-pick-palette" id="colorPickPalette"></div>
-      <div class="answer-feedback" id="colorFeedback"></div>
-      <button class="btn-game btn-play" style="margin-top:12px" onclick="submitColorPicks()">Check My Colors! ✓</button>
+    <!-- Header -->
+    <div class="pm-header" id="pmHeader" style="display:none">
+      <button class="game-back-btn" onclick="closeGame('color')">✕</button>
+      <div class="pm-level-badge" id="pmLevel">🌍 Round 1/5</div>
+      <div class="pm-timer-badge" id="pmTimer">⏱️ 20s</div>
+      <div class="pm-stars-badge" id="pmStars">⭐ 0</div>
     </div>
-    <div class="success-screen" id="colorSuccess">
-      <div class="success-emoji" id="colorScoreEmoji">🎉</div>
-      <div class="success-title" id="colorSuccessTitle">Great Job!</div>
-      <div id="colorResultText" style="font-size:18px;color:rgba(255,255,255,0.8);margin:4px 0"></div>
-      <div class="success-stars" id="colorSuccessStars">⭐ +3 stars</div>
-      <button class="btn-game btn-next" onclick="closeGame('color',true)">Back to Map</button>
+    <!-- Progress -->
+    <div class="pm-progress" id="pmProgress" style="display:none">
+      <div class="pm-progress-track">
+        <div class="pm-progress-fill" id="pmProgressFill" style="width:0%"></div>
+      </div>
+      <div class="pm-round-label" id="pmRoundLabel">Round 1 of 5</div>
+    </div>
+    <!-- Planet Area -->
+    <div class="pm-planet-area" id="pmPlanetArea" style="display:none">
+      <div class="pm-planet-wrapper" id="pmPlanetWrapper">
+        <div class="pm-planet-glow-ring"></div>
+        <div class="pm-planet-glow-ring"></div>
+        <div class="pm-planet" id="pmPlanet">
+          <div class="pm-planet-highlight"></div>
+          <div class="pm-planet-shadow"></div>
+          <span class="pm-planet-emoji" id="pmPlanetEmoji">🌍</span>
+        </div>
+      </div>
+      <div class="pm-question" id="pmQuestion">Which planet is this?</div>
+      <div class="pm-hint" id="pmHint">Tap the matching answer</div>
+      <div class="pm-options" id="pmOptions"></div>
+    </div>
+    <!-- Celebration Overlay -->
+    <div class="pm-celebrate" id="pmCelebrate">
+      <div class="pm-celebrate-emoji" id="pmCelebrateEmoji">🌟</div>
+      <div class="pm-celebrate-text" id="pmCelebrateText">Amazing!</div>
+      <div class="pm-celebrate-sub" id="pmCelebrateSub">You matched the planet!</div>
+      <div class="pm-celebrate-stars" id="pmCelebrateStars">⭐ +1</div>
+      <button class="pm-next-btn" id="pmNextBtn" onclick="nextPMRound()">Next →</button>
+    </div>
+    <!-- Final Result -->
+    <div class="pm-result" id="pmResult">
+      <div class="pm-result-emoji">🏆</div>
+      <div class="pm-result-title">Mission Complete!</div>
+      <div class="pm-result-stars" id="pmResultStars">⭐ 0</div>
+      <div class="pm-result-text" id="pmResultText">Great job exploring planets!</div>
+      <button class="pm-result-btn" onclick="closeGame('color',true)">Back to Map</button>
     </div>
   </div>
 </div>
@@ -988,31 +1469,78 @@ body{
   </div>
 </div>
 
-<!-- ═══ Game Overlay: Memory ═══ -->
-<div class="game-overlay" id="gameMemory">
-  <div class="game-header">
-    <button class="game-back-btn" onclick="closeGame('memory')">✕</button>
-    <span class="game-title">🧠 Shape Station</span>
-    <div style="font-size:14px;color:rgba(255,255,255,0.6)" id="memoryScore">0/6</div>
+<!-- ═══ Game Overlay: Shape Station ═══ -->
+<div class="game-overlay" id="gameShape" style="background:#0b0c3d">
+  <!-- Martian sky background -->
+  <div style="position:absolute;inset:0;z-index:0;background:radial-gradient(circle at top,#ff7e5f 0%,#0b0c3d 70%);overflow:hidden">
+    <div style="position:absolute;bottom:0;left:-10%;width:120%;height:307px;background:#a33b20;opacity:0.7;filter:blur(6px);border-radius:100% 100% 0 0;transform:translateY(50%)"></div>
   </div>
-  <div class="game-body">
-    <div id="memoryGameArea">
-      <div class="hunt-mission" style="margin-bottom:16px">Match the pairs! 🃏</div>
-      <div class="memory-grid" id="memoryGrid"></div>
+  <!-- Header -->
+  <div style="position:relative;z-index:5;display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:rgba(255,255,255,0.08);backdrop-filter:blur(16px);border-bottom:1px solid rgba(255,255,255,0.1);flex-shrink:0">
+    <div style="display:flex;align-items:center;gap:10px">
+      <button class="game-back-btn" onclick="closeGame('shape')" style="width:36px;height:36px;font-size:16px">✕</button>
+      <span style="font-size:18px;font-weight:700;background:linear-gradient(135deg,#00f0ff,#fface8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">Shape Station</span>
     </div>
-    <div class="success-screen" id="memorySuccess">
-      <div class="success-emoji">🧠</div>
-      <div class="success-title">Super Memory!</div>
-      <div class="success-stars">⭐ +3 stars</div>
-      <button class="btn-game btn-next" onclick="closeGame('memory',true)">Back to Map</button>
+    <div style="display:flex;align-items:center;gap:6px;background:rgba(255,255,255,0.08);border-radius:999px;padding:4px 12px;border:1px solid rgba(255,255,255,0.1)">
+      <span style="font-size:16px;color:#00f0ff">◆</span>
+      <span style="font-size:13px;font-weight:600;color:#7df4ff" id="ssScore">0</span>
+    </div>
+  </div>
+  <!-- Game body -->
+  <div style="flex:1;overflow-y:auto;position:relative;z-index:1;padding:16px 20px 120px;display:flex;flex-direction:column;align-items:center">
+    <!-- HUD -->
+    <div style="width:100%;max-width:600px;margin-bottom:16px;display:flex;flex-direction:column;gap:12px">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
+        <div style="display:flex;align-items:center;gap:10px">
+          <div style="background:#232555;border-radius:999px;padding:6px 18px;border:1px solid rgba(255,255,255,0.04);box-shadow:inset 0 2px 4px rgba(0,0,0,0.2)">
+            <span style="font-size:16px;font-weight:700;color:#7df4ff" id="ssScoreDisplay">Score: 0</span>
+          </div>
+          <div style="background:rgba(255,36,228,0.15);border:1px solid rgba(255,175,232,0.25);border-radius:999px;padding:4px 14px">
+            <span style="font-size:12px;font-weight:700;color:#fface8" id="ssPairsDisplay">Pairs Found: 0/6</span>
+          </div>
+        </div>
+      </div>
+      <!-- Progress bar -->
+      <div style="position:relative;width:100%;height:16px;background:#060538;border-radius:999px;border:2px solid #2e3060;box-shadow:inset 0 2px 4px rgba(0,0,0,0.3);overflow:visible">
+        <div style="position:absolute;top:0;left:0;height:100%;border-radius:999px;background:linear-gradient(90deg,#00f0ff,#00dbe9);box-shadow:0 0 10px #00f0ff;transition:width 0.5s;width:0%" id="ssProgressBar"></div>
+        <div style="position:absolute;top:50%;transform:translate(-50%,-50%);left:0%;transition:left 0.5s;z-index:2" id="ssRocketIndicator">
+          <span style="font-size:28px;filter:drop-shadow(0 0 8px #00f0ff);display:inline-block;transform:rotate(90deg)">🚀</span>
+        </div>
+        <div style="position:absolute;right:-8px;top:50%;transform:translateY(-50%)">
+          <span style="font-size:22px;color:#fface8">🌍</span>
+        </div>
+      </div>
+    </div>
+    <!-- Card Grid -->
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;width:100%;max-width:500px;perspective:1000px" id="ssGrid"></div>
+    <!-- Guide -->
+    <div style="position:fixed;bottom:24px;right:16px;z-index:10;display:flex;flex-direction:column;align-items:flex-end">
+      <div style="background:rgba(255,255,255,0.08);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.15);border-radius:24px 24px 4px 24px;padding:12px 16px;margin-bottom:12px;max-width:180px;box-shadow:0 4px 16px rgba(0,0,0,0.2)">
+        <p style="font-size:14px;font-weight:600;color:#e1e0ff" id="ssGuideText">Find the matching celestial bodies! 🌟</p>
+      </div>
+      <div style="position:relative;width:80px;height:80px;border-radius:50%;overflow:hidden;border:3px solid rgba(255,255,255,0.15);filter:drop-shadow(0 0 20px rgba(0,219,233,0.3));transition:transform 0.3s;cursor:pointer" onclick="document.getElementById('ssGuideText').textContent=['Find the matching celestial bodies! 🌟','Stellar work! Keep going! 🚀','Match all 6 pairs to win! ⭐','You got this! 💪'][Math.floor(Math.random()*4)]">
+        <img src="image_2026-05-23_150811711-removebg-preview.png" alt="Guide" style="width:100%;height:100%;object-fit:contain;display:block">
+        <div style="position:absolute;top:-4px;right:-4px;width:28px;height:28px;border-radius:50%;background:#aeed00;display:none;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(174,237,0,0.4)" id="ssGuideReaction">
+          <span style="font-size:14px">👍</span>
+        </div>
+      </div>
+    </div>
+    <!-- Win Modal -->
+    <div style="position:fixed;inset:0;z-index:100;display:none;align-items:center;justify-content:center;background:rgba(11,12,61,0.8);backdrop-filter:blur(8px);opacity:0;transition:opacity 0.5s" id="ssWinModal">
+      <div style="background:#191a4a;border:2px solid #00f0ff;border-radius:32px;padding:32px 24px;max-width:320px;width:90%;text-align:center;box-shadow:0 0 50px rgba(0,240,255,0.3)">
+        <div style="font-size:64px;color:#aeed00;margin-bottom:12px">🏆</div>
+        <h2 style="font-size:24px;font-weight:700;color:#7df4ff;margin-bottom:8px">Mission Complete!</h2>
+        <p style="font-size:14px;color:rgba(255,255,255,0.5);margin-bottom:20px;line-height:1.5">All planets matched! Amazing explorer! ⭐</p>
+        <button onclick="closeGame('shape',true)" style="width:100%;padding:14px;border:none;border-radius:12px;background:linear-gradient(135deg,#00f0ff,#00dbe9);color:#00363a;font-size:16px;font-weight:700;cursor:pointer;box-shadow:0 4px 16px rgba(0,240,255,0.3);transition:all 0.2s" onmouseover="this.style.filter='brightness(1.1)'" onmouseout="this.style.filter=''" ontouchstart="this.style.transform='scale(0.95)'" ontouchend="this.style.transform=''">Next Mission 🚀</button>
+      </div>
     </div>
   </div>
 </div>
 
 <!-- ═══ Game Overlay: Planet Jump ═══ -->
-<div class="game-overlay" id="gameJump">
+<div class="game-overlay" id="gameMoon">
   <div class="game-header">
-    <button class="game-back-btn" onclick="closeGame('jump')">✕</button>
+    <button class="game-back-btn" onclick="closeGame('moon')">✕</button>
     <span class="game-title">🌙 Rainbow Moon</span>
     <div style="font-size:14px;color:rgba(255,255,255,0.6)" id="jumpScore">0/4</div>
   </div>
@@ -1081,23 +1609,22 @@ function saveState(){
 }
 
 function updatePlanetUI(){
-  document.querySelectorAll('.planet-node').forEach(n=>{
+  document.querySelectorAll('.game-card').forEach(n=>{
     const p=n.dataset.planet;
     if(gameState.planets[p]){
       n.classList.remove('disabled');
-      n.classList.add('completed');
-      n.querySelector('.planet-status').className='planet-status completed';
-      n.querySelector('.planet-status').textContent='⭐';
+      n.classList.add('game-card-completed');
+      const st=n.querySelector('.game-card-status');
+      if(st){st.className='game-card-status completed';st.textContent='⭐';}
     }
   });
-  // Find first uncompleted for "current"
   let foundCurrent=false;
-  document.querySelectorAll('.planet-node').forEach(n=>{
+  document.querySelectorAll('.game-card').forEach(n=>{
     const p=n.dataset.planet;
     if(!gameState.planets[p]&&!foundCurrent){
       n.classList.remove('disabled');
-      n.querySelector('.planet-status').className='planet-status current';
-      n.querySelector('.planet-status').textContent='▶';
+      const st=n.querySelector('.game-card-status');
+      if(st){st.className='game-card-status current';st.textContent='▶';}
       foundCurrent=true;
     }
   });
@@ -1127,7 +1654,7 @@ let currentGame=null;
 function openGame(planet){
   if(currentGame)return;
   currentGame=planet;
-  if(planet==='color'){initColorPlanet();}
+  if(planet==='color'){initPlanetMatch();}
   if(planet==='letter')initLetterQuiz();
   else if(planet==='alien')initAlienFeed();
   else if(planet==='rocket')initRocketBuild();
@@ -1142,6 +1669,7 @@ function openGame(planet){
 }
 
 function closeGame(planet,gaveUp){
+  if(planet==='color'&&pmTimerInterval){clearInterval(pmTimerInterval);pmTimerInterval=null;}
   const el=document.getElementById('game'+planet.charAt(0).toUpperCase()+planet.slice(1));
   if(el)el.classList.remove('active');
   document.getElementById('mapContainer').style.display='';
@@ -1361,141 +1889,215 @@ function showLetterGameOver(){
 }
 
 // ═══════════════════════════════════════
-// COLOR PLANET: Observe → Pick Colors
+// PLANET MATCH: Name/Color/Emoji Quiz
 // ═══════════════════════════════════════
-const colorPlanets=[
-  {name:'Earth',emoji:'🌍',image:'eath.png.png',colors:['#1a73e8','#43a047','#ffffff']},
-  {name:'Mars',emoji:'🔴',image:'mars.png.jpeg',colors:['#d32f2f','#f5f5f5','#8d6e63']},
-  {name:'Jupiter',emoji:'🟠',image:'jupter.pmg.jpeg',colors:['#ff8a65','#bcaaa4','#e53935']},
-  {name:'Saturn',emoji:'🪐',image:'saturn.png.png',colors:['#ffd54f','#bcaaa4','#90a4ae']},
-  {name:'Neptune',emoji:'🌊',image:'netrpturn.png.png',colors:['#1565c0','#0d47a1','#64b5f6']},
-  {name:'Venus',emoji:'🟡',image:'venus.png.jpeg',colors:['#fff9c4','#fdd835','#ffab91']},
-  {name:'Mercury',emoji:'☿️',image:'mercury.png.png',colors:['#9e9e9e','#e0e0e0','#616161']}
+const pmColorNames={
+  '#4CAF50':'Green','#F44336':'Red','#FF9800':'Orange','#FFD54F':'Yellow',
+  '#2196F3':'Blue','#FFC107':'Gold','#9E9E9E':'Gray','#00BCD4':'Cyan','#FF5722':'Deep Orange','#BDBDBD':'Silver'
+};
+function getColorName(hex){return pmColorNames[hex]||hex;}
+const pmPlanets=[
+  {name:'Earth',emoji:'🌍',image:'eath.png.png',color:'#4CAF50',grad:'radial-gradient(circle at 35% 30%,#81C784,#1B5E20)',fact:'Our blue-green home!',q:'Which planet is our home?',match:'Name'},
+  {name:'Mars',emoji:'🔴',image:'mars.png.jpeg',color:'#F44336',grad:'radial-gradient(circle at 35% 30%,#EF9A9A,#B71C1C)',fact:'The red planet!',q:'Which planet is called the Red Planet?',match:'Name'},
+  {name:'Jupiter',emoji:'🟠',image:'jupter.pmg.jpeg',color:'#FF9800',grad:'radial-gradient(circle at 35% 30%,#FFCC80,#E65100)',fact:'The biggest planet!',q:'Which is the largest planet?',match:'Name'},
+  {name:'Saturn',emoji:'🪐',image:'saturn.png.png',color:'#FFD54F',grad:'radial-gradient(circle at 35% 30%,#FFF9C4,#F9A825)',fact:'It has beautiful rings!',q:'Which planet has rings?',match:'Name'},
+  {name:'Neptune',emoji:'🌊',image:'netrpturn.png.png',color:'#2196F3',grad:'radial-gradient(circle at 35% 30%,#64B5F6,#0D47A1)',fact:'The windy blue planet!',q:'Which planet is blue and windy?',match:'Name'},
+  {name:'Venus',emoji:'🟡',image:'venus.png.jpeg',color:'#FFC107',grad:'radial-gradient(circle at 35% 30%,#FFE082,#FF6F00)',fact:'The hottest planet!',q:'Which is the hottest planet?',match:'Name'},
+  {name:'Mercury',emoji:'☿️',image:'mercury.png.png',color:'#9E9E9E',grad:'radial-gradient(circle at 35% 30%,#E0E0E0,#424242)',fact:'The smallest planet!',q:'Which is the smallest planet?',match:'Name'},
+  {name:'Uranus',emoji:'💎',image:'urasun.png',color:'#00BCD4',grad:'radial-gradient(circle at 35% 30%,#80DEEA,#006064)',fact:'It spins sideways!',q:'Which planet spins on its side?',match:'Name'},
+  {name:'Sun',emoji:'☀️',image:'sun.png',color:'#FF5722',grad:'radial-gradient(circle at 35% 30%,#FFAB91,#BF360C)',fact:'Our shining star!',q:'What is our closest star?',match:'Name'},
+  {name:'Moon',emoji:'🌙',image:'moon.png',color:'#BDBDBD',grad:'radial-gradient(circle at 35% 30%,#F5F5F5,#616161)',fact:'Earth\'s best friend!',q:'What orbits Earth?',match:'Name'}
 ];
-let colorPlanetIdx=0;
-let colorSelected=[];
-let colorCountdownTimer=null;
+let pmRound=0;let pmScore=0;let pmStarsEarned=0;let pmTotalRounds=5;
+let pmQuestions=[];let pmLocked=false;let pmTimerInterval=null;let pmTimeLeft=20;
 
-function initColorPlanet(){
-  colorPlanetIdx=Math.floor(Math.random()*colorPlanets.length);
-  colorSelected=[];
-  const p=colorPlanets[colorPlanetIdx];
-  document.getElementById('colorTitle').textContent='🌈 '+p.name;
-  document.getElementById('colorPlanetName').textContent=p.emoji+' '+p.name;
-  document.getElementById('colorScore').textContent='Pick 3 colors';
-  document.getElementById('colorFeedback').textContent='';
-  document.getElementById('colorFeedback').className='answer-feedback';
-  // Show observe phase
-  document.getElementById('colorObserve').style.display='';
-  document.getElementById('colorPickArea').style.display='none';
-  document.getElementById('colorSuccess').classList.remove('active');
-  // Render the planet image
-  const container=document.getElementById('colorObservePlanet');
-  container.innerHTML='';
-  const img=document.createElement('img');
-  img.src=p.image;
-  img.alt=p.name;
-  img.style.cssText='position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block';
-  container.appendChild(img);
-  const hl=document.createElement('div');
-  hl.style.cssText='position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 35% 30%,rgba(255,255,255,0.15) 0%,transparent 50%);z-index:2;pointer-events:none';
-  container.appendChild(hl);
-  const sh=document.createElement('div');
-  sh.style.cssText='position:absolute;inset:0;border-radius:50%;background:radial-gradient(ellipse at 50% 100%,rgba(0,0,0,0.25) 0%,transparent 50%);z-index:2;pointer-events:none';
-  container.appendChild(sh);
-  startColorCountdown();
-  const el=document.getElementById('gameColor');
-  if(el){
-    el.classList.add('active');
-    document.getElementById('mapContainer').style.display='none';
+function initPlanetMatch(){
+  pmRound=0;pmScore=0;pmStarsEarned=0;pmLocked=false;
+  // Generate 5 random questions
+  pmQuestions=[];
+  const shuffled=[...pmPlanets].sort(()=>Math.random()-0.5);
+  for(let i=0;i<pmTotalRounds;i++){
+    const p=shuffled[i%shuffled.length];
+    const modes=['name','color','emoji'];
+    const mode=modes[i%3];
+    // Build wrong options
+    let wrongs=pmPlanets.filter(x=>x.name!==p.name).sort(()=>Math.random()-0.5).slice(0,2);
+    pmQuestions.push({planet:p,mode,options:[p,...wrongs].sort(()=>Math.random()-0.5)});
   }
+  // Create bg particles
+  const pc=document.getElementById('pmParticles');
+  pc.innerHTML='';
+  for(let i=0;i<20;i++){
+    const el=document.createElement('div');
+    el.className='pm-bg-particle';
+    const s=Math.random()*4+2;
+    el.style.cssText=`width:${s}px;height:${s}px;left:${Math.random()*100}%;top:${Math.random()*100}%;background:rgba(255,255,255,${Math.random()*0.3+0.1});animation-delay:${Math.random()*5}s;animation-duration:${(Math.random()*4+4).toFixed(1)}s`;
+    pc.appendChild(el);
+  }
+  // Show intro
+  document.getElementById('pmIntro').classList.remove('hidden');
+  document.getElementById('pmHeader').style.display='none';
+  document.getElementById('pmProgress').style.display='none';
+  document.getElementById('pmPlanetArea').style.display='none';
+  document.getElementById('pmCelebrate').classList.remove('active');
+  document.getElementById('pmResult').classList.remove('active');
+  const el=document.getElementById('gameColor');
+  if(el){el.classList.add('active');document.getElementById('mapContainer').style.display='none';}
 }
 
-function startColorCountdown(){
-  let sec=5;
-  document.getElementById('colorCountdown').textContent=sec;
-  clearInterval(colorCountdownTimer);
-  colorCountdownTimer=setInterval(function(){
-    sec--;
-    document.getElementById('colorCountdown').textContent=sec;
-    if(sec<=0){
-      clearInterval(colorCountdownTimer);
-      showColorPick();
+function startPlanetMatch(){
+  document.getElementById('pmIntro').classList.add('hidden');
+  document.getElementById('pmHeader').style.display='flex';
+  document.getElementById('pmProgress').style.display='block';
+  document.getElementById('pmPlanetArea').style.display='flex';
+  showPMRound();
+}
+
+function showPMRound(){
+  pmLocked=false;
+  // Clear any existing timer
+  if(pmTimerInterval){clearInterval(pmTimerInterval);pmTimerInterval=null;}
+  pmTimeLeft=20;
+  const timerEl=document.getElementById('pmTimer');
+  timerEl.textContent='⏱️ '+pmTimeLeft+'s';
+  timerEl.className='pm-timer-badge';
+  pmTimerInterval=setInterval(()=>{
+    pmTimeLeft--;
+    timerEl.textContent='⏱️ '+pmTimeLeft+'s';
+    if(pmTimeLeft<=5)timerEl.classList.add('pm-timer-low');
+    if(pmTimeLeft<=0){
+      clearInterval(pmTimerInterval);pmTimerInterval=null;
+      handlePMTimeOut();
     }
   },1000);
-}
-
-function showColorPick(){
-  clearInterval(colorCountdownTimer);
-  document.getElementById('colorObserve').style.display='none';
-  document.getElementById('colorPickArea').style.display='flex';
-  document.getElementById('colorFeedback').textContent='';
-  document.getElementById('colorFeedback').className='answer-feedback';
-  colorSelected=[];
-  const p=colorPlanets[colorPlanetIdx];
-  document.getElementById('colorPickTitle').textContent='Which colors are on '+p.name+'?';
-  // Show mini planet reference
-  const ref=document.getElementById('colorPickMiniPlanet');
-  ref.style.display='';
-  ref.innerHTML='';
-  const ri=document.createElement('img');
-  ri.src=p.image;ri.alt=p.name;
-  ri.style.cssText='position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;border-radius:50%';
-  ref.appendChild(ri);
-  // Build palette: 3 correct + 5 wrong, shuffled
-  const wrongColors=['#f44336','#9c27b0','#00bcd4','#e91e63','#3f51b5','#ff5722','#009688','#ffeb3b','#607d8b','#cddc39','#ff4081','#7c4dff'];
-  const wrongPick=[];
-  const shuffled=wrongColors.sort(()=>Math.random()-0.5);
-  for(let c of shuffled){
-    if(!p.colors.includes(c) && wrongPick.length<5)wrongPick.push(c);
+  const q=pmQuestions[pmRound];
+  const p=q.planet;
+  document.getElementById('pmLevel').textContent='🌍 Round '+(pmRound+1)+'/'+pmTotalRounds;
+  document.getElementById('pmStars').textContent='⭐ '+pmStarsEarned;
+  document.getElementById('pmProgressFill').style.width=((pmRound/pmTotalRounds)*100)+'%';
+  document.getElementById('pmRoundLabel').textContent='Round '+(pmRound+1)+' of '+pmTotalRounds;
+  document.getElementById('pmCelebrate').classList.remove('active');
+  // Set planet visual
+  const planetEl=document.getElementById('pmPlanet');
+  const emojiEl=document.getElementById('pmPlanetEmoji');
+  // Remove only previous extra image, keep structural children
+  const oldImg=planetEl.querySelector('.pm-planet-img');
+  if(oldImg)oldImg.remove();
+  emojiEl.style.display=p.image?'none':'';
+  if(p.image){
+    emojiEl.textContent='';
+  }else{
+    emojiEl.textContent=p.emoji;
   }
-  const allColors=[...p.colors,...wrongPick].sort(()=>Math.random()-0.5);
-  const pal=document.getElementById('colorPickPalette');
-  pal.innerHTML='';
-  allColors.forEach(c=>{
-    const swatch=document.createElement('div');
-    swatch.className='color-swatch pick-swatch';
-    swatch.style.background=c;
-    swatch.dataset.color=c;
-    swatch.addEventListener('click',function(){
-      swatch.classList.toggle('selected-pick');
-      if(swatch.classList.contains('selected-pick')){
-        colorSelected.push(c);
-      }else{
-        colorSelected=colorSelected.filter(x=>x!==c);
-      }
-      document.getElementById('colorScore').textContent=colorSelected.length+' selected';
-    });
-    pal.appendChild(swatch);
+  planetEl.style.background=p.image?'url('+p.image+') center/cover no-repeat,'+p.grad:p.grad;
+  // Remove old img if any (cleanup from previous approach)
+  const i2=planetEl.querySelector('.pm-planet-img');
+  if(i2)i2.remove();
+  // Set question
+  if(q.mode==='name'){
+    document.getElementById('pmQuestion').textContent='Which planet is this?';
+    document.getElementById('pmHint').textContent='Look at the planet and tap the right name!';
+  }else if(q.mode==='color'){
+    document.getElementById('pmQuestion').textContent='What color is '+p.name+'?';
+    document.getElementById('pmHint').textContent='Tap the matching color!';
+  }else{
+    document.getElementById('pmQuestion').textContent='Find the '+p.name+'!';
+    document.getElementById('pmHint').textContent='Tap the matching planet!';
+  }
+  // Build options
+  const opts=document.getElementById('pmOptions');
+  opts.innerHTML='';
+  q.options.forEach((opt,i)=>{
+    const card=document.createElement('div');
+    card.className='pm-option';
+    card.style.animationDelay=(i*0.1)+'s';
+    if(q.mode==='color'){
+      card.innerHTML='<div class="pm-option-swatch" style="background:'+opt.color+'"></div><div class="pm-option-label">'+getColorName(opt.color)+'</div>';
+    }else if(q.mode==='emoji'){
+      card.innerHTML='<div class="pm-option-emoji">'+opt.emoji+'</div><div class="pm-option-label">'+opt.name+'</div>';
+    }else{
+      card.innerHTML='<div class="pm-option-label" style="font-size:18px">'+opt.name+'</div>';
+    }
+    card.dataset.answer=opt.name;
+    card.addEventListener('click',function(){handlePMAnswer(this,opt.name,p.name,opt.emoji);});
+    opts.appendChild(card);
   });
 }
 
-function submitColorPicks(){
-  if(colorSelected.length===0)return;
-  const p=colorPlanets[colorPlanetIdx];
-  let correct=0;
-  for(let c of colorSelected){
-    if(p.colors.includes(c))correct++;
+function handlePMTimeOut(){
+  if(pmLocked)return;pmLocked=true;
+  const correct=pmQuestions[pmRound].planet.name;
+  document.querySelectorAll('.pm-option').forEach(c=>{
+    if(c.dataset.answer===correct)c.classList.add('pm-option-correct');
+    c.style.opacity='0.5';
+  });
+  document.getElementById('pmHint').textContent='⏰ Time\'s up!';
+  setTimeout(()=>showPMCelebrate(false),800);
+}
+function handlePMAnswer(el,selected,correct,emoji){
+  if(pmLocked)return;pmLocked=true;
+  if(pmTimerInterval){clearInterval(pmTimerInterval);pmTimerInterval=null;}
+  if(selected===correct){
+    el.classList.add('pm-option-correct');
+    pmScore++;pmStarsEarned++;
+    document.getElementById('pmStars').textContent='⭐ '+pmStarsEarned;
+    spawnConfetti(12);
+    showPMCelebrate(true,emoji);
+  }else{
+    el.classList.add('pm-option-wrong');
+    // highlight correct one
+    document.querySelectorAll('.pm-option').forEach(c=>{
+      if(c.dataset.answer===correct)c.classList.add('pm-option-correct');
+    });
+    setTimeout(()=>showPMCelebrate(false),800);
   }
-  let wrong=colorSelected.length-correct;
-  const total=p.colors.length;
-  const score=Math.max(0,correct-wrong);
-  const pct=Math.round(score/total*100);
-  // Show result popup
-  document.getElementById('colorPickArea').style.display='none';
-  document.getElementById('colorSuccess').classList.add('active');
-  let msg='Keep practicing! 💪';
-  let stars=1;
-  let emoji='😊';
-  if(pct===100){msg='🎉 Perfect Color Match! 🌟';stars=5;emoji='🏆';}
-  else if(pct>=66){msg='✨ Amazing Color Sense!';stars=4;emoji='🌟';}
-  else if(pct>=50){msg='👏 Great Eye for Colors!';stars=3;emoji='🎉';}
-  else if(pct>=33){msg='👍 Good Try!';stars=2;emoji='👍';}
-  document.getElementById('colorSuccessTitle').textContent=msg;
-  document.getElementById('colorSuccessStars').textContent='⭐ +'+stars+' stars';
-  document.getElementById('colorScoreEmoji').textContent=emoji;
-  document.getElementById('colorResultText').textContent='Picked '+correct+'/'+total+' correct colors!';
-  if(pct>=33)spawnConfetti(25);
+}
+
+function showPMCelebrate(won,emoji){
+  document.getElementById('pmCelebrate').classList.add('active');
+  if(won){
+    document.getElementById('pmCelebrateEmoji').textContent='🎉';
+    document.getElementById('pmCelebrateText').textContent='Correct!';
+    document.getElementById('pmCelebrateSub').textContent='You matched the planet! ⭐';
+    document.getElementById('pmCelebrateStars').textContent='⭐ +1 star';
+  }else{
+    document.getElementById('pmCelebrateEmoji').textContent='💪';
+    document.getElementById('pmCelebrateText').textContent='Nice try!';
+    document.getElementById('pmCelebrateSub').textContent='Keep going, you\'re learning!';
+    document.getElementById('pmCelebrateStars').textContent='';
+  }
+  document.getElementById('pmNextBtn').textContent=pmRound<pmTotalRounds-1?'Next →':'See Results 🎉';
+}
+
+function nextPMRound(){
+  if(pmTimerInterval){clearInterval(pmTimerInterval);pmTimerInterval=null;}
+  pmRound++;
+  if(pmRound>=pmTotalRounds){
+    showPMResult();
+  }else{
+    showPMRound();
+  }
+}
+
+function showPMResult(){
+  if(pmTimerInterval){clearInterval(pmTimerInterval);pmTimerInterval=null;}
+  document.getElementById('pmCelebrate').classList.remove('active');
+  document.getElementById('pmPlanetArea').style.display='none';
+  document.getElementById('pmProgress').style.display='none';
+  document.getElementById('pmHeader').style.display='none';
+  const result=document.getElementById('pmResult');
+  result.classList.add('active');
+  const pct=Math.round(pmScore/pmTotalRounds*100);
+  let title,emoji,stars;
+  if(pct>=80){title='🌟 Super Space Explorer!';emoji='🏆';stars=pmStarsEarned+2;}
+  else if(pct>=60){title='🚀 Amazing Astronaut!';emoji='🌟';stars=pmStarsEarned+1;}
+  else if(pct>=40){title='🌍 Great Planet Pal!';emoji='🎉';stars=pmStarsEarned;}
+  else{title='💫 Keep Exploring!';emoji='🚀';stars=Math.max(1,pmStarsEarned);}
+  document.getElementById('pmResultStars').textContent='⭐ '+stars;
+  document.getElementById('pmResultText').textContent='You got '+pmScore+'/'+pmTotalRounds+' correct!';
+  document.querySelector('.pm-result-emoji').textContent=emoji;
+  document.querySelector('.pm-result-title').textContent=title;
+  if(stars>0)spawnConfetti(30);
 }
 
 // ═══════════════════════════════════════
@@ -1635,75 +2237,80 @@ function spawnRocketRound(){
 }
 
 // ═══════════════════════════════════════
-// MINI GAME 4: SPACE MEMORY
+// MINI GAME 4: SHAPE STATION — Premium Planet Match
 // ═══════════════════════════════════════
-const memoryEmojis=['🚀','⭐','🌙','🪐','👽','🌈'];
-let memoryCards=[];
-let memoryFlipped=[];
-let memoryMatched=0;
-let memoryLocked=false;
+const ssAssets=[
+  {id:1,name:'Earth',img:'eath.png.png'},
+  {id:2,name:'Moon',img:'moon.png'},
+  {id:3,name:'Saturn',img:'saturn.png.png'},
+  {id:4,name:'Jupiter',img:'jupter.pmg.jpeg'},
+  {id:5,name:'Mars',img:'mars.png.jpeg'},
+  {id:6,name:'Neptune',img:'netrpturn.png.png'}
+];
+let ssCards=[],ssFlipped=[],ssMatched=0,ssScore=0,ssLock=false;
 
 function initMemory(){
-  memoryCards=[...memoryEmojis,...memoryEmojis];
-  for(let i=memoryCards.length-1;i>0;i--){
+  ssCards=[...ssAssets,...ssAssets];
+  for(let i=ssCards.length-1;i>0;i--){
     const j=Math.floor(Math.random()*(i+1));
-    [memoryCards[i],memoryCards[j]]=[memoryCards[j],memoryCards[i]];
+    [ssCards[i],ssCards[j]]=[ssCards[j],ssCards[i]];
   }
-  memoryFlipped=[];
-  memoryMatched=0;
-  memoryLocked=false;
-  document.getElementById('memoryGameArea').style.display='';
-  document.getElementById('memorySuccess').classList.remove('active');
-  document.getElementById('memoryScore').textContent=`0/${memoryEmojis.length}`;
-
-  const grid=document.getElementById('memoryGrid');
+  ssFlipped=[];ssMatched=0;ssScore=0;ssLock=false;
+  const grid=document.getElementById('ssGrid');
   grid.innerHTML='';
-  memoryCards.forEach((emoji,i)=>{
+  ssCards.forEach((card,i)=>{
     const el=document.createElement('div');
-    el.className='memory-card';
-    el.dataset.index=i;
-    el.dataset.emoji=emoji;
-    el.textContent='❓';
-    el.addEventListener('click',()=>flipCard(el,i));
+    el.className='ss-card';
+    el.dataset.id=card.id;el.dataset.index=i;
+    el.innerHTML='<div class="ss-card-inner"><div class="ss-card-face ss-card-back"><span>🚀</span></div><div class="ss-card-face ss-card-front"><img src="'+card.img+'" alt="'+card.name+'"></div></div>';
+    el.addEventListener('click',()=>{
+      if(ssLock||el.classList.contains('flipped')||el.classList.contains('matched'))return;
+      el.classList.add('flipped');
+      ssFlipped.push(el);
+      if(ssFlipped.length===2){
+        ssLock=true;
+        const [c1,c2]=ssFlipped;
+        if(c1.dataset.id===c2.dataset.id){
+          ssMatched++;ssScore+=150;
+          c1.classList.add('matched');c2.classList.add('matched');
+          document.getElementById('ssScore').textContent=ssScore;
+          document.getElementById('ssScoreDisplay').textContent='Score: '+ssScore;
+          document.getElementById('ssPairsDisplay').textContent='Pairs Found: '+ssMatched+'/6';
+          document.getElementById('ssGuideText').textContent=['Stellar work! Keep going! 🚀','Perfect alignment! ⭐','Discovery logged! 📡','Great job! 💪','To the stars! 🌟'][Math.floor(Math.random()*5)];
+          const p=(ssMatched/ssAssets.length)*100;
+          document.getElementById('ssProgressBar').style.width=p+'%';
+          document.getElementById('ssRocketIndicator').style.left=p+'%';
+          document.getElementById('ssGuideReaction').style.display='flex';
+          setTimeout(()=>document.getElementById('ssGuideReaction').style.display='none',2000);
+          spawnConfetti(10);
+          ssFlipped=[];ssLock=false;
+          if(ssMatched===ssAssets.length){
+            setTimeout(()=>{
+              const m=document.getElementById('ssWinModal');
+              m.style.display='flex';
+              setTimeout(()=>m.style.opacity='1',20);
+              spawnConfetti(30);
+            },600);
+          }
+        }else{
+          c1.classList.add('error');c2.classList.add('error');
+          setTimeout(()=>{
+            c1.classList.remove('flipped','error');c2.classList.remove('flipped','error');
+            ssFlipped=[];ssLock=false;
+          },900);
+        }
+      }
+    });
     grid.appendChild(el);
   });
-}
-
-function flipCard(el,i){
-  if(memoryLocked||memoryFlipped.includes(i)||el.classList.contains('matched')||el.classList.contains('flipped'))return;
-  el.classList.add('flipped');
-  el.textContent=memoryCards[i];
-  memoryFlipped.push(i);
-  if(memoryFlipped.length===2){
-    memoryLocked=true;
-    if(memoryCards[memoryFlipped[0]]===memoryCards[memoryFlipped[1]]){
-      setTimeout(()=>{
-        document.querySelectorAll('.memory-card.flipped').forEach(c=>{
-          c.classList.remove('flipped');
-          c.classList.add('matched');
-        });
-        memoryMatched++;
-        document.getElementById('memoryScore').textContent=`${memoryMatched}/${memoryEmojis.length}`;
-        memoryFlipped=[];
-        memoryLocked=false;
-        spawnConfetti(8);
-        if(memoryMatched===memoryEmojis.length){
-          document.getElementById('memoryGameArea').style.display='none';
-          document.getElementById('memorySuccess').classList.add('active');
-          spawnConfetti(30);
-        }
-      },500);
-    }else{
-      setTimeout(()=>{
-        document.querySelectorAll('.memory-card.flipped').forEach(c=>{
-          c.classList.remove('flipped');
-          c.textContent='❓';
-        });
-        memoryFlipped=[];
-        memoryLocked=false;
-      },800);
-    }
-  }
+  document.getElementById('ssScore').textContent='0';
+  document.getElementById('ssScoreDisplay').textContent='Score: 0';
+  document.getElementById('ssPairsDisplay').textContent='Pairs Found: 0/6';
+  document.getElementById('ssGuideText').textContent='Find the matching celestial bodies! 🌟';
+  document.getElementById('ssProgressBar').style.width='0%';
+  document.getElementById('ssRocketIndicator').style.left='0%';
+  const m=document.getElementById('ssWinModal');
+  m.style.opacity='0';m.style.display='none';
 }
 
 // ═══════════════════════════════════════
@@ -1764,18 +2371,26 @@ function updateJumpMission(){
 }
 
 // ─── Init ───
-saveState();
-
-// Create "Color Planet" completed by default
-gameState.planets.color=true;
+// Create all planets unlocked
+gameState.planets.color=true;gameState.planets.letter=true;gameState.planets.shape=true;gameState.planets.rocket=true;gameState.planets.alien=true;gameState.planets.moon=true;
 saveState();
 
 // First visit message
 if(gameState.stars===0){
   setTimeout(()=>{
-    document.getElementById('guideBubble').textContent='Welcome, little astronaut! Tap Letter Galaxy to start! 🌟';
+    document.getElementById('guideBubble').textContent='Welcome, little astronaut! Tap a planet to start! 🌟';
   },1000);
 }
+// Auto-rotate guide messages
+setInterval(()=>{
+  if(!currentGame){
+    guideIdx=(guideIdx+1)%guideMessages.length;
+    const b=document.getElementById('guideBubble');
+    b.textContent=guideMessages[guideIdx];
+    b.style.animation='none';void b.offsetWidth;
+    b.style.animation='bubblePop 0.4s cubic-bezier(0.34,1.56,0.64,1)';
+  }
+},18000);
 
 // ─── Cinematic floating particles ───
 (function(){
@@ -1789,6 +2404,60 @@ if(gameState.stars===0){
     document.body.appendChild(p);
   }
 })();
+// ─── Premium JS Effects ───
+
+// Sparkle burst on card click
+document.querySelectorAll('.game-card').forEach(c=>{
+  c.addEventListener('click',function(e){
+    const rect=this.getBoundingClientRect();
+    const cx=e.clientX||rect.left+rect.width/2;
+    const cy=e.clientY||rect.top+rect.height/2;
+    const emojis=['⭐','🌟','✨','💫','🌈','🚀'];
+    const burst=document.createElement('div');
+    burst.className='sparkle-burst';
+    burst.style.left=cx+'px';burst.style.top=cy+'px';
+    for(let i=0;i<8;i++){
+      const s=document.createElement('span');
+      const a=Math.random()*Math.PI*2;
+      const d=Math.random()*60+30;
+      s.textContent=emojis[Math.floor(Math.random()*emojis.length)];
+      s.style.setProperty('--sx',Math.cos(a)*d+'px');
+      s.style.setProperty('--sy',Math.sin(a)*d+'px');
+      s.style.setProperty('--sfs',(Math.random()*10+12)+'px');
+      s.style.setProperty('--sd',(Math.random()*0.3+0.3)+'s');
+      burst.appendChild(s);
+    }
+    document.body.appendChild(burst);
+    setTimeout(()=>burst.remove(),800);
+  });
+});
+
+// 3D tilt effect on game cards
+(function(){
+  const cards=document.querySelectorAll('.game-card');
+  cards.forEach(c=>{
+    c.addEventListener('mousemove',function(e){
+      const r=this.getBoundingClientRect();
+      const x=e.clientX-r.left,y=e.clientY-r.top;
+      const cx=r.width/2,cy=r.height/2;
+      const rotX=(y-cy)/cy*-8,rotY=(x-cx)/cx*8;
+      this.style.transform=`perspective(600px) rotateX(${rotX}deg) rotateY(${rotY}deg) translateY(-6px) scale(1.03)`;
+    });
+    c.addEventListener('mouseleave',function(){
+      this.style.transform='';
+    });
+  });
+})();
+
+// Enhanced addStars with burst
+const origAddStars=addStars;
+addStars=function(n){
+  origAddStars(n);
+  const el=document.getElementById('totalStars');
+  el.classList.remove('burst');
+  void el.offsetWidth;
+  el.classList.add('burst');
+};
 </script>
 </body>
 </html>

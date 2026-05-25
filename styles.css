@@ -11,7 +11,7 @@ html {
 
 body {
   font-family: 'Quicksand', sans-serif;
-  color: #2c2c2c;
+  color: #1e40af;
   background-color: transparent;
   line-height: 1.6;
 }
@@ -65,14 +65,14 @@ button {
   font-family: 'Fredoka', sans-serif;
   font-size: 1.4rem;
   font-weight: 700;
-  color: #2c2c2c;
+  color: #1e40af;
   margin: 0;
   line-height: 1.2;
 }
 
 .logo-text p {
   font-size: 0.7rem;
-  color: #5f6b7d;
+  color: #3b4f8a;
   margin: 2px 0 0 0;
 }
 
@@ -85,7 +85,7 @@ button {
 
 .nav-link {
   font-weight: 600;
-  color: #555;
+  color: #3749a8;
   font-size: 0.95rem;
   position: relative;
   padding-bottom: 4px;
@@ -116,7 +116,7 @@ button {
 
 .score-badge {
   background: #ffd966;
-  color: #2c2c2c;
+  color: #1e40af;
   padding: 8px 16px;
   border-radius: 20px;
   font-weight: 700;
@@ -475,11 +475,11 @@ button {
   background: #3dbb52;
 }
 
-.btn-blue {
+.btn-#1e40af {
   background: #3b82f6;
 }
 
-.btn-blue:hover {
+.btn-#1e40af:hover {
   background: #2563eb;
 }
 
@@ -582,7 +582,7 @@ button {
 }
 
 .how-to-spotlight-text {
-  color: #445268;
+  color: #1e3a7a;
   font-size: 0.95rem;
   line-height: 1.5;
 }
@@ -669,7 +669,7 @@ button {
 }
 
 .how-to-step p {
-  color: #465163;
+  color: #1e40af;
   font-size: 0.95rem;
   line-height: 1.55;
 }
@@ -679,7 +679,7 @@ button {
   font-size: 2.4rem;
   font-weight: 700;
   text-align: center;
-  color: #1a1a1a;
+  color: #1e40af;
   margin-bottom: 12px;
 }
 
@@ -771,7 +771,7 @@ button {
   font-family: 'Fredoka', sans-serif;
   font-size: 1.4rem;
   font-weight: 700;
-  color: #1a1a1a;
+  color: #1e40af;
   margin-bottom: 12px;
 }
 
@@ -817,7 +817,7 @@ button {
   font-family: 'Fredoka', sans-serif;
   font-size: 2.2rem;
   font-weight: 700;
-  color: #1a1a1a;
+  color: #1e40af;
   margin-bottom: 20px;
   line-height: 1.3;
 }
@@ -842,7 +842,7 @@ button {
 }
 
 .feature-item p {
-  color: #465163;
+  color: #1e40af;
   font-size: 0.95rem;
   line-height: 1.5;
 }
@@ -872,6 +872,9 @@ button {
   margin-top: 36px;
   position:relative;
   overflow:hidden;
+  min-height:300px;
+  display:flex;
+  align-items:center;
 }
 
 .footer-content {
@@ -1197,7 +1200,7 @@ button {
   font-family: 'Fredoka', sans-serif;
   font-size: 1.6rem;
   font-weight: 700;
-  color: #1a1a1a;
+  color: #1e40af;
   flex: 1;
   text-align: center;
 }
@@ -1692,7 +1695,7 @@ button {
   font-family: 'Fredoka', sans-serif;
   font-size: 2rem;
   font-weight: 700;
-  color: #1a1a1a;
+  color: #1e40af;
   margin-bottom: 15px;
 }
 
@@ -1705,7 +1708,7 @@ button {
 
 .results-message {
   font-size: 1.1rem;
-  color: #555;
+  color: #3749a8;
   margin-bottom: 30px;
   line-height: 1.6;
 }

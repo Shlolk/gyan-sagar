@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Rocket Lab - Mission: Crossword</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800&amp;family=Be+Vietnam+Pro:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "secondary-container": "#00eefc",
+                    "surface": "#1a0b2e",
+                    "on-primary-fixed-variant": "#87006d",
+                    "on-tertiary-fixed": "#23005b",
+                    "secondary-fixed": "#7df4ff",
+                    "on-tertiary-fixed-variant": "#5700c9",
+                    "inverse-primary": "#b0008f",
+                    "primary-fixed": "#ffd8ed",
+                    "outline-variant": "#57404e",
+                    "tertiary-fixed-dim": "#d1bcff",
+                    "surface-tint": "#ffade0",
+                    "on-tertiary": "#3c0090",
+                    "primary-container": "#ff32d0",
+                    "on-surface": "#eddcff",
+                    "inverse-surface": "#eddcff",
+                    "on-surface-variant": "#debece",
+                    "on-tertiary-container": "#34007f",
+                    "on-secondary": "#00363a",
+                    "outline": "#a68998",
+                    "on-primary-fixed": "#3b002e",
+                    "surface-container-high": "#322346",
+                    "error-container": "#93000a",
+                    "surface-container-lowest": "#150629",
+                    "on-secondary-container": "#00686f",
+                    "primary": "#ffade0",
+                    "surface-container": "#27183b",
+                    "secondary-fixed-dim": "#00dbe9",
+                    "on-secondary-fixed": "#002022",
+                    "inverse-on-surface": "#38294d",
+                    "tertiary": "#d1bcff",
+                    "surface-dim": "#1a0b2e",
+                    "tertiary-container": "#a178ff",
+                    "tertiary-fixed": "#e9ddff",
+                    "on-secondary-fixed-variant": "#004f54",
+                    "on-primary": "#60004c",
+                    "surface-container-highest": "#3d2e52",
+                    "on-error-container": "#ffdad6",
+                    "on-primary-container": "#540043",
+                    "secondary": "#d3fbff",
+                    "error": "#ffb4ab",
+                    "background": "#1a0b2e",
+                    "surface-container-low": "#231437",
+                    "on-background": "#eddcff",
+                    "surface-bright": "#413257",
+                    "primary-fixed-dim": "#ffade0",
+                    "on-error": "#690005",
+                    "surface-variant": "#3d2e52"
+            },
+            "borderRadius": {
+                    "DEFAULT": "1rem",
+                    "lg": "2rem",
+                    "xl": "3rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "unit": "8px",
+                    "element-gap": "12px",
+                    "gutter": "16px",
+                    "container-padding": "24px"
+            },
+            "fontFamily": {
+                    "body-xl": ["Be Vietnam Pro"],
+                    "body-lg": ["Be Vietnam Pro"],
+                    "display-hero": ["Plus Jakarta Sans"],
+                    "label-bold": ["Be Vietnam Pro"],
+                    "headline-lg-mobile": ["Plus Jakarta Sans"],
+                    "headline-lg": ["Plus Jakarta Sans"]
+            },
+            "fontSize": {
+                    "body-xl": ["20px", {"lineHeight": "30px", "fontWeight": "500"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "display-hero": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                    "label-bold": ["16px", {"lineHeight": "20px", "fontWeight": "700"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "30px", "fontWeight": "700"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "700"}]
+            },
+            "borderWidth": {
+                    "3": "3px",
+                    "6": "6px"
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 2px solid rgba(0, 238, 252, 0.4);
+            box-shadow: 0 0 20px rgba(0, 238, 252, 0.15);
+        }
+        
+        .cell-shadow {
+            box-shadow: 0 6px 0 rgba(0, 0, 0, 0.4);
+        }
+        
+        .active-cell {
+            box-shadow: 0 0 25px rgba(0, 238, 252, 0.8), inset 0 0 15px rgba(0, 238, 252, 0.5);
+            border: 3px solid rgba(0, 238, 252, 1);
+            transform: scale(1.05);
+            z-index: 10;
+        }
+
+        .success-cell {
+            background-color: #22c55e !important;
+            border-color: #4ade80 !important;
+            box-shadow: 0 0 20px rgba(34, 197, 94, 0.6) !important;
+            color: white !important;
+            animation: star-burst 0.5s ease-out;
+        }
+
+        @keyframes star-burst {
+            0% { transform: scale(1); box-shadow: 0 0 0px rgba(34, 197, 94, 0); }
+            50% { transform: scale(1.2); box-shadow: 0 0 40px rgba(34, 197, 94, 1); }
+            100% { transform: scale(1); box-shadow: 0 0 20px rgba(34, 197, 94, 0.6); }
+        }
+
+        .shake-error {
+            animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+            border-color: #ef4444 !important;
+        }
+
+        @keyframes shake {
+            10%, 90% { transform: translate(calc(-50% - 2px), -50%); }
+            20%, 80% { transform: translate(calc(-50% + 3px), -50%); }
+            30%, 50%, 70% { transform: translate(calc(-50% - 5px), -50%); }
+            40%, 60% { transform: translate(calc(-50% + 5px), -50%); }
+        }
+        @keyframes hintPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        .press-effect {
+            transition: all 0.1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .press-effect:hover {
+            transform: translateY(-4px) scale(1.05);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        }
+        .press-effect:active {
+            transform: translateY(2px) scale(0.95);
+        }
+
+        .nebula-bg {
+            background: radial-gradient(circle at 50% 50%, #1a0b2e 0%, #0d041a 100%);
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            opacity: 0.5;
+            animation: twinkle var(--duration) infinite ease-in-out;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.3); }
+        }
+
+        .fuel-gauge-fill {
+            background: linear-gradient(90deg, #00eefc 0%, #ff32d0 100%);
+            box-shadow: 0 0 25px rgba(255, 50, 208, 0.7);
+        }
+
+        .rocket-float {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .rocket-charge {
+            animation: charging-boost 0.5s ease-in-out infinite alternate;
+            filter: drop-shadow(0 0 15px #ffade0);
+        }
+
+        @keyframes charging-boost {
+            0% { transform: translateY(0) rotate(0); filter: hue-rotate(0deg) brightness(1); }
+            100% { transform: translateY(-3px) rotate(1deg); filter: hue-rotate(45deg) brightness(1.5); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(2deg); }
+        }
+
+        .zero-g {
+            animation: zero-g-float 5s ease-in-out infinite;
+        }
+
+        @keyframes zero-g-float {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(5px, -10px) rotate(3deg); }
+            66% { transform: translate(-5px, -5px) rotate(-2deg); }
+        }
+
+        .speaking-anim {
+            animation: cosmo-talk 0.3s ease-in-out infinite alternate;
+        }
+
+        @keyframes cosmo-talk {
+            from { transform: scale(1) rotate(0deg); }
+            to { transform: scale(1.05) rotate(2deg); }
+        }
+
+        .launch-ready-active {
+            animation: launch-ready 1s infinite alternate;
+            cursor: pointer !important;
+            opacity: 1 !important;
+            pointer-events: auto !important;
+        }
+
+        @keyframes launch-ready {
+            0% { box-shadow: 0 0 10px rgba(255, 50, 208, 0.4); background-color: #ff32d0; transform: scale(1); }
+            100% { box-shadow: 0 0 40px rgba(255, 50, 208, 1); background-color: #ffade0; transform: scale(1.05); }
+        }
+
+        .magical-border {
+            position: relative;
+            background: linear-gradient(#27183b, #27183b) padding-box,
+                        linear-gradient(45deg, #ffade0, #00eefc, #a178ff) border-box;
+            border: 4px solid transparent;
+        }
+
+        .hint-anim {
+            animation: magic-reveal 0.8s ease-out;
+        }
+
+        @keyframes magic-reveal {
+            0% { transform: scale(0); opacity: 0; filter: brightness(3); }
+            100% { transform: scale(1); opacity: 1; filter: brightness(1); }
+        }
+
+        .nebula-cloud {
+            animation: nebula-drift var(--d) linear infinite alternate;
+        }
+
+        @keyframes nebula-drift {
+            from { transform: translate(0, 0) scale(1); }
+            to { transform: translate(20px, 20px) scale(1.1); }
+        }
+
+        .drag-over {
+            border: 3px dashed #00eefc !important;
+            background: rgba(0, 238, 252, 0.1) !important;
+        }
+        .confetti-piece{
+            position:fixed;top:-10px;z-index:9999;pointer-events:none;
+            animation:confettiFall var(--d,2s) ease-out forwards;
+        }
+        @keyframes confettiFall{0%{transform:translateY(0) rotate(0);opacity:1}100%{transform:translateY(100vh) rotate(720deg);opacity:0}}
+        .modal-overlay{
+            position:fixed;inset:0;z-index:9998;
+            background:rgba(0,0,0,0.7);backdrop-filter:blur(8px);
+            display:none;align-items:center;justify-content:center;
+        }
+        .modal-overlay.active{display:flex}
+        .modal-card{
+            background:#27183b;border:2px solid #00eefc;
+            border-radius:32px;padding:32px 24px;max-width:320px;width:90%;
+            text-align:center;box-shadow:0 0 50px rgba(0,238,252,0.3);
+        }
+        .heart-icon{color:#ef4444;text-shadow:0 0 10px rgba(239,68,68,0.5)}
+        @keyframes nextPulse {
+            0%, 100% { box-shadow: 0 0 15px rgba(0,238,252,0.3), 0 0 30px rgba(0,238,252,0.1), inset 0 -3px 0 rgba(0,0,0,0.3); transform: translate(-50%,-50%) scale(1); }
+            50% { box-shadow: 0 0 30px rgba(0,238,252,0.6), 0 0 60px rgba(0,238,252,0.25), inset 0 -3px 0 rgba(0,0,0,0.3); transform: translate(-50%,-50%) scale(1.08); }
+        }
+        @keyframes tilePop {
+            0% { transform: translate(-50%,-50%) scale(1); }
+            40% { transform: translate(-50%,-50%) scale(1.25); }
+            100% { transform: translate(-50%,-50%) scale(1); }
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-lg h-screen overflow-hidden">
+<!-- Background Nebula -->
+<div class="nebula-bg" id="star-container"></div>
+<!-- Top Navigation -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-gutter py-unit max-w-7xl mx-auto bg-surface/15 backdrop-blur-xl border-b border-secondary-container/30 shadow-[0_4px_30px_rgba(0,238,252,0.2)]">
+<div class="flex items-center gap-element-gap">
+<span class="material-symbols-outlined text-primary text-4xl rocket-float" data-icon="rocket_launch">rocket_launch</span>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile font-extrabold text-primary dark:text-primary-fixed drop-shadow-[0_0_15px_rgba(255,173,224,0.7)] tracking-tight">Rocket Lab</h1>
+</div>
+<!-- Progress Bar -->
+<div class="hidden md:flex flex-col items-end w-72 gap-1">
+<div class="flex justify-between w-full px-1">
+<span class="font-label-bold text-label-bold text-secondary-fixed uppercase tracking-widest text-sm">MISSION PROGRESS</span>
+<span class="font-label-bold text-label-bold text-primary animate-bounce" id="progress-percent">0%</span>
+</div>
+<div class="w-full h-5 bg-surface-container-highest rounded-full overflow-hidden border-2 border-white/10 p-[2px]">
+<div class="fuel-gauge-fill h-full w-[0%] rounded-full relative transition-all duration-700" id="progress-bar">
+<div class="absolute right-0 top-0 h-full w-4 bg-white/40 blur-[3px]"></div>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-2">
+<span class="text-lg">⏱</span>
+<span class="font-black text-lg text-secondary-fixed" id="timerDisplay">30</span>
+</div>
+<div class="flex items-center gap-1 text-xl" id="livesDisplay"><span class="heart-icon">♥</span><span class="heart-icon">♥</span><span class="heart-icon">♥</span></div>
+<span class="h-6 w-px bg-white/10"></span>
+<span class="font-bold text-sm text-secondary-fixed/60">SCORE</span>
+<span class="font-black text-lg text-primary drop-shadow-[0_0_10px_rgba(255,173,224,0.5)]" id="scoreDisplay" style="transition:transform 0.2s cubic-bezier(0.34,1.56,0.64,1)">0</span>
+<span class="font-bold text-sm text-secondary-fixed/80" id="questionCounter">1/10</span>
+<button class="material-symbols-outlined text-secondary-fixed text-3xl hover:scale-110 hover:text-white transition-all" data-icon="account_circle">account_circle</button>
+<button class="material-symbols-outlined text-secondary-fixed text-3xl hover:scale-110 hover:text-white transition-all" data-icon="settings">settings</button>
+</div>
+</header>
+<main class="pt-20 h-screen overflow-hidden px-gutter max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-4">
+<!-- Left Column: Rocket Charge & Cosmo -->
+<div class="lg:col-span-3 flex flex-col gap-3">
+<!-- Rocket Module -->
+<div class="glass-panel p-4 rounded-xl text-center flex flex-col items-center border-t-8 border-primary relative overflow-hidden group">
+<div class="absolute inset-0 bg-primary/5 group-hover:bg-primary/10 transition-colors"></div>
+<h3 class="font-label-bold text-label-bold text-tertiary-fixed mb-3 z-10">ENGINE POWER</h3>
+<div class="relative w-24 h-36 mb-3 z-10">
+<span class="material-symbols-outlined text-7xl text-on-surface-variant/10 absolute inset-0 flex items-center justify-center" data-icon="rocket" style="font-size: 100px;">rocket</span>
+<div class="absolute bottom-0 w-full overflow-hidden transition-all duration-700 h-[0%]" id="rocket-fill-container">
+<div class="rocket-charge">
+<span class="material-symbols-outlined text-7xl text-primary absolute bottom-0 left-0 w-full flex items-center justify-center" data-icon="rocket" style="font-size: 100px; font-variation-settings: 'FILL' 1;">rocket</span>
+<div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-full h-6 bg-primary/30 blur-xl animate-pulse"></div>
+</div>
+</div>
+</div>
+<p class="font-label-bold text-primary z-10 animate-pulse text-sm" id="engine-status">SYSTEMS STANDBY</p>
+</div>
+<!-- Cosmo Helper -->
+<div class="relative flex flex-col items-center lg:items-start">
+<div class="glass-panel p-3 rounded-2xl mb-3 relative ml-4 magical-border transition-all duration-300" id="speech-bubble">
+<p class="font-label-bold text-on-surface text-sm leading-snug" id="cosmo-text">"You're doing great, cadet! This one is about our home!"</p>
+<div class="absolute -bottom-2 left-8 w-4 h-4 bg-surface-container-high rotate-45 border-r-4 border-b-4 border-primary/30"></div>
+</div>
+<div class="zero-g relative group" id="cosmo-avatar">
+<div class="absolute -inset-4 bg-secondary-container/20 blur-2xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<img alt="Cosmo the Astronaut" class="w-24 h-24 relative z-10 cursor-pointer hover:scale-110 transition-transform" src="https://lh3.googleusercontent.com/aida/ADBb0ujaFUitMKaiwRE4rYigkeD9-neiMtcWVJbmMRPaoCi9eWZCXVf_le0zDuL3Ddu1Rosowu7lqixsIhWGUyH7fWGOdLprvj5bhCedo7WjiXd_NtoaP_A4J1KXCYvLzirKr1AoB5F5ScM-Mq-nVffLAEbXpmtLVhhzE0EAXBhIzt0rdvo5sI-xChtQpfLfupi5XEAHrPgwNQQQvyPY8ACm_FZnmCAidPlCULXIKRTdqzN442JR6XwmHXKpTQY"/>
+</div>
+</div>
+</div>
+<!-- Middle Column: Connect Letters -->
+<div class="lg:col-span-6 flex flex-col items-center justify-center gap-3">
+<div class="relative" style="width:100%;max-width:380px;height:300px" id="letters-area">
+<svg id="lines-svg" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1;overflow:visible">
+<defs><linearGradient id="lineGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#00eefc"/><stop offset="100%" stop-color="#a178ff"/></linearGradient></defs>
+</svg>
+<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center" id="letters-container"></div>
+</div>
+<!-- Word Preview Strip -->
+<div style="display:flex;gap:8px;padding:8px 16px;background:rgba(255,255,255,0.05);border-radius:16px;border:1px solid rgba(255,255,255,0.08);min-height:48px;align-items:center" id="word-strip"></div>
+</div>
+<!-- Right Column: Clue Card & Action Buttons -->
+<div class="lg:col-span-3 flex flex-col gap-3">
+<!-- Clue Card -->
+<div class="magical-border p-4 rounded-2xl shadow-2xl overflow-hidden">
+<div class="flex items-center gap-2 mb-3">
+<span class="material-symbols-outlined text-primary text-2xl drop-shadow-[0_0_8px_rgba(255,50,208,0.8)]" data-icon="lightbulb" style="font-variation-settings: 'FILL' 1;">lightbulb</span>
+<h2 class="font-headline-lg-mobile text-primary tracking-tight text-lg">Mission Clue</h2>
+</div>
+<div class="bg-surface/50 p-4 rounded-xl mb-3 border border-white/10">
+<p class="font-body-xl text-on-background italic leading-relaxed text-center text-sm" id="clue-text">
+                    "The planet we live on (5 letters)"
+                </p>
+</div>
+<div class="flex flex-wrap items-center gap-2">
+<span class="px-3 py-1 bg-tertiary-container text-on-tertiary-container rounded-full font-label-bold text-[10px] uppercase tracking-widest border border-white/10 shadow-sm">LEVEL: 4</span>
+<span class="px-3 py-1 bg-secondary-container/20 text-secondary-container rounded-full font-label-bold text-[10px] uppercase tracking-widest border border-secondary-container/40 shadow-sm">PLANETS</span>
+</div>
+</div>
+<!-- Action Buttons Stack -->
+<div class="flex flex-col gap-2">
+<button class="flex items-center justify-center gap-2 w-full py-3 bg-tertiary text-on-tertiary font-black text-base rounded-2xl border-b-6 border-on-tertiary-fixed-variant press-effect shadow-xl active:translate-y-1 active:border-b-3 transition-all" id="hint-btn">
+<span class="material-symbols-outlined text-xl" data-icon="magic_button" style="font-variation-settings: 'FILL' 1;">magic_button</span>
+                HINT (<span id="hints-left">3</span> left)
+            </button>
+<button class="flex items-center justify-center gap-2 w-full py-3 bg-secondary-container text-on-secondary-container font-black text-base rounded-2xl border-b-6 border-on-secondary-fixed-variant press-effect shadow-xl pulse-button active:translate-y-1 active:border-b-3 transition-all" id="voice-btn">
+<span class="material-symbols-outlined text-xl" data-icon="record_voice_over" style="font-variation-settings: 'FILL' 1;">record_voice_over</span>
+                VOICE CLUE
+            </button>
+<a href="code.html" class="flex items-center justify-center gap-2 w-full py-3 bg-surface-container-highest text-on-surface-variant/70 font-black text-sm rounded-2xl border-b-6 border-black/20 press-effect shadow-xl active:translate-y-1 active:border-b-3 transition-all mt-2 hover:text-secondary-fixed hover:bg-surface-container-high">
+<span class="material-symbols-outlined text-xl" data-icon="arrow_back">arrow_back</span>
+                BACK TO HUB
+            </a>
+</div>
+</div>
+</main>
+
+<!-- Win Modal -->
+<div class="modal-overlay" id="winModal">
+<div class="modal-card">
+<div style="font-size:64px;color:#00eefc;margin-bottom:12px">🚀</div>
+<h2 class="font-headline-lg-mobile text-secondary-fixed font-extrabold text-2xl mb-2">Mission Complete!</h2>
+<p class="text-on-surface-variant text-sm mb-2">All 10 planets identified! You're a true space explorer! ⭐</p>
+<p class="text-secondary-fixed font-black text-xl mb-5">Final Score: <span id="finalScore" class="text-primary drop-shadow-[0_0_12px_rgba(255,173,224,0.7)]">0</span></p>
+<button onclick="window.location.reload()" class="w-full py-3 bg-secondary-container text-on-secondary-container font-black rounded-2xl border-b-4 border-on-secondary-fixed-variant cursor-pointer transition-all hover:brightness-110">Play Again 🚀</button>
+</div>
+</div>
+
+<!-- Game Over Modal -->
+<div class="modal-overlay" id="gameOverModal">
+<div class="modal-card" style="border-color:#ef4444;box-shadow:0 0 50px rgba(239,68,68,0.3)">
+<div style="font-size:64px;color:#ef4444;margin-bottom:12px">💫</div>
+<h2 class="font-headline-lg-mobile text-red-400 font-extrabold text-2xl mb-2">Mission Failed</h2>
+<p class="text-on-surface-variant text-sm mb-5">Out of lives! Keep practicing, cadet! 💪</p>
+<button onclick="window.location.reload()" class="w-full py-3 bg-red-500 text-white font-black rounded-2xl border-b-4 border-red-800 cursor-pointer transition-all hover:brightness-110">Try Again 🚀</button>
+</div>
+</div>
+
+<script>
+    // Star and Nebula Generation
+    const starContainer = document.getElementById('star-container');
+    for (let i = 0; i < 150; i++) {
+        const star = document.createElement('div');
+        star.className = 'star';
+        const size = (Math.random() * 3 + 1) + 'px';
+        star.style.width = size;
+        star.style.height = size;
+        star.style.left = Math.random() * 100 + '%';
+        star.style.top = Math.random() * 100 + '%';
+        star.style.setProperty('--duration', Math.random() * 4 + 2 + 's');
+        starContainer.appendChild(star);
+    }
+    const nebulaColors = ['#a178ff', '#ff32d0', '#00eefc'];
+    for (let i = 0; i < 5; i++) {
+        const nebula = document.createElement('div');
+        nebula.className = 'nebula-cloud absolute rounded-full blur-[120px] opacity-20 pointer-events-none';
+        nebula.style.background = nebulaColors[i % 3];
+        const size = (Math.random() * 400 + 300) + 'px';
+        nebula.style.width = size;
+        nebula.style.height = size;
+        nebula.style.left = (Math.random() * 100) + '%';
+        nebula.style.top = (Math.random() * 100) + '%';
+        nebula.style.setProperty('--d', (Math.random() * 10 + 10) + 's');
+        starContainer.appendChild(nebula);
+    }
+
+    // ══════════════════════════════════════════
+    // 10 QUESTIONS
+    // ══════════════════════════════════════════
+    const questions = [
+        { word: "EARTH", clue: "The planet we live on", hintIdx: 2 },
+        { word: "MOONS", clue: "Natural satellites that orbit planets", hintIdx: 0 },
+        { word: "STARS", clue: "Twinkling lights in the night sky", hintIdx: 4 },
+        { word: "SOLAR", clue: "Relating to the sun", hintIdx: 1 },
+        { word: "VENUS", clue: "The hottest planet in our system", hintIdx: 3 },
+        { word: "SPACE", clue: "The area beyond Earth's atmosphere", hintIdx: 2 },
+        { word: "ORBIT", clue: "The path a planet takes around the sun", hintIdx: 4 },
+        { word: "COMET", clue: "A frozen ball of ice and dust in space", hintIdx: 1 },
+        { word: "ALIEN", clue: "A being from another world", hintIdx: 3 },
+        { word: "LUNAR", clue: "Relating to the Earth's moon", hintIdx: 0 }
+    ];
+
+    // ══════════════════════════════════════════
+    // GAME STATE
+    // ══════════════════════════════════════════
+    let currentQ = 0;
+    let lives = 3;
+    let timer = 30;
+    let timerInterval = null;
+    let hintsUsed = 0;
+    const maxHints = 3;
+    let connected = [];
+    let score = 0;
+    let isTransitioning = false;
+
+    // DOM refs
+    const progressBar = document.getElementById('progress-bar');
+    const progressPercent = document.getElementById('progress-percent');
+    const rocketFill = document.getElementById('rocket-fill-container');
+    const engineStatus = document.getElementById('engine-status');
+    const timerDisplay = document.getElementById('timerDisplay');
+    const livesDisplay = document.getElementById('livesDisplay');
+    const questionCounter = document.getElementById('questionCounter');
+    const cosmoText = document.getElementById('cosmo-text');
+    const speechBubble = document.getElementById('speech-bubble');
+    const cosmoAvatar = document.getElementById('cosmo-avatar');
+    const hintBtn = document.getElementById('hint-btn');
+    const hintsLeftText = document.getElementById('hints-left');
+    const voiceBtn = document.getElementById('voice-btn');
+    const clueText = document.getElementById('clue-text');
+    const lettersContainer = document.getElementById('letters-container');
+    const linesSvg = document.getElementById('lines-svg');
+    const wordStrip = document.getElementById('word-strip');
+    const scoreDisplay = document.getElementById('scoreDisplay');
+
+    function updateScoreDisplay() {
+        scoreDisplay.textContent = score;
+        scoreDisplay.style.transform = 'scale(1.4)';
+        setTimeout(() => scoreDisplay.style.transform = 'scale(1)', 200);
+    }
+
+    function initGame() {
+        currentQ = 0; lives = 3; hintsUsed = 0; score = 0;
+        hintsLeftText.textContent = maxHints;
+        hintBtn.classList.remove('opacity-50', 'pointer-events-none');
+        updateScoreDisplay();
+        loadQuestion();
+    }
+
+    function loadQuestion() {
+        if (isTransitioning) return;
+        clearInterval(timerInterval);
+        timer = 30; connected = [];
+        timerDisplay.textContent = timer;
+        timerDisplay.style.color = '#7df4ff';
+
+        const q = questions[currentQ];
+        questionCounter.textContent = `${currentQ + 1}/${questions.length}`;
+        clueText.textContent = `"${q.clue} (${q.word.length} letters)"`;
+        cosmoText.textContent = `"${q.clue}"`;
+
+        const indices = [0, 1, 2, 3, 4];
+        for (let i = indices.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [indices[i], indices[j]] = [indices[j], indices[i]]; }
+
+        const cx = 50, cy = 50, r = 34;
+        const angles = [-90, -18, 54, 126, 198];
+
+        // Fade out old content
+        lettersContainer.style.opacity = '0';
+        lettersContainer.style.transform = 'scale(0.8)';
+        setTimeout(() => {
+            lettersContainer.innerHTML = '';
+            linesSvg.innerHTML = '';
+            lettersContainer.style.opacity = '';
+            lettersContainer.style.transform = '';
+
+            indices.forEach((wordIdx, i) => {
+                const a = angles[i] * Math.PI / 180;
+                const pctX = cx + r * Math.cos(a);
+                const pctY = cy + r * Math.sin(a);
+                const el = document.createElement('div');
+                el.className = 'letter-tile';
+                el.textContent = q.word[wordIdx];
+                el.dataset.wordIdx = wordIdx;
+                el.dataset.connected = 'false';
+                el.style.cssText = `position:absolute;left:${pctX}%;top:${pctY}%;width:60px;height:60px;border-radius:50%;background:linear-gradient(145deg,#3a2a50,#23153a);border:3px solid rgba(0,238,252,0.35);display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:900;color:#b8d4ff;cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,0.3),inset 0 -3px 0 rgba(0,0,0,0.3);z-index:2;transition:all 0.25s cubic-bezier(0.34,1.56,0.64,1);user-select:none;-webkit-user-select:none;transform:translate(-50%,-50%)`;
+                el.addEventListener('click', () => handleTileClick(el));
+                el.style.opacity = '0';
+                lettersContainer.appendChild(el);
+                // Staggered entrance
+                setTimeout(() => {
+                    el.style.transition = 'all 0.4s cubic-bezier(0.34,1.56,0.64,1)';
+                    el.style.opacity = '1';
+                    el.style.transform = 'translate(-50%,-50%) scale(1)';
+                }, i * 60);
+            });
+
+            // Hint glow + first-letter indicator
+            setTimeout(() => {
+                const tiles = document.querySelectorAll('.letter-tile');
+                tiles.forEach(el => {
+                    const wi = parseInt(el.dataset.wordIdx);
+                    if (wi === q.hintIdx) {
+                        el.style.borderColor = '#aeed00';
+                        el.style.boxShadow = '0 0 30px rgba(174,237,0,0.4), 0 0 60px rgba(174,237,0,0.15), inset 0 -3px 0 rgba(0,0,0,0.3)';
+                    }
+                });
+                updateWordStrip();
+                nextTileGlow();
+            }, 350);
+        }, 300);
+
+        timerInterval = setInterval(tick, 1000);
+        if (hintsUsed >= maxHints) hintBtn.classList.add('opacity-50', 'pointer-events-none');
+        else hintBtn.classList.remove('opacity-50', 'pointer-events-none');
+    }
+
+    // ══════════════════════════════════════════
+    // WORD STRIP
+    // ══════════════════════════════════════════
+    function updateWordStrip() {
+        const q = questions[currentQ];
+        wordStrip.innerHTML = '';
+        for (let i = 0; i < q.word.length; i++) {
+            const slot = document.createElement('div');
+            const isConnected = connected.includes(i);
+            slot.textContent = isConnected ? q.word[i] : '';
+            slot.style.cssText = `width:38px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:900;transition:all 0.3s;background:${isConnected ? 'rgba(0,238,252,0.15)' : 'rgba(255,255,255,0.05)'};border:2px solid ${isConnected ? '#00eefc' : 'rgba(255,255,255,0.1)'};color:${isConnected ? '#7df4ff' : 'rgba(255,255,255,0.2)'};box-shadow:${isConnected ? '0 0 15px rgba(0,238,252,0.2)' : 'none'}`;
+            if (isConnected) slot.style.animation = 'none';
+            wordStrip.appendChild(slot);
+        }
+    }
+
+    // ══════════════════════════════════════════
+    // NEXT-LETTER GLOW
+    // ══════════════════════════════════════════
+    function nextTileGlow() {
+        document.querySelectorAll('.letter-tile').forEach(el => {
+            el.style.animation = '';
+            el.style.boxShadow = el.style.boxShadow.includes('rgba(174,237,0') ? el.style.boxShadow : '0 4px 20px rgba(0,0,0,0.3), inset 0 -3px 0 rgba(0,0,0,0.3)';
+            el.style.borderColor = el.style.borderColor.includes('#aeed00') ? '#aeed00' : 'rgba(0,238,252,0.35)';
+        });
+        const q = questions[currentQ];
+        let nextIdx = 0;
+        while (connected.includes(nextIdx)) nextIdx++;
+        if (nextIdx >= q.word.length) return;
+        document.querySelectorAll('.letter-tile').forEach(el => {
+            if (parseInt(el.dataset.wordIdx) === nextIdx && el.dataset.connected === 'false') {
+                el.style.animation = 'nextPulse 1.2s ease-in-out infinite';
+                el.style.borderColor = '#00eefc';
+                el.style.boxShadow = '0 0 25px rgba(0,238,252,0.4), 0 0 50px rgba(0,238,252,0.15), inset 0 -3px 0 rgba(0,0,0,0.3)';
+            }
+        });
+    }
+
+    // ══════════════════════════════════════════
+    // TAP TO CONNECT
+    // ══════════════════════════════════════════
+    function handleTileClick(el) {
+        if (el.dataset.connected === 'true' || isTransitioning) return;
+        const q = questions[currentQ];
+        let nextIdx = 0;
+        while (connected.includes(nextIdx)) nextIdx++;
+        if (nextIdx >= q.word.length) return;
+        if (parseInt(el.dataset.wordIdx) !== nextIdx) {
+            shakeTile(el);
+            return;
+        }
+
+        el.dataset.connected = 'true';
+        el.style.borderColor = '#00eefc';
+        el.style.boxShadow = '0 0 25px rgba(0,238,252,0.5), 0 0 50px rgba(0,238,252,0.2), inset 0 -3px 0 rgba(0,0,0,0.3)';
+        el.style.animation = 'tilePop 0.5s cubic-bezier(0.34,1.56,0.64,1)';
+        setTimeout(() => el.style.animation = '', 500);
+        spawnBurst(el);
+
+        // Draw line from previous
+        if (connected.length > 0) {
+            const prevIdx = connected[connected.length - 1];
+            let prevTile = null;
+            document.querySelectorAll('.letter-tile').forEach(t => { if (parseInt(t.dataset.wordIdx) === prevIdx) prevTile = t; });
+            if (prevTile) drawLine(prevTile, el);
+        }
+
+        connected.push(nextIdx);
+        score += 100;
+        updateScoreDisplay();
+        updateWordStrip();
+        nextTileGlow();
+        updateProgress((connected.length / q.word.length) * 100);
+
+        if (connected.length === q.word.length) {
+            clearInterval(timerInterval);
+            score += 200;
+            updateScoreDisplay();
+            cosmoText.textContent = `Perfect! +${score} points! 🎉`;
+            spawnConfetti(20);
+            isTransitioning = true;
+            setTimeout(() => {
+                isTransitioning = false;
+                if (currentQ + 1 < questions.length) { currentQ++; loadQuestion(); }
+                else showWin();
+            }, 1800);
+        }
+    }
+
+    function shakeTile(el) {
+        el.style.animation = 'none';
+        void el.offsetWidth;
+        el.style.animation = 'shake 0.4s ease-in-out';
+        el.style.borderColor = '#ef4444';
+        el.style.boxShadow = '0 0 20px rgba(239,68,68,0.3)';
+        setTimeout(() => {
+            el.style.animation = '';
+            el.style.borderColor = 'rgba(0,238,252,0.35)';
+            el.style.boxShadow = '0 4px 20px rgba(0,0,0,0.3), inset 0 -3px 0 rgba(0,0,0,0.3)';
+            nextTileGlow();
+        }, 400);
+    }
+
+    function spawnBurst(el) {
+        const rect = el.getBoundingClientRect();
+        const cx = rect.left + rect.width / 2, cy = rect.top + rect.height / 2;
+        const colors = ['#00eefc', '#7df4ff', '#a78bfa', '#ffade0', '#aeed00'];
+        for (let i = 0; i < 8; i++) {
+            const p = document.createElement('div');
+            const a = Math.random() * 2 * Math.PI;
+            const d = Math.random() * 40 + 20;
+            const s = Math.random() * 4 + 3;
+            p.style.cssText = `position:fixed;left:${cx}px;top:${cy}px;width:${s}px;height:${s}px;border-radius:50%;background:${colors[i % colors.length]};pointer-events:none;z-index:9999;box-shadow:0 0 6px ${colors[i % colors.length]}`;
+            document.body.appendChild(p);
+            p.animate([
+                { transform: 'translate(0,0) scale(1)', opacity: 1 },
+                { transform: `translate(${Math.cos(a) * d}px,${Math.sin(a) * d}px) scale(0)`, opacity: 0 }
+            ], { duration: 600, easing: 'cubic-bezier(0,.8,.5,1)', fill: 'forwards' });
+            setTimeout(() => p.remove(), 650);
+        }
+    }
+
+    function drawLine(from, to) {
+        const r1 = from.getBoundingClientRect(), r2 = to.getBoundingClientRect();
+        const cr = lettersContainer.parentElement.getBoundingClientRect();
+        const x1 = r1.left - cr.left + r1.width / 2, y1 = r1.top - cr.top + r1.height / 2;
+        const x2 = r2.left - cr.left + r2.width / 2, y2 = r2.top - cr.top + r2.height / 2;
+
+        // Glow line behind
+        const glow = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        glow.setAttribute('x1', x1); glow.setAttribute('y1', y1);
+        glow.setAttribute('x2', x2); glow.setAttribute('y2', y2);
+        glow.setAttribute('stroke', '#00eefc');
+        glow.setAttribute('stroke-width', '12');
+        glow.setAttribute('stroke-linecap', 'round');
+        glow.setAttribute('opacity', '0.2');
+        glow.setAttribute('filter', 'blur(4px)');
+        linesSvg.appendChild(glow);
+
+        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        line.setAttribute('x1', x1); line.setAttribute('y1', y1);
+        line.setAttribute('x2', x1); line.setAttribute('y2', y1);
+        line.setAttribute('stroke', 'url(#lineGrad)');
+        line.setAttribute('stroke-width', '4');
+        line.setAttribute('stroke-linecap', 'round');
+        line.setAttribute('opacity', '1');
+        linesSvg.appendChild(line);
+
+        // Animate line draw
+        const dx = x2 - x1, dy = y2 - y1;
+        const duration = 300;
+        const start = performance.now();
+        function anim(now) {
+            const t = Math.min((now - start) / duration, 1);
+            const ease = 1 - Math.pow(1 - t, 3);
+            line.setAttribute('x2', x1 + dx * ease);
+            line.setAttribute('y2', y1 + dy * ease);
+            glow.setAttribute('x2', x1 + dx * ease);
+            glow.setAttribute('y2', y1 + dy * ease);
+            if (t < 1) requestAnimationFrame(anim);
+            else { line.setAttribute('x2', x2); line.setAttribute('y2', y2); glow.setAttribute('x2', x2); glow.setAttribute('y2', y2); }
+        }
+        requestAnimationFrame(anim);
+    }
+
+
+    // ══════════════════════════════════════════
+    // TIMER & LIVES
+    // ══════════════════════════════════════════
+    function tick() {
+        timer--;
+        timerDisplay.textContent = timer;
+        if (timer <= 10) timerDisplay.style.color = '#ef4444';
+        if (timer <= 0) {
+            clearInterval(timerInterval);
+            cosmoText.textContent = "Time's up! Let's move on! ⏱";
+            setTimeout(() => loseLife(), 500);
+        }
+    }
+
+    function updateLives() {
+        let html = '';
+        for (let i = 0; i < 3; i++) {
+            html += i < lives ? '<span class="heart-icon">♥</span>' : '<span class="text-gray-600">♡</span>';
+        }
+        livesDisplay.innerHTML = html;
+    }
+
+    function updateProgress(percent) {
+        progressBar.style.width = `${percent}%`;
+        progressPercent.textContent = `${Math.round(percent)}%`;
+        rocketFill.style.height = `${percent}%`;
+        if (percent >= 100) engineStatus.textContent = "READY FOR LIFT OFF!";
+        else if (percent > 0) engineStatus.textContent = "IGNITION SEQUENCE START";
+        else engineStatus.textContent = "SYSTEMS STANDBY";
+    }
+
+    function loseLife() {
+        lives--;
+        updateLives();
+        clearInterval(timerInterval);
+        if (lives <= 0) {
+            cosmoText.textContent = "No more lives! Mission failed... 😢";
+            setTimeout(showGameOver, 1200);
+        } else if (currentQ + 1 < questions.length) {
+            cosmoText.textContent = `Oh no! ${lives} life${lives > 1 ? 's' : ''} left! Try the next one! 💪`;
+            setTimeout(() => { currentQ++; loadQuestion(); }, 1500);
+        } else {
+            cosmoText.textContent = "No more questions! Mission incomplete... 😢";
+            setTimeout(showGameOver, 1200);
+        }
+    }
+
+    // ══════════════════════════════════════════
+    // WIN / GAME OVER
+    // ══════════════════════════════════════════
+    function showWin() {
+        document.getElementById('winModal').classList.add('active');
+        document.getElementById('finalScore').textContent = score;
+        spawnConfetti(40);
+    }
+
+    function showGameOver() {
+        document.getElementById('gameOverModal').classList.add('active');
+    }
+
+    function spawnConfetti(count = 20) {
+        const colors = ['#ff32d0', '#00eefc', '#a178ff', '#ffade0', '#fbbf24'];
+        for (let i = 0; i < count; i++) {
+            const c = document.createElement('div');
+            c.className = 'confetti-piece';
+            c.style.cssText = `left:${Math.random() * 100}%;background:${colors[Math.floor(Math.random() * colors.length)]};width:${Math.random() * 8 + 4}px;height:${Math.random() * 8 + 4}px;border-radius:${Math.random() > 0.5 ? '50%' : '2px'};--d:${(Math.random() * 2 + 1.5).toFixed(1)}s;animation-delay:${(Math.random() * 0.5).toFixed(1)}s`;
+            document.body.appendChild(c);
+            setTimeout(() => c.remove(), 3500);
+        }
+    }
+
+    // ══════════════════════════════════════════
+    // HINT
+    // ══════════════════════════════════════════
+    hintBtn.addEventListener('click', () => {
+        if (hintsUsed >= maxHints) return;
+        const q = questions[currentQ];
+        let nextIdx = 0;
+        while (connected.includes(nextIdx)) nextIdx++;
+        if (nextIdx >= q.word.length) return;
+
+        const tiles = document.querySelectorAll('.letter-tile');
+        let target = null;
+        tiles.forEach(el => {
+            if (parseInt(el.dataset.wordIdx) === nextIdx && el.dataset.connected === 'false') target = el;
+        });
+        if (!target) return;
+
+        target.dataset.connected = 'true';
+        target.style.borderColor = '#00eefc';
+        target.style.boxShadow = '0 0 25px rgba(0,238,252,0.5), 0 0 50px rgba(0,238,252,0.2), inset 0 -3px 0 rgba(0,0,0,0.3)';
+        target.style.animation = 'tilePop 0.5s cubic-bezier(0.34,1.56,0.64,1)';
+        setTimeout(() => target.style.animation = '', 500);
+        spawnBurst(target);
+
+        // Draw line from previous
+        if (connected.length > 0) {
+            const prevIdx = connected[connected.length - 1];
+            let prevTile = null;
+            tiles.forEach(t => { if (parseInt(t.dataset.wordIdx) === prevIdx) prevTile = t; });
+            if (prevTile) drawLine(prevTile, target);
+        }
+
+        connected.push(nextIdx);
+        hintsUsed++;
+        hintsLeftText.textContent = maxHints - hintsUsed;
+        if (hintsUsed === maxHints) hintBtn.classList.add('opacity-50', 'pointer-events-none');
+
+        updateWordStrip();
+        nextTileGlow();
+
+        const pct = (connected.length / q.word.length) * 100;
+        updateProgress(pct);
+
+        if (connected.length === q.word.length) {
+            clearInterval(timerInterval);
+            cosmoText.textContent = "Correct! 🎉 Stellar work!";
+            spawnConfetti(15);
+            isTransitioning = true;
+            setTimeout(() => {
+                isTransitioning = false;
+                if (currentQ + 1 < questions.length) { currentQ++; loadQuestion(); }
+                else showWin();
+            }, 1800);
+        }
+    });
+
+    // ══════════════════════════════════════════
+    // VOICE CLUE
+    // ══════════════════════════════════════════
+    voiceBtn.addEventListener('click', () => {
+        cosmoAvatar.classList.add('speaking-anim');
+        speechBubble.classList.add('scale-110', 'border-secondary-container');
+        const originalText = cosmoText.textContent;
+        const q = questions[currentQ];
+        cosmoText.textContent = `Listen up! The word has ${q.word.length} letters. Find "${q.word[q.hintIdx]}" then tap the rest in order! ${q.clue}!`;
+        setTimeout(() => {
+            cosmoAvatar.classList.remove('speaking-anim');
+            speechBubble.classList.remove('scale-110', 'border-secondary-container');
+            cosmoText.textContent = originalText;
+        }, 4000);
+    });
+
+    // ══════════════════════════════════════════
+    // START
+    // ══════════════════════════════════════════
+    initGame();
+</script>
+</body></html>
