@@ -430,8 +430,8 @@
   .island-map .level-btn:focus-visible {
     box-shadow: none;
   }
-  .level-btn:hover { transform: scale(1.03); }
-  .level-btn:active { transform: scale(0.98); }
+  .level-btn:hover { transform: translateZ(0) scale(1.03); }
+  .level-btn:active { transform: translateZ(0) scale(0.98); }
 
   .node-current .level-btn {
     width: clamp(54px, 6vw, 74px);
@@ -446,7 +446,7 @@
   }
 
   @keyframes current-stone {
-    50% { transform: scale(1.05); }
+    50% { transform: translateZ(0) scale(1.05); }
   }
 
   .node-done .level-btn {
