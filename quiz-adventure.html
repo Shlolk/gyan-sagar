@@ -280,6 +280,7 @@
     background:
       linear-gradient(180deg, rgba(9, 43, 24, 0.28), rgba(7, 31, 21, 0.68)),
       url("Jungle Sunset Forest Tree 3D Cartoon Backgrounds 🌳✨.jpeg") center / cover fixed no-repeat;
+    will-change: transform;
   }
 
   .world-bg,
@@ -317,6 +318,7 @@
       0 14px 0 rgba(34, 121, 64, 0.16),
       0 24px 48px rgba(15, 91, 105, 0.28);
     isolation: isolate;
+    will-change: transform;
   }
 
   .island-map::before,
@@ -392,6 +394,8 @@
     color: transparent;
     font-size: 0;
     text-shadow: none;
+    transform: translateZ(0);
+    backface-visibility: hidden;
   }
 
   .level-btn::after {
