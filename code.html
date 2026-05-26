@@ -1226,7 +1226,7 @@ body{
 <!-- ═══ Header ═══ -->
 <div class="header-bar">
   <div class="logo">
-    <div class="logo-icon">🚀</div>
+    <img src="ChatGPT Image May 26, 2026, 02_08_24 PM.png" class="logo-icon" style="width:36px;height:36px;object-fit:contain;border-radius:8px">
     <h1>Space Quest</h1>
   </div>
   <div class="star-display">
@@ -1519,7 +1519,7 @@ body{
       </div>
     </div>
     <!-- Card Grid -->
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;width:100%;max-width:500px;perspective:1000px;flex:1;align-content:center;padding-bottom:2px" id="ssGrid"></div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;max-width:500px;perspective:1000px;flex:1;align-content:center;padding-bottom:2px;margin:0 auto;width:100%" id="ssGrid"></div>
     <!-- Guide -->
     <div style="position:absolute;bottom:6px;right:6px;z-index:10;display:flex;flex-direction:column;align-items:flex-end">
       <div style="background:rgba(255,255,255,0.08);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.15);border-radius:16px 16px 4px 16px;padding:8px 12px;margin-bottom:8px;max-width:150px;box-shadow:0 4px 16px rgba(0,0,0,0.2)">
@@ -1986,10 +1986,7 @@ function showPMRound(){
   document.getElementById('pmCelebrate').classList.remove('active');
   // Set planet visual
   const planetEl=document.getElementById('pmPlanet');
-  const wrapperEl=document.getElementById('pmPlanetWrapper');
   const emojiEl=document.getElementById('pmPlanetEmoji');
-  // Hide planet visual when asking about color so kids can't see the answer
-  wrapperEl.style.display=q.mode==='color'?'none':'';
   // Remove only previous extra image, keep structural children
   const oldImg=planetEl.querySelector('.pm-planet-img');
   if(oldImg)oldImg.remove();
