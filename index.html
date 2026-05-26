@@ -401,8 +401,7 @@
             position: relative !important;
         }
         .hero-section::after,
-        .how-to-play-panel::after,
-        .features-section::after {
+        .how-to-play-panel::after {
             content: '';
             position: absolute;
             inset: -3px;
@@ -579,94 +578,45 @@
                     <h1>QuizQuest Kids</h1>
                     <p>Making learning an adventure for every child</p>
                 </div>
-            </div>
 
-            <!-- Navigation Menu -->
-            <div class="pill-nav-container">
-                <nav class="pill-nav" aria-label="Primary">
-                    <div class="pill-nav-items desktop-only">
-                        <ul class="pill-list" role="menubar">
-                            <li role="none">
-                                <a role="menuitem" href="#home" class="pill is-active" aria-label="Home">
-                                    <span class="hover-circle" aria-hidden="true"></span>
-                                    <span class="label-stack">
-                                        <span class="pill-label">Home</span>
-                                        <span class="pill-label-hover" aria-hidden="true">Home</span>
-                                    </span>
-                                </a>
-                            </li>
-                            <li role="none">
-                                <a role="menuitem" href="#achievements" class="pill" aria-label="Achievements">
-                                    <span class="hover-circle" aria-hidden="true"></span>
-                                    <span class="label-stack">
-                                        <span class="pill-label">Achievements</span>
-                                        <span class="pill-label-hover" aria-hidden="true">Achievements</span>
-                                    </span>
-                                </a>
-                            </li>
-                            <li role="none">
-                                <a role="menuitem" href="#how-to-play" class="pill" aria-label="How to Play">
-                                    <span class="hover-circle" aria-hidden="true"></span>
-                                    <span class="label-stack">
-                                        <span class="pill-label">How to Play</span>
-                                        <span class="pill-label-hover" aria-hidden="true">How to Play</span>
-                                    </span>
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                    <button class="mobile-menu-button mobile-only" aria-label="Toggle menu">
-                        <span class="hamburger-line"></span>
-                        <span class="hamburger-line"></span>
-                    </button>
-                </nav>
-                <div class="mobile-menu-popover mobile-only">
-                    <ul class="mobile-menu-list">
-                        <li><a href="#home" class="mobile-menu-link is-active">Home</a></li>
-                        <li><a href="#achievements" class="mobile-menu-link">Achievements</a></li>
-                        <li><a href="#how-to-play" class="mobile-menu-link">How to Play</a></li>
-                    </ul>
-                </div>
-            </div>
-
-            <!-- User Section -->
-            <div class="user-section">
-                <span class="score-badge">
-                    <i class="fas fa-star"></i> 1,250
-                </span>
-                <div class="user-avatar">👧</div>
-            </div>
-        </div>
-    </header>
-
-    <!-- MAIN CONTENT -->
-    <main class="main-content">
-        <!-- HERO SECTION -->
-        <section class="hero-section" id="home">
-            <div class="hero-bg">
-                <span class="hero-glow hero-glow-1" aria-hidden="true"></span>
-                <span class="hero-glow hero-glow-2" aria-hidden="true"></span>
-                <span class="hero-cloud hero-cloud-1" aria-hidden="true"></span>
-                <span class="hero-cloud hero-cloud-2" aria-hidden="true"></span>
-                <span class="hero-cloud hero-cloud-3" aria-hidden="true"></span>
-                <span class="hero-particle hero-particle-1" aria-hidden="true"></span>
-                <span class="hero-particle hero-particle-2" aria-hidden="true"></span>
-                <span class="hero-particle hero-particle-3" aria-hidden="true"></span>
-                <span class="hero-particle hero-particle-4" aria-hidden="true"></span>
-            </div>
-            <div class="hero-wrapper">
-                <div class="hero-left">
-                    <span class="age-badge">Ages 5-12</span>
-                    <h2 class="hero-title scroll-float" data-start="top bottom-=20%" data-end="bottom center"><span class="hero-line">Learn. Play.</span><span class="hero-line hero-accent">Level Up — Every Day</span></h2>
-                    <p class="hero-description">Join Robo-Kid on a colorful learning adventure packed with mini quests, rewards, and brain-boosting challenges.</p>
-                    <a class="btn btn-primary" id="startBtn" href="#how-to-play">
-                        <i class="fas fa-play"></i> START LEARNING!
-                    </a>
-                </div>
-                <div class="hero-right">
-                    <div class="hero-mascot">
-                        <div class="mascot-halo" aria-hidden="true"></div>
-                        <img src="robot.png" alt="Robo-Kid mascot" class="mascot-image">
+                <div class="features-right">
+                    <div class="phone-mockup decay-card" data-max-displacement="400" data-movement-bound="50">
+                        <svg viewBox="-60 -75 720 900" preserveAspectRatio="xMidYMid slice" class="decay-svg">
+                            <filter id="decayFilter">
+                                <feTurbulence
+                                    type="turbulence"
+                                    baseFrequency="0.015"
+                                    numOctaves="5"
+                                    seed="4"
+                                    stitchTiles="stitch"
+                                    x="0%" y="0%" width="100%" height="100%"
+                                    result="turbulence1"
+                                />
+                                <feDisplacementMap
+                                    class="decay-displacement-map"
+                                    in="SourceGraphic"
+                                    in2="turbulence1"
+                                    scale="0"
+                                    xChannelSelector="R"
+                                    yChannelSelector="B"
+                                    x="0%" y="0%" width="100%" height="100%"
+                                    result="displacementMap"
+                                />
+                            </filter>
+                            <g>
+                                <image
+                                    href="phone-mockup.png"
+                                    x="0" y="0"
+                                    width="600" height="750"
+                                    filter="url(#decayFilter)"
+                                    preserveAspectRatio="xMidYMid slice"
+                                />
+                            </g>
+                        </svg>
+                        <div class="decay-card-text">
+                            <span>Mobile</span>
+                            Ready!
+                        </div>
                     </div>
                 </div>
             </div>
