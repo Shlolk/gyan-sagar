@@ -838,9 +838,12 @@ body{
 .ss-card.error .ss-card-inner{animation:ssShake 0.5s ease-in-out}
 @keyframes ssShake{0%,100%{transform:translateX(0)}20%{transform:translateX(-6px) rotate(-2deg)}40%{transform:translateX(6px) rotate(2deg)}60%{transform:translateX(-4px) rotate(-1deg)}80%{transform:translateX(4px) rotate(1deg)}}
 
-/* ─── Shape Station: no scroll ─── */
+/* ─── Shape Station: no scroll, fit screen ─── */
 #gameShape{overflow:hidden !important}
-.ss-card .ss-card-back span{font-size:28px}
+#ssGrid{flex:1;min-height:0;grid-template-rows:repeat(4,1fr) !important}
+.ss-card{aspect-ratio:unset;height:100%;width:100%}
+.ss-card .ss-card-back span{font-size:clamp(16px,3.5vw,28px)}
+.ss-card-front img{width:65%;height:65%}
 
 
 /* ─── Progress dots ─── */
