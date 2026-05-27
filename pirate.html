@@ -1,361 +1,1286 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com; font-src https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data:;">
-    <title>Pirate Island - QuizQuest Kids</title>
-    
-    <!-- External CSS -->
-    <link rel="stylesheet" href="styles.css">
-    
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
-    
-    <!-- Font Awesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data:;">
+  <title>Pirate Island - QuizQuest Kids</title>
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Quicksand', sans-serif;
+      background: url('pirate_island.png') center/cover no-repeat fixed #0b1a2e;
+      min-height: 100dvh;
+      overflow-x: hidden;
+      color: #fff;
+      position: relative;
+    }
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.55);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .menu-screen, #puzzleScreen, #bubbleScreen { position: relative; z-index: 1; }
+    /* ── Menu Screen ── */
+    .menu-screen {
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+      position: relative;
+    }
+    .menu-screen::before {
+      content: '';
+      position: fixed; inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+      pointer-events: none;
+    }
+    .menu-title {
+      font-family: 'Fredoka', sans-serif;
+      font-size: clamp(32px, 6vw, 52px);
+      font-weight: 700;
+      background: linear-gradient(135deg, #fbbf24, #f59e0b, #ef4444);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 8px;
+      text-align: center;
+    }
+    .menu-sub {
+      font-size: clamp(14px, 2.5vw, 20px);
+      color: rgba(255,255,255,0.7);
+      margin-bottom: 36px;
+      text-align: center;
+    }
+    .game-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+      width: min(100%, 700px);
+      position: relative;
+      z-index: 1;
+    }
+    .game-card {
+      background: rgba(255,255,255,0.08);
+      backdrop-filter: blur(12px);
+      border: 2px solid rgba(255,255,255,0.12);
+      border-radius: 24px;
+      padding: 32px 24px;
+      cursor: pointer;
+      transition: transform 0.25s cubic-bezier(0.175,0.885,0.32,1.275), box-shadow 0.25s;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .game-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+      border-color: rgba(255,255,255,0.3);
+    }
+    .game-card:active {
+      transform: translateY(-2px) scale(0.98);
+    }
+    .game-card-icon {
+      font-size: 56px;
+      margin-bottom: 14px;
+      display: block;
+    }
+    .game-card-title {
+      font-family: 'Fredoka', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: #fff;
+    }
+    .game-card-desc {
+      font-size: 16px;
+      color: rgba(255,255,255,0.85);
+      line-height: 1.5;
+    }
+    .card-puzzle {
+      background: linear-gradient(160deg, rgba(251,191,36,0.15), rgba(239,68,68,0.1));
+    }
+    .card-bubble {
+      background: linear-gradient(160deg, rgba(56,189,248,0.15), rgba(16,185,129,0.1));
+    }
+
+    .back-btn {
+      position: fixed; top: 16px; left: 16px; z-index: 50;
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: #fff;
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      display: grid; place-items: center;
+      cursor: pointer;
+      font-size: 20px;
+      transition: background 0.2s, transform 0.2s;
+    }
+    .back-btn:hover { background: rgba(255,255,255,0.2); transform: scale(1.1); }
+
+    /* ── Puzzle Game (no-scroll) ── */
+    #puzzleScreen {
+      display: none;
+      height: 100dvh; height: 100svh;
+      overflow: hidden;
+      padding: 8px 10px;
+      position: relative;
+    }
+    #puzzleScreen.active { display: flex; flex-direction: column; }
+    .puzzle-header {
+      flex-shrink: 0;
+      text-align: center;
+      margin-bottom: 4px;
+    }
+    .puzzle-header h2 {
+      font-family: 'Fredoka', sans-serif;
+      font-size: clamp(16px, 3.5vw, 22px);
+      color: #fbbf24;
+    }
+    .puzzle-header p {
+      font-size: clamp(10px, 2vw, 13px);
+      color: rgba(255,255,255,0.6);
+      margin-top: 1px;
+    }
+    .puzzle-area {
+      flex: 1;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      max-width: 520px;
+      margin: 0 auto;
+      width: 100%;
+      min-height: 0;
+      padding: 0 2px;
+    }
+    .puzzle-side {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      flex: 1;
+      max-width: 320px;
+    }
+    .puzzle-side-label {
+      font-family: 'Fredoka', sans-serif;
+      font-size: clamp(12px, 2.5vw, 16px);
+      color: rgba(255,255,255,0.6);
+      font-weight: 600;
+      text-align: center;
+      flex-shrink: 0;
+    }
+    .puzzle-board {
+      display: grid;
+      gap: 1.5px;
+      width: min(calc((100vw - 40px) / 2), calc((100dvh - 140px)), 320px);
+      aspect-ratio: 1;
+      background: rgba(0,0,0,0.4);
+      border-radius: 10px;
+      padding: 4px;
+      border: 2px solid rgba(255,255,255,0.12);
+      box-shadow: 0 6px 24px rgba(0,0,0,0.4);
+      flex-shrink: 0;
+      position: relative;
+    }
+    .puzzle-slot {
+      border-radius: 4px;
+      background: rgba(255,255,255,0.04);
+      border: 2px dashed rgba(255,255,255,0.2);
+      position: relative;
+      transition: border-color 0.2s, background 0.2s, transform 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .puzzle-slot::before {
+      content: '▢';
+      font-size: clamp(14px, 3vw, 22px);
+      color: rgba(255,255,255,0.1);
+      pointer-events: none;
+      position: absolute;
+    }
+    .puzzle-slot.hover {
+      border-color: #fbbf24;
+      background: rgba(251,191,36,0.15);
+      transform: scale(1.04);
+    }
+    .puzzle-slot.filled {
+      border-color: rgba(255,255,255,0.3);
+      background: transparent;
+    }
+    .puzzle-slot.filled::before { display: none; }
+    .puzzle-slot.correct {
+      border-color: #4ade80;
+      background: rgba(74,222,128,0.1);
+    }
+    .puzzle-slot.correct::before { display: none; }
+    .puzzle-slot .piece {
+      width: 100%; height: 100%;
+      border-radius: 2px;
+      cursor: grab;
+      transition: transform 0.15s, opacity 0.2s;
+      touch-action: none;
+    }
+    .puzzle-slot .piece:active { cursor: grabbing; }
+
+    #piecesContainer {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2px;
+      padding: 4px;
+      background: rgba(0,0,0,0.2);
+      border-radius: 10px;
+      border: 2px solid rgba(255,255,255,0.1);
+      width: min(calc((100vw - 40px) / 2), calc((100dvh - 140px)), 320px);
+      aspect-ratio: 1;
+      flex-shrink: 0;
+      position: relative;
+    }
+    #piecesContainer .piece {
+      width: 100%;
+      height: 100%;
+      border-radius: 4px;
+      cursor: grab;
+      transition: transform 0.15s, opacity 0.2s, box-shadow 0.2s;
+      border: 1.5px solid rgba(255,255,255,0.2);
+      background-color: rgba(255,255,255,0.05);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      touch-action: none;
+    }
+    #piecesContainer .piece:hover {
+      transform: scale(1.08);
+      border-color: #fbbf24;
+      box-shadow: 0 4px 16px rgba(251,191,36,0.3);
+    }
+    #piecesContainer .piece:active { cursor: grabbing; }
+    .puzzle-slot img {
+      width: 100%; height: 100%;
+      border-radius: 4px;
+      display: block;
+      pointer-events: none;
+    }
+
+    .puzzle-complete {
+      display: none;
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(6px);
+      border-radius: 10px;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 20px;
+      z-index: 10;
+    }
+    .puzzle-complete.active { display: flex; }
+    .puzzle-complete h3 {
+      font-family: 'Fredoka', sans-serif;
+      font-size: 28px;
+      background: linear-gradient(135deg, #fbbf24, #f59e0b);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 8px;
+    }
+    .puzzle-complete .btn {
+      margin-top: 12px;
+      padding: 10px 28px;
+      border: none;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #fbbf24, #f59e0b);
+      color: #1a1a2e;
+      font-weight: 700;
+      font-size: 16px;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    .puzzle-complete .btn:hover { transform: scale(1.05); }
+
+    /* ── Bubble Math Game ── */
+    #bubbleScreen {
+      display: none;
+      min-height: 100dvh;
+      padding: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+    #bubbleScreen.active { display: block; }
+    .bubble-header {
+      text-align: center;
+      position: relative;
+      z-index: 5;
+      margin-bottom: 20px;
+    }
+    .bubble-header h2 {
+      font-family: 'Fredoka', sans-serif;
+      font-size: 22px;
+      color: #38bdf8;
+    }
+    .bubble-stats {
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+      margin-top: 8px;
+      font-size: 15px;
+      font-weight: 600;
+    }
+    .bubble-stats span { color: rgba(255,255,255,0.75); }
+    .bubble-stats strong { color: #fff; }
+    #bubbleLives { font-size: 20px; letter-spacing: 2px; }
+
+    .bubble-question {
+      text-align: center;
+      position: relative;
+      z-index: 5;
+      margin: 12px 0 20px;
+    }
+    .bubble-question .q-text {
+      font-family: 'Fredoka', sans-serif;
+      font-size: clamp(28px, 5vw, 42px);
+      background: rgba(0,0,0,0.3);
+      display: inline-block;
+      padding: 12px 32px;
+      border-radius: 16px;
+      border: 2px solid rgba(255,255,255,0.1);
+      backdrop-filter: blur(8px);
+    }
+
+    .bubble-field {
+      position: relative;
+      width: 100%;
+      height: calc(100dvh - 240px);
+      min-height: 300px;
+      overflow: hidden;
+      border-radius: 20px;
+      background: linear-gradient(180deg, rgba(15,35,60,0.6), rgba(25,80,120,0.3));
+      border: 2px solid rgba(255,255,255,0.06);
+    }
+    .bubble-field::before {
+      content: '';
+      position: absolute; bottom: 0; left: 0; right: 0;
+      height: 40%;
+      background: linear-gradient(0deg, rgba(16,185,129,0.08), transparent);
+      pointer-events: none;
+    }
+
+    .bubble {
+      position: absolute;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-family: 'Fredoka', sans-serif;
+      font-weight: 700;
+      color: #fff;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.4);
+      cursor: pointer;
+      user-select: none;
+      -webkit-user-select: none;
+      transition: transform 0.15s, filter 0.15s;
+      box-shadow: inset 0 -8px 20px rgba(0,0,0,0.15), 0 4px 16px rgba(0,0,0,0.2);
+      will-change: transform, top;
+    }
+    .bubble::before {
+      content: '';
+      position: absolute;
+      top: 12%; left: 20%;
+      width: 30%; height: 20%;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.35);
+      transform: rotate(-20deg);
+    }
+    .bubble:hover {
+      transform: scale(1.12);
+      filter: brightness(1.2);
+    }
+    .bubble:active { transform: scale(0.95); }
+    .bubble.popped {
+      animation: bubble-pop 0.3s ease-out forwards;
+    }
+    @keyframes bubble-pop {
+      0% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.3); opacity: 0.5; }
+      100% { transform: scale(0); opacity: 0; }
+    }
+    .bubble.correct-flash {
+      animation: correct-flash 0.6s ease-out forwards;
+    }
+    @keyframes correct-flash {
+      0% { box-shadow: 0 0 0 0 rgba(74,222,128,0.8); }
+      50% { box-shadow: 0 0 40px 20px rgba(74,222,128,0.4); transform: scale(1.3); }
+      100% { box-shadow: 0 0 0 0 rgba(74,222,128,0); transform: scale(1); }
+    }
+
+    .ocean-floor {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 40px;
+      background: linear-gradient(0deg, rgba(16,185,129,0.12), transparent);
+      pointer-events: none;
+    }
+    .ocean-floor::before {
+      content: '~~~~';
+      position: absolute;
+      bottom: 8px;
+      width: 100%;
+      text-align: center;
+      font-size: 24px;
+      color: rgba(255,255,255,0.06);
+      letter-spacing: 12px;
+    }
+
+    /* ── Game Feel Animations ── */
+    @keyframes screen-shake {
+      0%, 100% { transform: translate(0,0); }
+      10% { transform: translate(-6px,4px); }
+      20% { transform: translate(4px,-6px); }
+      30% { transform: translate(-4px,6px); }
+      40% { transform: translate(6px,-4px); }
+      50% { transform: translate(-2px,3px); }
+      60% { transform: translate(3px,-3px); }
+      70% { transform: translate(-5px,5px); }
+      80% { transform: translate(5px,-5px); }
+      90% { transform: translate(-3px,3px); }
+    }
+    #bubbleScreen.shake { animation: screen-shake 0.4s ease-out; }
+    @keyframes pulse-timer {
+      0%, 100% { transform: scale(1); color: #ef4444; }
+      50% { transform: scale(1.15); color: #ff6b6b; }
+    }
+    .timer-low { animation: pulse-timer 0.5s ease-in-out infinite; }
+    @keyframes streak-pop {
+      0% { transform: scale(0) rotate(-180deg); opacity: 0; }
+      60% { transform: scale(1.3) rotate(10deg); opacity: 1; }
+      100% { transform: scale(1) rotate(0deg); opacity: 1; }
+    }
+    .streak-badge {
+      display: inline-block;
+      background: linear-gradient(135deg, #f97316, #ef4444);
+      padding: 2px 12px;
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+      animation: streak-pop 0.4s cubic-bezier(0.175,0.885,0.32,1.275);
+      margin-left: 8px;
+    }
+    .q-progress {
+      font-family: 'Fredoka', sans-serif;
+      font-size: 16px;
+      color: rgba(255,255,255,0.85);
+      margin-bottom: 4px;
+      text-align: center;
+    }
+    .q-progress strong { color: #38bdf8; }
+
+    .bubble-over {
+      display: none;
+      text-align: center;
+      padding: 40px 30px;
+      position: relative;
+      z-index: 10;
+      animation: fade-in-up 0.5s ease-out;
+    }
+    @keyframes fade-in-up {
+      0% { opacity: 0; transform: translateY(30px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    .bubble-over.active { display: block; }
+    .bubble-over h3 {
+      font-family: 'Fredoka', sans-serif;
+      font-size: 32px;
+      margin-bottom: 8px;
+    }
+    .bubble-over p { font-size: 16px; margin-bottom: 20px; }
+    .bubble-over .btn {
+      margin: 6px 8px;
+      padding: 12px 32px;
+      border: none;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #38bdf8, #16a34a);
+      color: #fff;
+      font-weight: 700;
+      font-size: 17px;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 4px 16px rgba(56,189,248,0.3);
+    }
+    .bubble-over .btn:hover { transform: scale(1.06); box-shadow: 0 6px 24px rgba(56,189,248,0.5); }
+    .bubble-over .btn-secondary {
+      background: linear-gradient(135deg, #f59e0b, #ef4444);
+      box-shadow: 0 4px 16px rgba(239,68,68,0.3);
+    }
+
+    .hidden { display: none !important; }
+  </style>
 </head>
-
 <body>
-    <!-- PIRATE BACKGROUND -->
-    <div class="pirate-video-bg"></div>
 
+<!-- ── Back Button ── -->
+<button class="back-btn" id="backBtn"><i class="fas fa-arrow-left"></i></button>
 
-
-    <!-- QUIZ MODAL SCREEN - FULL SCREEN FOR PIRATE -->
-    <div class="quiz-modal full-screen-quiz" id="quizModal">
-        <div class="quiz-container">
-            <!-- Quiz Screen -->
-            <div class="quiz-screen" id="quizScreen">
-                <!-- Header -->
-                <div class="quiz-header">
-                    <a href="index.html" class="btn-close" title="Back to Home"><i class="fas fa-times"></i></a>
-                    <div class="quiz-title" id="quizTitle">🏴‍☠️ Pirate Island</div>
-                    <div class="quiz-stats">
-                        <span class="score-display">Score: <span id="scoreDisplay">0</span>/5</span>
-                    </div>
-                </div>
-
-                <!-- Progress Bar -->
-                <div class="progress-container">
-                    <div class="progress-bar" id="progressBar"></div>
-                </div>
-                <div class="question-counter" id="questionCounter">Question 1 of 5</div>
-
-                <!-- Question -->
-                <div class="question-box" id="questionBox">
-                    <h3 id="questionText">Question text here</h3>
-                </div>
-
-                <!-- Options -->
-                <div class="options-container" id="optionsContainer"></div>
-
-                <!-- Feedback -->
-                <div class="feedback-box hidden" id="feedbackBox">
-                    <div class="feedback-content" id="feedbackContent"></div>
-                </div>
-
-                <!-- Next Button -->
-                <button class="btn btn-primary btn-next hidden" id="nextBtn">
-                    Next Question <i class="fas fa-arrow-right"></i>
-                </button>
-            </div>
-
-            <!-- Results Screen -->
-            <div class="results-screen hidden" id="resultsScreen">
-                <div class="results-content">
-                    <div class="results-emoji" id="resultsEmoji">🎉</div>
-                    <h2 class="results-title" id="resultsTitle">Awesome Job!</h2>
-                    <div class="final-score" id="finalScore">You got 5 out of 5 correct!</div>
-                    <div class="results-message" id="resultsMessage">You're a quiz champion! 🏆</div>
-                    
-                    <div class="results-buttons">
-                        <button class="btn btn-primary" id="playAgainBtn">
-                            <i class="fas fa-redo"></i> Play Again
-                        </button>
-                        <button class="btn btn-secondary" id="backToWorldsBtn">
-                            <i class="fas fa-arrow-left"></i> Back to Worlds
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
+<!-- ── Menu Screen ── -->
+<div class="menu-screen" id="menuScreen">
+  <div class="menu-title">🏴‍☠️ Pirate Island</div>
+  <div class="menu-sub">Choose your adventure!</div>
+  <div class="game-cards">
+    <div class="game-card card-puzzle" onclick="startPuzzle()">
+      <span class="game-card-icon">🧩</span>
+      <div class="game-card-title">Pirate Puzzle</div>
+      <div class="game-card-desc">Drag and drop puzzle pieces to complete the pirate scene!</div>
     </div>
+    <div class="game-card card-bubble" onclick="startBubbleGame()">
+      <span class="game-card-icon">🫧</span>
+      <div class="game-card-title">Bubble Math</div>
+      <div class="game-card-desc">Pop the correct bubble to solve math problems underwater!</div>
+    </div>
+  </div>
+</div>
 
-    <!-- Confetti Container -->
-    <div id="confetti-container"></div>
+<!-- ── Puzzle Screen ── -->
+<div id="puzzleScreen">
+  <div class="puzzle-header">
+    <h2>🧩 Pirate Puzzle</h2>
+    <p>Drag pieces from left <strong>→</strong> right</p>
+  </div>
+  <div class="puzzle-area">
+    <div class="puzzle-side">
+      <div class="puzzle-side-label">🧩 Pieces</div>
+      <div id="piecesContainer"></div>
+    </div>
+    <div class="puzzle-side">
+      <div class="puzzle-side-label">⬜ Board</div>
+      <div class="puzzle-board" id="puzzleBoard">
+        <div class="puzzle-complete" id="puzzleComplete">
+          <h3>🏆 Puzzle Complete!</h3>
+          <p style="color:rgba(255,255,255,0.6)">You assembled the treasure map!</p>
+          <button class="btn" onclick="goBack()">Back to Menu</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
+<!-- ── Bubble Math Screen ── -->
+<div id="bubbleScreen">
+  <div class="bubble-header">
+    <h2>🫧 Underwater Bubble Math</h2>
+    <div class="q-progress">Question <strong id="qCount">0</strong> / 10</div>
+    <div class="bubble-stats">
+      <span>Lives: <strong id="bubbleLives">❤️❤️❤️</strong></span>
+      <span>Score: <strong id="bubbleScore">0</strong> <span id="streakDisplay"></span></span>
+      <span>Time: <strong id="bubbleTimer">20</strong>s</span>
+    </div>
+  </div>
+  <div class="bubble-question" id="bubbleQuestion">
+    <span class="q-text" id="qText">5 + 3 = ?</span>
+  </div>
+  <div class="bubble-field" id="bubbleField"></div>
+  <div class="bubble-over" id="bubbleOver">
+    <h3 id="bubbleResultTitle">Game Over!</h3>
+    <p id="bubbleResultMsg" style="color:rgba(255,255,255,0.7)">You scored 0/10</p>
+    <button class="btn" onclick="startBubbleGame()">🔄 Play Again</button>
+    <button class="btn btn-secondary" onclick="goBack()">🏠 Menu</button>
+  </div>
+</div>
 
-    <!-- SCRIPT -->
-    <script>
-        // Auto-initialize pirate quiz when page loads
-        document.addEventListener('DOMContentLoaded', function() {
-            // Set the quiz world to pirate
-            const quizData = {
-                pirate: {
-                    title: "🏴‍☠️ Pirate Island",
-                    color: "#ff9500",
-                    theme: "pirate",
-                    questions: [
-                        {
-                            question: "A pirate has 3 gold coins. He finds 4 more. How many total?",
-                            options: ["5", "6", "7", "8"],
-                            correct: "7",
-                            explanation: "3 + 4 = 7 gold coins! Treasure found! 💰"
-                        },
-                        {
-                            question: "What is the opposite of 'land'?",
-                            options: ["Sky", "Sea", "Ship", "Beach"],
-                            correct: "Sea",
-                            explanation: "Sea is the opposite of land! Pirates sail the seas! ⛵"
-                        },
-                        {
-                            question: "If a treasure map says 'walk 5 steps north, then 3 steps south', how many steps from start?",
-                            options: ["8 steps north", "2 steps north", "5 steps south", "3 steps north"],
-                            correct: "2 steps north",
-                            explanation: "5 north - 3 south = 2 steps north! Smart pirate! 🗺️"
-                        },
-                        {
-                            question: "A pirate ship has 8 cannons. 3 are broken. How many work?",
-                            options: ["4", "5", "6", "8"],
-                            correct: "5",
-                            explanation: "8 - 3 = 5 working cannons! Your ship is ready! ⚔️"
-                        },
-                        {
-                            question: "What do pirates say instead of 'hello'?",
-                            options: ["Yo", "Ahoy", "Shiver me timbers", "Matey"],
-                            correct: "Ahoy",
-                            explanation: "Ahoy, matey! Classic pirate greeting! 🏴‍☠️"
-                        }
-                    ]
-                }
-            };
+<script>
+  // ── Navigation ──
+  const backBtn = document.getElementById('backBtn');
 
-            // Initialize pirate quiz
-            window.currentQuiz = quizData.pirate;
-            window.currentQuestionIndex = 0;
-            window.score = 0;
-            window.quizActive = true;
-            window.answered = false;
+  function showMenu() {
+    document.getElementById('menuScreen').style.display = 'flex';
+    document.getElementById('puzzleScreen').classList.remove('active');
+    document.getElementById('bubbleScreen').classList.remove('active');
+    document.getElementById('bubbleOver').classList.remove('active');
+    document.getElementById('bubbleField').style.display = 'block';
+    document.getElementById('bubbleQuestion').style.display = 'block';
+    backBtn.style.display = 'none';
+    if (bubbleGameTimer) clearInterval(bubbleGameTimer);
+    document.querySelectorAll('.bubble').forEach(b => {
+      if (b._raf) cancelAnimationFrame(b._raf);
+      b.remove();
+    });
+  }
+  backBtn.style.display = 'none';
+  backBtn.addEventListener('click', goBack);
 
-            // Update theme
-            document.querySelector(".quiz-container").className = "quiz-container theme-pirate";
-            
-            // Load first question
-            loadQuestionPirate();
-        });
+  function shuffle(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+  }
 
-        function loadQuestionPirate() {
-            if (window.currentQuestionIndex >= window.currentQuiz.questions.length) {
-                showResultsPirate();
-                return;
+  // ===================================================================
+  // ── PIRATE PUZZLE GAME ──
+  // ===================================================================
+  let puzzleImageData = null;
+  let draggedPiece = null;
+  const PUZZLE_COLS = 4;
+  const PUZZLE_ROWS = 4;
+
+  function initPuzzle() {
+    document.getElementById('puzzleComplete').classList.remove('active');
+    const board = document.getElementById('puzzleBoard');
+    board.innerHTML = '<div style="grid-column:1/-1;display:grid;place-items:center;color:rgba(255,255,255,0.5);font-size:18px">Loading puzzle...</div>';
+    board.style.gridTemplateColumns = '1fr';
+    document.getElementById('piecesContainer').innerHTML = '';
+    puzzleImageData = null;
+
+    const img = new Image();
+    img.onload = function() {
+      puzzleImageData = 'priatebhai.jpeg';
+      buildPuzzle();
+    };
+    img.onerror = function() {
+      buildPuzzle();
+    };
+    img.src = 'priatebhai.jpeg';
+  }
+
+  function buildPuzzle() {
+    const board = document.getElementById('puzzleBoard');
+    board.style.gridTemplateColumns = `repeat(${PUZZLE_COLS}, 1fr)`;
+    board.innerHTML = '';
+    const piecesContainer = document.getElementById('piecesContainer');
+    piecesContainer.innerHTML = '';
+    let pieces = [];
+
+    for (let i = 0; i < PUZZLE_ROWS * PUZZLE_COLS; i++) {
+      const slot = document.createElement('div');
+      slot.classList.add('puzzle-slot');
+      slot.dataset.index = i;
+      slot.addEventListener('dragover', e => { e.preventDefault(); });
+      slot.addEventListener('drop', dropPiece);
+      slot.addEventListener('touchmove', e => e.preventDefault());
+      board.appendChild(slot);
+    }
+
+    const pieceSize = 100;
+    const imgUrl = puzzleImageData || 'priatebhai.jpeg';
+    for (let i = 0; i < PUZZLE_ROWS * PUZZLE_COLS; i++) {
+      const piece = document.createElement('div');
+      piece.classList.add('piece');
+      piece.draggable = true;
+      piece.dataset.index = i;
+      piece.style.backgroundImage = `url('${imgUrl}')`;
+      piece.style.backgroundSize = `${PUZZLE_COLS * pieceSize}px ${PUZZLE_ROWS * pieceSize}px`;
+      const x = (i % PUZZLE_COLS) * pieceSize;
+      const y = Math.floor(i / PUZZLE_COLS) * pieceSize;
+      piece.style.backgroundPosition = `-${x}px -${y}px`;
+      piece.addEventListener('dragstart', e => { draggedPiece = piece; });
+
+      piece.addEventListener('touchstart', e => {
+        if (piece.draggable === false || piece.closest('.puzzle-slot')) return;
+        e.preventDefault();
+        draggedPiece = piece;
+        const touch = e.touches[0];
+        const rect = piece.getBoundingClientRect();
+        piece._offset = {
+          x: touch.clientX - rect.left,
+          y: touch.clientY - rect.top
+        };
+        piece._clone = piece.cloneNode(true);
+        piece._clone.style.position = 'fixed';
+        piece._clone.style.zIndex = '1000';
+        piece._clone.style.width = rect.width + 'px';
+        piece._clone.style.height = rect.height + 'px';
+        piece._clone.style.left = (touch.clientX - piece._offset.x) + 'px';
+        piece._clone.style.top = (touch.clientY - piece._offset.y) + 'px';
+        piece._clone.style.pointerEvents = 'none';
+        piece._clone.style.opacity = '0.85';
+        piece._clone.style.transform = 'scale(1.08)';
+        document.body.appendChild(piece._clone);
+        piece.style.opacity = '0.5';
+      }, { passive: false });
+
+      piece.addEventListener('touchmove', e => {
+        if (piece.draggable === false || !piece._clone) return;
+        e.preventDefault();
+        const touch = e.touches[0];
+        piece._clone.style.left = (touch.clientX - piece._offset.x) + 'px';
+        piece._clone.style.top = (touch.clientY - piece._offset.y) + 'px';
+        document.querySelectorAll('.puzzle-slot.hover').forEach(s => s.classList.remove('hover'));
+        const el = document.elementFromPoint(touch.clientX, touch.clientY);
+        if (el) {
+          const slot = el.closest('.puzzle-slot');
+          if (slot && !slot.hasChildNodes()) slot.classList.add('hover');
+        }
+      }, { passive: false });
+
+      piece.addEventListener('touchend', e => {
+        if (piece.draggable === false) return;
+        if (piece._clone) { piece._clone.remove(); piece._clone = null; }
+        piece.style.opacity = '1';
+        document.querySelectorAll('.puzzle-slot.hover').forEach(s => {
+          s.classList.remove('hover');
+          if (!s.hasChildNodes()) {
+            const slotIndex = parseInt(s.dataset.index);
+            const pieceIndex = parseInt(piece.dataset.index);
+            if (pieceIndex === slotIndex) {
+              s.appendChild(piece);
+              piece.draggable = false;
+              piece.style.cursor = 'default';
+              checkWinPuzzle();
             }
-
-            const question = window.currentQuiz.questions[window.currentQuestionIndex];
-            window.answered = false;
-
-            document.getElementById("questionCounter").textContent = `Question ${window.currentQuestionIndex + 1} of 5`;
-            updateProgressBar();
-
-            document.getElementById("questionText").textContent = question.question;
-
-            const container = document.getElementById("optionsContainer");
-            container.innerHTML = "";
-
-            question.options.forEach((option, index) => {
-                const optionBtn = document.createElement("button");
-                optionBtn.className = "option-btn";
-                optionBtn.textContent = option;
-                optionBtn.addEventListener("click", () => checkAnswerPirate(option, question.correct, question.explanation));
-                container.appendChild(optionBtn);
-            });
-
-            document.getElementById("feedbackBox").classList.add("hidden");
-            document.getElementById("nextBtn").classList.add("hidden");
-        }
-
-        function updateProgressBar() {
-            const progress = ((window.currentQuestionIndex + 1) / 5) * 100;
-            document.getElementById("progressBar").style.width = progress + "%";
-        }
-
-        function checkAnswerPirate(selected, correct, explanation) {
-            if (window.answered) return;
-
-            window.answered = true;
-            const isCorrect = selected === correct;
-
-            if (isCorrect) {
-                window.score++;
-                playCorrectSound();
-                showCorrectFeedback(explanation);
-            } else {
-                playWrongSound();
-                showIncorrectFeedback(selected, correct, explanation);
-            }
-
-            document.getElementById("scoreDisplay").textContent = window.score;
-
-            const buttons = document.querySelectorAll(".option-btn");
-            buttons.forEach(btn => {
-                if (btn.textContent === correct) {
-                    btn.classList.add("correct");
-                } else if (btn.textContent === selected && !isCorrect) {
-                    btn.classList.add("incorrect");
-                }
-                btn.disabled = true;
-            });
-
-            document.getElementById("feedbackBox").classList.remove("hidden");
-
-            setTimeout(() => {
-                document.getElementById("nextBtn").classList.remove("hidden");
-            }, 500);
-        }
-
-        function showCorrectFeedback(explanation) {
-            const feedbackBox = document.getElementById("feedbackBox");
-            const content = document.getElementById("feedbackContent");
-
-            feedbackBox.className = "feedback-box feedback-correct feedback-pirate-popup";
-            content.innerHTML = `
-                <div class="feedback-popup-image-wrap">
-                    <img class="feedback-popup-image" src="pirate-happy.png" alt="Happy pirate celebrating a correct answer">
-                </div>
-                <div class="feedback-title">Correct!</div>
-                <div class="feedback-text">${explanation}</div>
-            `;
-        }
-
-        function showIncorrectFeedback(selected, correct, explanation) {
-            const feedbackBox = document.getElementById("feedbackBox");
-            const content = document.getElementById("feedbackContent");
-
-            feedbackBox.className = "feedback-box feedback-incorrect feedback-pirate-wrong";
-            content.innerHTML = `
-                <div class="feedback-popup-image-wrap">
-                    <img class="feedback-popup-image" src="pirate-sad.png" alt="Sad pirate showing a wrong answer">
-                </div>
-                <div class="feedback-title">Oops, try again!</div>
-                <div class="feedback-text">The correct answer is: <strong>${correct}</strong></div>
-                <div class="feedback-text">${explanation}</div>
-            `;
-        }
-
-        function playCorrectSound() {
-            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            const oscillator = audioContext.createOscillator();
-            const gain = audioContext.createGain();
-
-            oscillator.connect(gain);
-            gain.connect(audioContext.destination);
-
-            oscillator.frequency.value = 800;
-            oscillator.type = "sine";
-
-            gain.gain.setValueAtTime(0.3, audioContext.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
-
-            oscillator.start(audioContext.currentTime);
-            oscillator.stop(audioContext.currentTime + 0.3);
-        }
-
-        function playWrongSound() {
-            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            const oscillator = audioContext.createOscillator();
-            const gain = audioContext.createGain();
-
-            oscillator.connect(gain);
-            gain.connect(audioContext.destination);
-
-            oscillator.frequency.setValueAtTime(400, audioContext.currentTime);
-            oscillator.frequency.linearRampToValueAtTime(200, audioContext.currentTime + 0.3);
-            oscillator.type = "sine";
-
-            gain.gain.setValueAtTime(0.2, audioContext.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
-
-            oscillator.start(audioContext.currentTime);
-            oscillator.stop(audioContext.currentTime + 0.3);
-        }
-
-        document.getElementById("nextBtn").addEventListener("click", function() {
-            window.currentQuestionIndex++;
-            loadQuestionPirate();
+          }
         });
+      });
 
-        document.getElementById("playAgainBtn").addEventListener("click", function() {
-            window.currentQuestionIndex = 0;
-            window.score = 0;
-            window.answered = false;
-            document.getElementById("scoreDisplay").textContent = "0";
-            document.getElementById("quizScreen").classList.remove("hidden");
-            document.getElementById("resultsScreen").classList.add("hidden");
-            loadQuestionPirate();
-        });
+      piece.addEventListener('touchcancel', e => {
+        if (piece._clone) { piece._clone.remove(); piece._clone = null; }
+        piece.style.opacity = '1';
+        document.querySelectorAll('.puzzle-slot.hover').forEach(s => s.classList.remove('hover'));
+      });
 
-        document.getElementById("backToWorldsBtn").addEventListener("click", function() {
-            window.location.href = "index.html";
-        });
+      pieces.push(piece);
+    }
 
-        function showResultsPirate() {
-            window.quizActive = false;
+    // Shuffle pieces
+    pieces.sort(() => Math.random() - 0.5);
 
-            document.getElementById("quizScreen").classList.add("hidden");
-            document.getElementById("resultsScreen").classList.remove("hidden");
+    // Add shuffled pieces to container
+    pieces.forEach(p => piecesContainer.appendChild(p));
+  }
 
-            const percentage = (window.score / 5) * 100;
-            let emoji = "🎉";
-            let title = "Awesome Job!";
-            let message = "";
+  function dropPiece(e) {
+    e.preventDefault();
+    if (!draggedPiece) return;
+    const slotIndex = parseInt(this.dataset.index);
+    const pieceIndex = parseInt(draggedPiece.dataset.index);
 
-            if (window.score === 5) {
-                emoji = "🏆";
-                title = "PERFECT SCORE! 🌟";
-                message = "You're a quiz champion! You got every single one right! You're incredible!";
-                createConfetti();
-            } else if (window.score >= 4) {
-                emoji = "🌟";
-                title = "Excellent Work!";
-                message = "You got 4 out of 5! That's amazing! Keep practicing!";
-            } else if (window.score >= 3) {
-                emoji = "😊";
-                title = "Great Job!";
-                message = "You got 3 out of 5! Good effort! Play again to improve!";
-            } else if (window.score >= 2) {
-                emoji = "💪";
-                title = "Good Try!";
-                message = "You got 2 out of 5. Keep learning and try again!";
-            } else {
-                emoji = "📚";
-                title = "Learning Adventure!";
-                message = "You're just getting started! Try again to improve!";
-            }
+    if (pieceIndex === slotIndex) {
+      this.appendChild(draggedPiece);
+      draggedPiece.draggable = false;
+      draggedPiece = null;
+      checkWinPuzzle();
+    }
+  }
 
-            document.getElementById("resultsEmoji").textContent = emoji;
-            document.getElementById("resultsTitle").textContent = title;
-            document.getElementById("finalScore").textContent = `You got ${window.score} out of 5 correct!`;
-            document.getElementById("resultsMessage").textContent = message;
+  function checkWinPuzzle() {
+    const completed = document.querySelectorAll('.puzzle-slot .piece').length;
+    if (completed === PUZZLE_ROWS * PUZZLE_COLS) {
+      setTimeout(() => {
+        document.getElementById('puzzleComplete').classList.add('active');
+      }, 300);
+    }
+  }
+
+  function drawPirateScene(canvas) {
+    const ctx = canvas.getContext('2d');
+    const w = canvas.width;
+    const h = canvas.height;
+
+    // Clouds
+    ctx.fillStyle = 'rgba(255,255,255,0.3)';
+    ctx.beginPath();
+    ctx.arc(w * 0.2, h * 0.1, 20, 0, Math.PI * 2);
+    ctx.arc(w * 0.25, h * 0.08, 16, 0, Math.PI * 2);
+    ctx.arc(w * 0.3, h * 0.1, 18, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Ocean
+    const oceanGrad = ctx.createLinearGradient(0, h * 0.55, 0, h);
+    oceanGrad.addColorStop(0, '#1a5276');
+    oceanGrad.addColorStop(0.5, '#0e3d5c');
+    oceanGrad.addColorStop(1, '#0a2a40');
+    ctx.fillStyle = oceanGrad;
+    ctx.fillRect(0, h * 0.55, w, h * 0.45);
+
+    // Waves
+    ctx.strokeStyle = 'rgba(255,255,255,0.08)';
+    ctx.lineWidth = 2;
+    for (let row = 0; row < 5; row++) {
+      ctx.beginPath();
+      for (let x = 0; x <= w; x += 8) {
+        const y = h * 0.58 + row * 18 + Math.sin(x * 0.05 + row * 1.5) * 5;
+        x === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+    }
+
+    // Pirate Ship
+    // Hull
+    ctx.fillStyle = '#5c2e16';
+    ctx.beginPath();
+    ctx.moveTo(w * 0.15, h * 0.62);
+    ctx.lineTo(w * 0.85, h * 0.62);
+    ctx.lineTo(w * 0.78, h * 0.74);
+    ctx.lineTo(w * 0.22, h * 0.74);
+    ctx.closePath();
+    ctx.fill();
+    ctx.strokeStyle = '#3d1f0e';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // Hull stripes
+    ctx.fillStyle = '#fbbf24';
+    ctx.fillRect(w * 0.25, h * 0.65, w * 0.5, 4);
+    ctx.fillRect(w * 0.3, h * 0.70, w * 0.4, 3);
+
+    // Mast
+    ctx.fillStyle = '#3d1f0e';
+    ctx.fillRect(w * 0.48, h * 0.22, 6, h * 0.4);
+
+    // Sail left
+    ctx.beginPath();
+    ctx.moveTo(w * 0.49, h * 0.25);
+    ctx.quadraticCurveTo(w * 0.2, h * 0.32, w * 0.2, h * 0.45);
+    ctx.quadraticCurveTo(w * 0.35, h * 0.42, w * 0.49, h * 0.42);
+    ctx.closePath();
+    ctx.fillStyle = '#f0f0f0';
+    ctx.fill();
+    ctx.strokeStyle = '#ccc';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+
+    // Sail right
+    ctx.beginPath();
+    ctx.moveTo(w * 0.51, h * 0.25);
+    ctx.quadraticCurveTo(w * 0.8, h * 0.32, w * 0.8, h * 0.45);
+    ctx.quadraticCurveTo(w * 0.65, h * 0.42, w * 0.51, h * 0.42);
+    ctx.closePath();
+    ctx.fillStyle = '#f0f0f0';
+    ctx.fill();
+    ctx.strokeStyle = '#ccc';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+
+    // Skull on sail
+    ctx.fillStyle = '#1a1a2e';
+    ctx.beginPath();
+    ctx.arc(w * 0.5, h * 0.33, 10, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#fff';
+    ctx.beginPath();
+    ctx.arc(w * 0.5, h * 0.33, 7, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#1a1a2e';
+    ctx.beginPath();
+    ctx.arc(w * 0.47, h * 0.31, 1.8, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(w * 0.53, h * 0.31, 1.8, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillRect(w * 0.48, h * 0.33, 4, 1.5);
+
+    // Pirate flag
+    ctx.fillStyle = '#1a1a2e';
+    ctx.beginPath();
+    ctx.moveTo(w * 0.51, h * 0.22);
+    ctx.lineTo(w * 0.65, h * 0.20);
+    ctx.lineTo(w * 0.51, h * 0.26);
+    ctx.closePath();
+    ctx.fill();
+
+    // Treasure chest on ship
+    ctx.fillStyle = '#8B4513';
+    ctx.fillRect(w * 0.3, h * 0.56, 24, 16);
+    ctx.fillStyle = '#fbbf24';
+    ctx.fillRect(w * 0.33, h * 0.56, 18, 5);
+    ctx.fillRect(w * 0.38, h * 0.56, 8, 16);
+
+    // Palm tree on island
+    ctx.fillStyle = '#4a2c0a';
+    ctx.fillRect(w * 0.1, h * 0.58, 6, h * 0.16);
+    ctx.fillStyle = '#16a34a';
+    for (let i = 0; i < 6; i++) {
+      const a = (i / 6) * Math.PI * 2;
+      ctx.beginPath();
+      ctx.ellipse(w * 0.1 + Math.cos(a) * 18, h * 0.55 + Math.sin(a) * 8, 20, 6, a, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    // Island sand
+    ctx.fillStyle = '#d4a54a';
+    ctx.beginPath();
+    ctx.ellipse(w * 0.1, h * 0.74, 20, 8, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Treasure map scroll
+    ctx.fillStyle = '#f5deb3';
+    ctx.fillRect(w * 0.7, h * 0.62, 22, 14);
+    ctx.fillStyle = '#8B4513';
+    ctx.fillRect(w * 0.7, h * 0.62, 22, 3);
+    ctx.fillRect(w * 0.7, h * 0.73, 22, 3);
+    ctx.fillStyle = '#c0392b';
+    ctx.beginPath();
+    ctx.moveTo(w * 0.72, h * 0.66);
+    ctx.lineTo(w * 0.78, h * 0.66);
+    ctx.lineTo(w * 0.75, h * 0.71);
+    ctx.closePath();
+    ctx.fill();
+
+    // X marks the spot
+    ctx.strokeStyle = '#ef4444';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(w * 0.72, h * 0.67);
+    ctx.lineTo(w * 0.78, h * 0.73);
+    ctx.moveTo(w * 0.78, h * 0.67);
+    ctx.lineTo(w * 0.72, h * 0.73);
+    ctx.stroke();
+  }
+// ── UNDERWATER BUBBLE MATH ──
+  // ===================================================================
+  let bubbleLives = 3;
+  let bubbleScore = 0;
+  let bubbleTimeLeft = 20;
+  let bubbleGameActive = false;
+  let bubbleGameTimer = null;
+  let questionCount = 0;
+  let currentCorrectAnswer = 0;
+  let currentBubbles = [];
+  let comboCount = 0;
+  let bubbleAudioCtx = null;
+  const MAX_QUESTIONS = 10;
+  const bubbleColors = [
+    'radial-gradient(circle at 30% 30%, #60a5fa, #2563eb)',
+    'radial-gradient(circle at 30% 30%, #f87171, #dc2626)',
+    'radial-gradient(circle at 30% 30%, #34d399, #059669)',
+    'radial-gradient(circle at 30% 30%, #fbbf24, #d97706)',
+    'radial-gradient(circle at 30% 30%, #c084fc, #9333ea)',
+    'radial-gradient(circle at 30% 30%, #fb923c, #ea580c)',
+    'radial-gradient(circle at 30% 30%, #22d3ee, #0891b2)',
+  ];
+
+  function getAudioCtx() {
+    if (!bubbleAudioCtx) bubbleAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (bubbleAudioCtx.state === 'suspended') bubbleAudioCtx.resume();
+    return bubbleAudioCtx;
+  }
+
+  function playNote(freq, duration, type, volume) {
+    try {
+      const ac = getAudioCtx();
+      const osc = ac.createOscillator();
+      const g = ac.createGain();
+      osc.connect(g); g.connect(ac.destination);
+      osc.frequency.value = freq;
+      osc.type = type || 'sine';
+      g.gain.setValueAtTime(volume || 0.15, ac.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + duration);
+      osc.start(ac.currentTime); osc.stop(ac.currentTime + duration);
+    } catch(e) {}
+  }
+
+  function playCorrectSound() {
+    playNote(523, 0.12, 'sine', 0.12);
+    setTimeout(() => playNote(659, 0.12, 'sine', 0.12), 80);
+    setTimeout(() => playNote(784, 0.2, 'sine', 0.15), 160);
+  }
+
+  function playWrongSound() {
+    playNote(200, 0.15, 'square', 0.08);
+  }
+
+  function playLifeLostSound() {
+    playNote(400, 0.15, 'sawtooth', 0.1);
+    setTimeout(() => playNote(250, 0.25, 'sawtooth', 0.1), 120);
+  }
+
+  function playGameOverSound() {
+    playNote(500, 0.2, 'sine', 0.12);
+    setTimeout(() => playNote(400, 0.2, 'sine', 0.12), 150);
+    setTimeout(() => playNote(300, 0.3, 'sine', 0.12), 300);
+  }
+
+  function playComboSound() {
+    playNote(880, 0.1, 'sine', 0.1);
+    setTimeout(() => playNote(1100, 0.15, 'sine', 0.12), 60);
+  }
+
+  function showFloatingText(x, y, text, color, size) {
+    const el = document.createElement('div');
+    el.style.cssText = `position:absolute;left:${x}px;bottom:${document.getElementById('bubbleField').offsetHeight - y}px;font-family:'Fredoka',sans-serif;font-weight:700;font-size:${size||36}px;color:${color};pointer-events:none;z-index:20;text-shadow:0 3px 12px rgba(0,0,0,0.6);white-space:nowrap;`;
+    el.textContent = text;
+    document.getElementById('bubbleField').appendChild(el);
+    const startT = performance.now();
+    function floatUp(now) {
+      const t = (now - startT) / 1000;
+      if (t > 1) { el.remove(); return; }
+      el.style.transform = `translateY(${-t * 70}px)`;
+      el.style.opacity = 1 - t * 0.8;
+      requestAnimationFrame(floatUp);
+    }
+    requestAnimationFrame(floatUp);
+  }
+
+  function shakeScreen() {
+    const screen = document.getElementById('bubbleScreen');
+    screen.classList.remove('shake');
+    void screen.offsetWidth;
+    screen.classList.add('shake');
+    setTimeout(() => screen.classList.remove('shake'), 500);
+  }
+
+  function updateStreak() {
+    const el = document.getElementById('streakDisplay');
+    if (comboCount >= 3) {
+      const fire = comboCount >= 5 ? '🔥🔥' : '🔥';
+      el.innerHTML = `<span class="streak-badge">${fire} ${comboCount}x streak!</span>`;
+    } else {
+      el.innerHTML = '';
+    }
+  }
+
+  function generateMathQuestion() {
+    const ops = ['+', '-'];
+    const op = ops[Math.floor(Math.random() * ops.length)];
+    let a, b, answer;
+    if (op === '+') {
+      a = Math.floor(Math.random() * 10) + 1;
+      b = Math.floor(Math.random() * 10) + 1;
+      answer = a + b;
+    } else {
+      a = Math.floor(Math.random() * 10) + 5;
+      b = Math.floor(Math.random() * (a - 1)) + 1;
+      answer = a - b;
+    }
+    const wrongs = new Set();
+    while (wrongs.size < 3) {
+      let w = answer + (Math.floor(Math.random() * 6) - 3);
+      if (w !== answer && w >= 0 && w <= 20) wrongs.add(w);
+    }
+    const options = [answer, ...wrongs];
+    shuffle(options);
+    return { text: `${a} ${op} ${b} = ?`, answer, options };
+  }
+
+  function spawnBubble(answer, isCorrect) {
+    const field = document.getElementById('bubbleField');
+    const size = Math.floor(Math.random() * 24) + 56;
+    const x = Math.random() * (field.offsetWidth - size - 20) + 10;
+    const startY = field.offsetHeight - size - 10;
+    const endY = -size - 20;
+    const duration = Math.random() * 2500 + 4500;
+
+    const bubble = document.createElement('div');
+    bubble.className = 'bubble';
+    bubble.textContent = answer;
+    bubble.style.width = size + 'px';
+    bubble.style.height = size + 'px';
+    bubble.style.fontSize = Math.floor(size * 0.38) + 'px';
+    bubble.style.left = x + 'px';
+    bubble.style.top = startY + 'px';
+    bubble.style.background = bubbleColors[Math.floor(Math.random() * bubbleColors.length)];
+    bubble.style.transform = 'scale(0)';
+    bubble.style.transition = 'transform 0.3s cubic-bezier(0.175,0.885,0.32,1.275)';
+    bubble.dataset.correct = isCorrect ? 'true' : 'false';
+    bubble._escaped = false;
+
+    void bubble.offsetWidth;
+    bubble.style.transform = 'scale(1)';
+
+    const startTime = performance.now();
+    function animateFloat(now) {
+      if (bubble.classList.contains('popped')) return;
+      const elapsed = now - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const y = startY + (endY - startY) * progress;
+      const sway = Math.sin(progress * Math.PI * 4) * 8;
+      bubble.style.top = y + 'px';
+      bubble.style.left = (x + sway) + 'px';
+      if (progress < 1) {
+        bubble._raf = requestAnimationFrame(animateFloat);
+      } else {
+        if (bubble.parentNode) bubble.remove();
+        if (!bubble._escaped && isCorrect && bubbleGameActive) {
+          bubble._escaped = true;
+          onCorrectBubbleEscaped();
         }
+      }
+    }
+    bubble._raf = requestAnimationFrame(animateFloat);
+    bubble.addEventListener('click', () => popBubble(bubble));
+    field.appendChild(bubble);
+    currentBubbles.push(bubble);
+    return bubble;
+  }
 
-        function createConfetti() {
-            const container = document.getElementById("confetti-container");
-            container.innerHTML = "";
+  function clearAllBubbles() {
+    currentBubbles.forEach(b => {
+      if (b._raf) cancelAnimationFrame(b._raf);
+      if (b.parentNode) b.remove();
+    });
+    currentBubbles = [];
+  }
 
-            for (let i = 0; i < 50; i++) {
-                const confetti = document.createElement("div");
-                confetti.className = "confetti";
-                confetti.textContent = ["🎉", "⭐", "🎊", "🏆", "🌟"][Math.floor(Math.random() * 5)];
-                confetti.style.left = Math.random() * 100 + "%";
-                confetti.style.animationDelay = Math.random() * 0.5 + "s";
+  function popBubble(bubble) {
+    if (!bubbleGameActive || bubble.classList.contains('popped')) return;
+    cancelAnimationFrame(bubble._raf);
+    bubble._raf = null;
+    bubble.classList.add('popped');
 
-                container.appendChild(confetti);
+    if (bubble.dataset.correct === 'true') {
+      bubbleScore++;
+      comboCount++;
+      document.getElementById('bubbleScore').textContent = bubbleScore;
+      playCorrectSound();
+      updateStreak();
 
-                setTimeout(() => confetti.remove(), 3000);
-            }
+      const rect = bubble.getBoundingClientRect();
+      const fieldRect = document.getElementById('bubbleField').getBoundingClientRect();
+      showFloatingText(
+        rect.left - fieldRect.left + rect.width/2 - 40,
+        rect.top - fieldRect.top,
+        '✦ +1 Correct!',
+        '#4ade80',
+        32
+      );
+
+      clearAllBubbles();
+      setTimeout(() => {
+        if (bubbleGameActive) spawnQuestion();
+      }, 350);
+    } else {
+      comboCount = 0;
+      updateStreak();
+      playWrongSound();
+      setTimeout(() => { if (bubble.parentNode) bubble.remove(); }, 350);
+    }
+  }
+
+  function onCorrectBubbleEscaped() {
+    if (!bubbleGameActive) return;
+    bubbleLives--;
+    comboCount = 0;
+    updateStreak();
+    updateHearts();
+    playLifeLostSound();
+    shakeScreen();
+    if (bubbleLives <= 0) {
+      setTimeout(() => endBubbleGame(), 600);
+    } else {
+      clearAllBubbles();
+      setTimeout(() => spawnQuestion(), 500);
+    }
+  }
+
+  function updateHearts() {
+    document.getElementById('bubbleLives').textContent = '❤️'.repeat(bubbleLives) + '🖤'.repeat(3 - bubbleLives);
+  }
+
+  function spawnQuestion() {
+    if (!bubbleGameActive) return;
+    questionCount++;
+    document.getElementById('qCount').textContent = questionCount;
+    if (questionCount > MAX_QUESTIONS) {
+      endBubbleGame();
+      return;
+    }
+    const q = generateMathQuestion();
+    currentCorrectAnswer = q.answer;
+    document.getElementById('qText').textContent = q.text;
+    document.getElementById('qText').style.animation = 'none';
+    void document.getElementById('qText').offsetWidth;
+    document.getElementById('qText').style.animation = 'fade-in-up 0.3s ease-out';
+    currentBubbles = [];
+    document.getElementById('bubbleField').innerHTML = '';
+    q.options.forEach((opt, i) => {
+      setTimeout(() => {
+        if (bubbleGameActive) {
+          spawnBubble(opt, opt === q.answer);
         }
-    </script>
+      }, i * 400);
+    });
+  }
+
+  function startBubbleGame() {
+    document.getElementById('menuScreen').style.display = 'none';
+    document.getElementById('bubbleScreen').classList.add('active');
+    document.getElementById('puzzleScreen').classList.remove('active');
+    document.getElementById('bubbleOver').classList.remove('active');
+    document.getElementById('bubbleField').style.display = 'block';
+    document.getElementById('bubbleQuestion').style.display = 'block';
+    document.getElementById('bubbleField').innerHTML = '';
+    document.getElementById('bubbleScreen').classList.remove('shake');
+    backBtn.style.display = 'grid';
+
+    bubbleLives = 3;
+    bubbleScore = 0;
+    bubbleTimeLeft = 20;
+    questionCount = 0;
+    comboCount = 0;
+    currentBubbles = [];
+    bubbleGameActive = true;
+    document.getElementById('bubbleScore').textContent = '0';
+    document.getElementById('bubbleTimer').textContent = '20';
+    document.getElementById('bubbleTimer').className = '';
+    document.getElementById('qCount').textContent = '0';
+    document.getElementById('streakDisplay').innerHTML = '';
+    updateHearts();
+
+    if (bubbleGameTimer) clearInterval(bubbleGameTimer);
+    bubbleGameTimer = setInterval(() => {
+      bubbleTimeLeft--;
+      document.getElementById('bubbleTimer').textContent = bubbleTimeLeft;
+      if (bubbleTimeLeft <= 5) {
+        document.getElementById('bubbleTimer').classList.add('timer-low');
+      }
+      if (bubbleTimeLeft <= 0) {
+        endBubbleGame();
+      }
+    }, 1000);
+
+    spawnQuestion();
+  }
+
+  function endBubbleGame() {
+    bubbleGameActive = false;
+    if (bubbleGameTimer) clearInterval(bubbleGameTimer);
+    clearAllBubbles();
+    playGameOverSound();
+
+    document.getElementById('bubbleTimer').className = '';
+    document.getElementById('bubbleOver').classList.add('active');
+    document.getElementById('bubbleField').style.display = 'none';
+    document.getElementById('bubbleQuestion').style.display = 'none';
+
+    let title, msg;
+    const pct = Math.round((bubbleScore / MAX_QUESTIONS) * 100);
+    if (bubbleScore >= 8) {
+      title = '🏆 Math Genius!';
+      msg = `You scored ${bubbleScore}/10 (${pct}%) — Incredible!`;
+    } else if (bubbleScore >= 5) {
+      title = '🌟 Great Job!';
+      msg = `You scored ${bubbleScore}/10 (${pct}%) — Keep it up!`;
+    } else if (bubbleScore >= 3) {
+      title = '👍 Good Try!';
+      msg = `You scored ${bubbleScore}/10 (${pct}%) — Try again!`;
+    } else {
+      title = '💀 Drowned!';
+      msg = `You scored ${bubbleScore}/10 (${pct}%) — Practice makes perfect!`;
+    }
+    document.getElementById('bubbleResultTitle').textContent = title;
+    document.getElementById('bubbleResultMsg').textContent = msg;
+  }
+
+  function startPuzzle() {
+    document.getElementById('menuScreen').style.display = 'none';
+    document.getElementById('puzzleScreen').classList.add('active');
+    document.getElementById('bubbleScreen').classList.remove('active');
+    backBtn.style.display = 'grid';
+    initPuzzle();
+  }
+
+  function goBack() {
+    bubbleGameActive = false;
+    showMenu();
+  }
+
+</script>
 </body>
-
 </html>

@@ -37,7 +37,7 @@
           <span style="font-size:clamp(24px,5vw,36px);animation:starSpin 2s ease-in-out infinite 0.6s">✨</span>
         </div>
         <div style="position:absolute;bottom:-60px;left:50%;transform:translateX(-50%);animation:splashFadeIn 0.8s ease 1.2s both">
-          <p style="font-family:'Quicksand',sans-serif;font-size:13px;color:rgba(255,255,255,0.4);font-weight:500">Tap anywhere to start 🚀</p>
+          <p style="font-family:'Quicksand',sans-serif;font-size:16px;color:rgba(255,255,255,0.6);font-weight:600">Tap anywhere to start 🚀</p>
         </div>
       </div>
     </div>
@@ -146,10 +146,37 @@
         }
 
         .main-content,
-        .footer,
         .hero-bg {
             background: transparent !important;
         }
+        .premium-footer {
+            background: rgba(255, 255, 255, 0.7) !important;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        .premium-footer::before { display: none; }
+        .premium-footer .footer-orb { opacity: 0.3; }
+        .premium-footer .footer-links li a::before {
+            background: linear-gradient(90deg, #a78bfa, #f9a8d4) !important;
+            height: 2px !important;
+        }
+        .premium-footer .footer-subscribe input {
+            background: rgba(0,0,0,0.04) !important;
+            border-color: rgba(0,0,0,0.1) !important;
+            color: #333 !important;
+        }
+        .premium-footer .footer-subscribe input::placeholder {
+            color: rgba(0,0,0,0.25) !important;
+        }
+        .premium-footer .footer-social a {
+            background: rgba(0,0,0,0.05) !important;
+            border-color: rgba(0,0,0,0.1) !important;
+            color: rgba(0,0,0,0.5) !important;
+        }
+        .premium-footer .footer-bottom-bar {
+            border-top-color: rgba(0,0,0,0.08) !important;
+        }
+        .premium-footer .footer-col-title { color: #2d1b69 !important; }
 
         /* ─── Premium glass sections ─── */
         .hero-section,
@@ -177,19 +204,12 @@
             to { transform: rotate(360deg); }
         }
 
-        .header,
-        .footer {
+        .header {
             background: rgba(255, 255, 255, 0.7) !important;
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             border-bottom: 1px solid rgba(255, 255, 255, 0.2) !important;
-        }
-        .header {
             box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-        }
-        .footer {
-            border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
-            box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.1);
         }
 
         /* ─── Premium text styling ─── */
@@ -208,7 +228,8 @@
         .pill-label,
         .pill-label-hover,
         .nav-item,
-        .footer-section a {
+        .footer-section a,
+        .footer-links li a {
             font-size: 1rem !important;
             color: #3d2e7c !important;
         }
@@ -238,7 +259,11 @@
         .feature-item p,
         .how-to-step p,
         .footer-section p,
-        .footer-bottom p {
+        .footer-bottom p,
+        .premium-footer .footer-tagline,
+        .premium-footer .footer-privacy-note,
+        .premium-footer .footer-bottom-bar p,
+        .premium-footer .footer-bottom-links a {
             color: #0d0221 !important;
             text-shadow: 0 1px 4px rgba(255,255,255,0.5) !important;
             font-weight: 600 !important;
@@ -409,7 +434,12 @@
         .card-description,
         .feature-item p,
         .footer-section p,
-        .footer-bottom p {
+        .footer-bottom p,
+        .premium-footer .footer-tagline,
+        .premium-footer .footer-privacy-note,
+        .premium-footer .footer-links li a,
+        .premium-footer .footer-bottom-bar p,
+        .premium-footer .footer-bottom-links a {
             font-size: 1.05rem !important;
             line-height: 1.7 !important;
         }
@@ -437,6 +467,321 @@
         .hero-title {
             margin-left: 0;
             margin-right: 0;
+        }
+
+        /* ── PREMIUM FOOTER ── */
+        .premium-footer {
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(160deg, #0c0824 0%, #1a0a3e 25%, #2d0a4e 50%, #1a0a3e 75%, #0c0824 100%);
+            color: #fff;
+            padding: 80px 24px 0;
+        }
+        .premium-footer::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 600px 300px at 20% 0%, rgba(167,139,250,0.15), transparent),
+                radial-gradient(ellipse 500px 400px at 80% 10%, rgba(249,168,212,0.1), transparent),
+                radial-gradient(ellipse 400px 300px at 50% 80%, rgba(251,191,36,0.06), transparent);
+            pointer-events: none;
+            z-index: 1;
+        }
+        .premium-footer::after {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #a78bfa, #f9a8d4, #fbbf24, #a78bfa, transparent);
+            background-size: 200% 100%;
+            animation: footerGradBar 4s linear infinite;
+            z-index: 5;
+        }
+        @keyframes footerGradBar {
+            0% { background-position: 0% 0%; }
+            100% { background-position: 200% 0%; }
+        }
+
+        .footer-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            pointer-events: none;
+            z-index: 1;
+            animation: footerOrbFloat 8s ease-in-out infinite alternate;
+        }
+        .footer-orb:nth-child(1) {
+            width: 400px; height: 400px;
+            background: rgba(167,139,250,0.12);
+            top: -100px; left: -100px;
+            animation-duration: 10s;
+        }
+        .footer-orb:nth-child(2) {
+            width: 350px; height: 350px;
+            background: rgba(249,168,212,0.08);
+            bottom: -80px; right: -80px;
+            animation-duration: 12s;
+            animation-delay: -3s;
+        }
+        .footer-orb:nth-child(3) {
+            width: 250px; height: 250px;
+            background: rgba(251,191,36,0.06);
+            top: 50%; left: 60%;
+            animation-duration: 9s;
+            animation-delay: -5s;
+        }
+        @keyframes footerOrbFloat {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(30px, -30px) scale(1.15); }
+        }
+
+        .footer-grid {
+            position: relative;
+            z-index: 2;
+            display: grid;
+            grid-template-columns: 1.4fr 1fr 1fr 1.2fr;
+            gap: 32px;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding-bottom: 40px;
+        }
+        @media (max-width: 900px) {
+            .footer-grid { grid-template-columns: 1fr 1fr; gap: 28px; }
+        }
+        @media (max-width: 540px) {
+            .footer-grid { grid-template-columns: 1fr; gap: 24px; }
+            .premium-footer { padding: 60px 16px 0; }
+        }
+
+        .footer-col {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .footer-brand-name {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #a78bfa, #f9a8d4, #fbbf24, #a78bfa);
+            background-size: 300% 100%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: brandShimmer 4s ease-in-out infinite;
+            line-height: 1.2;
+        }
+        @keyframes brandShimmer {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .footer-tagline {
+            font-size: 0.95rem;
+            color: rgba(255,255,255,0.65);
+            line-height: 1.6;
+            font-weight: 500;
+        }
+
+        .footer-social {
+            display: flex;
+            gap: 10px;
+            margin-top: 4px;
+        }
+        .footer-social a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: rgba(255,255,255,0.6);
+            font-size: 1.1rem;
+            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1);
+        }
+        .footer-social a:hover {
+            background: rgba(167,139,250,0.2);
+            border-color: rgba(167,139,250,0.4);
+            color: #c4b5fd;
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 24px rgba(167,139,250,0.2);
+        }
+        .footer-social a:nth-child(2):hover {
+            background: rgba(249,168,212,0.2);
+            border-color: rgba(249,168,212,0.4);
+            color: #f9a8d4;
+            box-shadow: 0 8px 24px rgba(249,168,212,0.2);
+        }
+        .footer-social a:nth-child(3):hover {
+            background: rgba(103,232,249,0.2);
+            border-color: rgba(103,232,249,0.4);
+            color: #67e8f9;
+            box-shadow: 0 8px 24px rgba(103,232,249,0.2);
+        }
+        .footer-social a:nth-child(4):hover {
+            background: rgba(251,191,36,0.2);
+            border-color: rgba(251,191,36,0.4);
+            color: #fbbf24;
+            box-shadow: 0 8px 24px rgba(251,191,36,0.2);
+        }
+
+        .footer-col-title {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #fff;
+            position: relative;
+            padding-bottom: 10px;
+            margin-bottom: 4px;
+        }
+        .footer-col-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 32px;
+            height: 2.5px;
+            border-radius: 4px;
+            background: linear-gradient(90deg, #a78bfa, #f9a8d4);
+        }
+
+        .footer-links {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .footer-links li a {
+            color: rgba(255,255,255,0.6);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            padding: 6px 0;
+            display: inline-block;
+            position: relative;
+            transition: color 0.3s;
+        }
+        .footer-links li a::before {
+            content: '';
+            position: absolute;
+            bottom: 2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            border-radius: 4px;
+            background: linear-gradient(90deg, #a78bfa, #f9a8d4);
+            transition: width 0.3s cubic-bezier(0.34,1.56,0.64,1);
+        }
+        .footer-links li a:hover {
+            color: #fff;
+        }
+        .footer-links li a:hover::before {
+            width: 100%;
+        }
+
+        .footer-subscribe {
+            display: flex;
+            gap: 8px;
+            margin-top: 4px;
+        }
+        .footer-subscribe input {
+            flex: 1;
+            padding: 10px 14px;
+            border-radius: 12px;
+            border: 1.5px solid rgba(255,255,255,0.15);
+            background: rgba(255,255,255,0.06);
+            color: #fff;
+            font-size: 0.85rem;
+            font-family: 'Quicksand', sans-serif;
+            outline: none;
+            transition: border-color 0.3s, box-shadow 0.3s;
+            min-width: 0;
+        }
+        .footer-subscribe input::placeholder {
+            color: rgba(255,255,255,0.3);
+        }
+        .footer-subscribe input:focus {
+            border-color: rgba(167,139,250,0.5);
+            box-shadow: 0 0 20px rgba(167,139,250,0.1);
+        }
+        .footer-subscribe button {
+            padding: 10px 18px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #a78bfa, #7c3aed);
+            color: #fff;
+            font-weight: 700;
+            font-size: 0.85rem;
+            font-family: 'Quicksand', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1);
+            white-space: nowrap;
+            box-shadow: 0 4px 16px rgba(124,58,237,0.25);
+        }
+        .footer-subscribe button:hover {
+            transform: translateY(-2px) scale(1.03);
+            box-shadow: 0 8px 28px rgba(124,58,237,0.35);
+        }
+        .footer-subscribe button:active {
+            transform: scale(0.96);
+        }
+        .footer-privacy-note {
+            font-size: 0.75rem;
+            color: rgba(255,255,255,0.3);
+            line-height: 1.4;
+        }
+
+        .footer-bottom-bar {
+            position: relative;
+            z-index: 2;
+            border-top: 1px solid rgba(255,255,255,0.06);
+            padding: 20px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .footer-bottom-bar p {
+            margin: 0;
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.4);
+            font-weight: 500;
+        }
+        .footer-bottom-bar .footer-heart {
+            display: inline-block;
+            animation: heartBeat 1.5s ease-in-out infinite;
+        }
+        @keyframes heartBeat {
+            0%, 100% { transform: scale(1); }
+            15% { transform: scale(1.25); }
+            30% { transform: scale(1); }
+            45% { transform: scale(1.15); }
+            60% { transform: scale(1); }
+        }
+        .footer-bottom-bar .footer-bottom-links {
+            display: flex;
+            gap: 20px;
+        }
+        .footer-bottom-bar .footer-bottom-links a {
+            color: rgba(255,255,255,0.35);
+            text-decoration: none;
+            font-size: 0.8rem;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        .footer-bottom-bar .footer-bottom-links a:hover {
+            color: rgba(255,255,255,0.7);
         }
     </style>
     <!-- HEADER / NAVIGATION -->
@@ -696,47 +1041,67 @@
     </main>
 
     <!-- FOOTER -->
-    <footer class="footer" style="padding:0;overflow:hidden;background:url('footer.png?t=2') center/cover no-repeat">
-        <div style="position:absolute;inset:0;background:rgba(0,0,0,0.35);z-index:1"></div>
+    <footer class="premium-footer">
+        <div class="footer-orb"></div>
+        <div class="footer-orb"></div>
+        <div class="footer-orb"></div>
 
-        <div style="position:relative;z-index:2;padding:60px 20px 40px">
-            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;max-width:1400px;margin:0 auto 18px;position:relative;z-index:1" class="bento-section">
-                <div class="magic-bento-card magic-bento-card--border-glow" style="background:rgba(0,0,0,0.2);backdrop-filter:blur(6px);border-radius:16px;padding:20px;border:1px solid rgba(255,255,255,0.15);display:flex;flex-direction:column;justify-content:space-between;aspect-ratio:auto;min-height:auto">
-                    <div class="magic-bento-card__header">
-                        <div class="magic-bento-card__label" style="font-family:'Fredoka',sans-serif;font-size:1.1rem;color:#60a5fa;font-weight:700">QuizQuest Kids</div>
-                    </div>
-                    <div class="magic-bento-card__content">
-                        <p class="magic-bento-card__description" style="color:#93c5fd;font-size:0.9rem;font-weight:500;line-height:1.6;margin:0">Making learning an adventure for every child!</p>
-                    </div>
-                </div>
-                <div class="magic-bento-card magic-bento-card--border-glow" style="background:rgba(0,0,0,0.2);backdrop-filter:blur(6px);border-radius:16px;padding:20px;border:1px solid rgba(255,255,255,0.15);display:flex;flex-direction:column;justify-content:space-between;aspect-ratio:auto;min-height:auto">
-                    <div class="magic-bento-card__header">
-                        <div class="magic-bento-card__label" style="font-family:'Fredoka',sans-serif;font-size:1.1rem;color:#60a5fa;font-weight:700">Quick Links</div>
-                    </div>
-                    <div class="magic-bento-card__content">
-                        <ul style="list-style:none;margin:0;padding:0">
-                            <li style="margin-bottom:6px"><a href="index.html" class="magic-bento-card__description" style="color:#93c5fd;font-size:0.9rem;font-weight:600;text-decoration:none;display:block;background:rgba(255,255,255,0.15);padding:8px 14px;border-radius:10px;transition:background 0.2s;margin:0">Home</a></li>
-                            <li style="margin-bottom:6px"><a href="quiz-adventure.html?world=jungle" class="magic-bento-card__description" style="color:#93c5fd;font-size:0.9rem;font-weight:600;text-decoration:none;display:block;background:rgba(255,255,255,0.15);padding:8px 14px;border-radius:10px;transition:background 0.2s;margin:0">Jungle Adventure</a></li>
-                            <li style="margin-bottom:0"><a href="code.html" class="magic-bento-card__description" style="color:#93c5fd;font-size:0.9rem;font-weight:600;text-decoration:none;display:block;background:rgba(255,255,255,0.15);padding:8px 14px;border-radius:10px;transition:background 0.2s;margin:0">Space Quest</a></li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="magic-bento-card magic-bento-card--border-glow" style="background:rgba(0,0,0,0.2);backdrop-filter:blur(6px);border-radius:16px;padding:20px;border:1px solid rgba(255,255,255,0.15);display:flex;flex-direction:column;justify-content:space-between;aspect-ratio:auto;min-height:auto">
-                    <div class="magic-bento-card__header">
-                        <div class="magic-bento-card__label" style="font-family:'Fredoka',sans-serif;font-size:1.1rem;color:#60a5fa;font-weight:700">Fun Themes</div>
-                    </div>
-                    <div class="magic-bento-card__content">
-                        <ul style="list-style:none;margin:0;padding:0">
-                            <li style="margin-bottom:6px"><a href="quiz-adventure.html?world=jungle" class="magic-bento-card__description" style="color:#93c5fd;font-size:0.9rem;font-weight:600;text-decoration:none;display:block;background:rgba(255,255,255,0.15);padding:8px 14px;border-radius:10px;transition:background 0.2s;margin:0">🌿 Jungle Adventure</a></li>
-                            <li style="margin-bottom:6px"><a href="code.html" class="magic-bento-card__description" style="color:#93c5fd;font-size:0.9rem;font-weight:600;text-decoration:none;display:block;background:rgba(255,255,255,0.15);padding:8px 14px;border-radius:10px;transition:background 0.2s;margin:0">🚀 Space Quest</a></li>
-                            <li style="margin-bottom:0"><a href="pirate.html" class="magic-bento-card__description" style="color:#93c5fd;font-size:0.9rem;font-weight:600;text-decoration:none;display:block;background:rgba(255,255,255,0.15);padding:8px 14px;border-radius:10px;transition:background 0.2s;margin:0">🏴‍☠️ Pirate Island</a></li>
-                        </ul>
-                    </div>
+        <div class="footer-grid">
+            <!-- Brand -->
+            <div class="footer-col">
+                <div class="footer-brand-name">QuizQuest Kids</div>
+                <p class="footer-tagline">Making learning an adventure for every child through interactive stories, puzzles, and galactic quests!</p>
+                <div class="footer-social">
+                    <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
                 </div>
             </div>
-            <div class="footer-bottom" style="border-top-color:rgba(255,255,255,0.15);color:#93c5fd;font-weight:600">
-                &copy; 2026 QuizQuest Kids. All rights reserved.
+
+            <!-- Quick Links -->
+            <div class="footer-col">
+                <div class="footer-col-title">Quick Links</div>
+                <ul class="footer-links">
+                    <li><a href="index.html">🏠 Home</a></li>
+                    <li><a href="quiz-adventure.html?world=jungle">🌿 Jungle Adventure</a></li>
+                    <li><a href="code.html">🚀 Space Quest</a></li>
+                    <li><a href="pirate.html">🏴‍☠️ Pirate Island</a></li>
+                </ul>
             </div>
+
+            <!-- Explore -->
+            <div class="footer-col">
+                <div class="footer-col-title">Explore</div>
+                <ul class="footer-links">
+                    <li><a href="code.html" onclick="event.preventDefault();localStorage.setItem('qq_autoGame','color');window.location='code.html'">🎨 Color Planet</a></li>
+                    <li><a href="code.html" onclick="event.preventDefault();localStorage.setItem('qq_autoGame','letter');window.location='code.html'">🔤 Letter Galaxy</a></li>
+                    <li><a href="code.html" onclick="event.preventDefault();localStorage.setItem('qq_autoGame','shape');window.location='code.html'">⬛ Shape Station</a></li>
+                    <li><a href="rocket.html">🚀 Rocket Lab</a></li>
+                    <li><a href="code.html" onclick="event.preventDefault();localStorage.setItem('qq_autoGame','alien');window.location='code.html'">🌍 Planet Order</a></li>
+                </ul>
+            </div>
+
+            <!-- Connect -->
+            <div class="footer-col">
+                <div class="footer-col-title">Stay in the Loop</div>
+                <p class="footer-tagline" style="font-size:0.85rem;margin:0">Get updates on new adventures & games!</p>
+                <div class="footer-subscribe">
+                    <input type="email" placeholder="Enter your email" aria-label="Email address">
+                    <button onclick="this.textContent='✓ Subscribed!';this.style.background='linear-gradient(135deg,#4ade80,#16a34a)'">Subscribe</button>
+                </div>
+                <p class="footer-privacy-note">We respect your privacy. No spam, ever.</p>
+            </div>
+        </div>
+
+        <div class="footer-bottom-bar">
+            <p>&copy; 2026 QuizQuest Kids. All rights reserved.</p>
+            <div class="footer-bottom-links">
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+                <a href="#">Contact Us</a>
+            </div>
+            <p>Made with <span class="footer-heart">❤️</span> for curious kids everywhere</p>
         </div>
     </footer>
 

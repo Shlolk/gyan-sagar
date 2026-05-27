@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=3.0">
 <title>Space Adventure – QuizQuest Kids</title>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
@@ -92,7 +92,7 @@ body{
   backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,0.2);
   border-radius:20px 20px 4px 20px;
   padding:14px 18px;max-width:220px;
-  font-size:14px;font-weight:600;line-height:1.4;
+  font-size:16px;font-weight:600;line-height:1.4;
   color:#fff;
   animation:bubblePop 0.4s cubic-bezier(0.34,1.56,0.64,1);
   pointer-events:auto;
@@ -132,7 +132,7 @@ body{
 }
 @keyframes titleRainbow{0%{background-position:0% 50%}100%{background-position:100% 50%}}
 .map-subtitle{
-  text-align:center;font-size:14px;color:rgba(255,255,255,0.7);
+  text-align:center;font-size:18px;color:rgba(255,255,255,0.9);
   margin-bottom:28px;font-family:'Quicksand',sans-serif;
   text-shadow:0 2px 12px rgba(0,0,0,0.3);
 }
@@ -187,7 +187,7 @@ body{
 @keyframes ringGlow{0%{opacity:0.4}100%{opacity:1}}
 
 .planet-label{
-  margin-top:10px;font-size:14px;font-weight:700;
+  margin-top:10px;font-size:16px;font-weight:700;
   text-align:center;color:#fff;
   text-shadow:0 2px 12px rgba(0,0,0,0.4),0 0 20px rgba(167,139,250,0.2);
 }
@@ -288,13 +288,6 @@ body{
 }
 .planet-alien .planet-glow{background:radial-gradient(circle,rgba(245,158,11,0.4),transparent)}
 .planet-alien .planet-ring{--ring-color:rgba(245,158,11,0.6)}
-.planet-moon .planet-body{
-  background:linear-gradient(135deg,#fbcfe8,#ec4899);
-  box-shadow:0 8px 32px rgba(236,72,153,0.4),inset 0 -4px 12px rgba(0,0,0,0.15);
-}
-.planet-moon .planet-glow{background:radial-gradient(circle,rgba(236,72,153,0.4),transparent)}
-.planet-moon .planet-ring{--ring-color:rgba(236,72,153,0.6)}
-
 /* ─── Game Cards Grid ─── */
 .game-cards{
   display:flex;flex-direction:row;flex-wrap:wrap;gap:16px;
@@ -375,8 +368,6 @@ body{
 .card-rocket .game-card-glow{background:radial-gradient(circle,rgba(6,182,212,0.3),transparent)}
 .card-alien .card-bg{background:linear-gradient(135deg,#fde68a,#f59e0b)}
 .card-alien .game-card-glow{background:radial-gradient(circle,rgba(245,158,11,0.3),transparent)}
-.card-moon .card-bg{background:linear-gradient(135deg,#fbcfe8,#ec4899)}
-.card-moon .game-card-glow{background:radial-gradient(circle,rgba(236,72,153,0.3),transparent)}
 
 @media(max-width:820px){
   .game-card{flex:0 0 calc(50% - 10px);min-height:100px;padding:12px 14px}
@@ -469,7 +460,7 @@ body{
 .life-heart{font-size:20px;transition:all 0.3s}
 @keyframes heartPop{0%{transform:scale(0)}50%{transform:scale(1.3)}100%{transform:scale(1)}}
 .question-counter{
-  font-size:14px;color:rgba(255,255,255,0.9);text-align:center;margin-bottom:8px;
+  font-size:16px;color:rgba(255,255,255,0.9);text-align:center;margin-bottom:8px;
 }
 .fill-sentence{
   font-size:20px;font-weight:700;text-align:center;
@@ -649,7 +640,7 @@ body{
   min-height:60px;display:flex;align-items:center;justify-content:center;
 }
 .pm-hint{
-  font-size:14px;color:rgba(255,255,255,0.85);margin-bottom:16px;
+  font-size:16px;color:rgba(255,255,255,0.9);margin-bottom:16px;
   position:relative;z-index:2;min-height:20px;
 }
 .pm-options{
@@ -760,27 +751,79 @@ body{
 @keyframes pmPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
 .pm-intro-btn:active{transform:scale(0.92);animation:none}
 
-/* ─── MINI GAME: Alien Feeding ─── */
-.alien-area{
-  display:flex;flex-direction:column;align-items:center;gap:16px;
-  width:100%;max-width:400px;
+/* ─── MINI GAME: Planet Order ─── */
+.po-area{
+  display:flex;flex-direction:column;align-items:center;gap:10px;
+  width:100%;max-width:500px;margin:0 auto;
 }
-.alien-character{
-  width:100px;height:100px;border-radius:50%;
-  background:linear-gradient(135deg,#a78bfa,#7c3aed);
+.po-sun{
+  width:clamp(50px,12vw,80px);height:clamp(50px,12vw,80px);
+  background:radial-gradient(circle at 35% 30%,#fbbf24,#f59e0b,#ef4444);
+  border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:clamp(20px,5vw,32px);font-weight:700;
+  box-shadow:0 0 30px rgba(251,191,36,0.5),0 0 60px rgba(239,68,68,0.2);
+  flex-shrink:0;position:relative;z-index:2;
+}
+.po-sun-label{font-size:12px;color:rgba(255,255,255,0.5);margin-top:-4px;}
+
+.po-slots{
+  display:flex;flex-wrap:wrap;gap:6px;justify-content:center;
+  padding:8px;background:rgba(0,0,0,0.2);border-radius:14px;
+  border:1.5px solid rgba(255,255,255,0.08);width:100%;
+  max-width:440px;min-height:clamp(50px,12vw,80px);
+}
+.po-slot{
+  width:clamp(42px,10vw,70px);height:clamp(42px,10vw,70px);
+  border-radius:50%;border:2px dashed rgba(255,255,255,0.25);
+  background:rgba(255,255,255,0.04);
   display:flex;align-items:center;justify-content:center;
-  font-size:44px;animation:alienBounce 2s ease-in-out infinite;
-  border:3px solid rgba(255,255,255,0.2);
-  box-shadow:0 8px 24px rgba(124,58,237,0.3);
+  font-size:clamp(10px,2vw,13px);color:rgba(255,255,255,0.2);
+  transition:all 0.2s;position:relative;flex-shrink:0;
 }
-@keyframes alienBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
-.alien-thought{
-  background:rgba(255,255,255,0.1);border-radius:16px;padding:12px 16px;
-  font-size:15px;text-align:center;max-width:300px;
-  border:1px solid rgba(255,255,255,0.1);
+.po-slot .slot-num{
+  font-family:'Fredoka',sans-serif;font-size:clamp(10px,2vw,13px);
+  color:rgba(255,255,255,0.15);pointer-events:none;
 }
-.feed-items{
-  display:flex;flex-wrap:wrap;gap:12px;justify-content:center;
+.po-slot.hover{border-color:#fbbf24;background:rgba(251,191,36,0.1);transform:scale(1.06);}
+.po-slot.filled{border-color:#4ade80;background:rgba(74,222,128,0.1);border-style:solid;}
+.po-slot.filled .slot-num{display:none;}
+.po-slot.wrong{animation:poShake 0.4s ease-out;}
+@keyframes poShake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
+
+.po-cards{
+  display:flex;flex-wrap:wrap;gap:6px;justify-content:center;
+  padding:8px;background:rgba(0,0,0,0.15);border-radius:14px;
+  border:1.5px solid rgba(255,255,255,0.06);width:100%;
+  max-width:440px;
+}
+.po-card{
+  width:clamp(42px,10vw,70px);height:clamp(42px,10vw,70px);
+  border-radius:50%;cursor:grab;flex-shrink:0;
+  background-size:cover;background-position:center;
+  border:2px solid rgba(255,255,255,0.3);
+  box-shadow:0 3px 10px rgba(0,0,0,0.3);
+  transition:transform 0.15s,box-shadow 0.15s,opacity 0.2s;
+  touch-action:none;position:relative;
+}
+.po-card:hover{transform:scale(1.12);box-shadow:0 6px 20px rgba(0,0,0,0.4);}
+.po-card:active{cursor:grabbing;}
+.po-card.placed{opacity:0;pointer-events:none;transform:scale(0);}
+
+.po-complete{
+  display:none;flex-direction:column;align-items:center;gap:10px;
+  padding:20px;text-align:center;animation:fadeIn 0.5s ease-out;
+}
+.po-complete.active{display:flex;}
+.po-complete .po-big{font-size:56px;}
+.po-complete h3{font-family:'Fredoka',sans-serif;font-size:24px;color:#4ade80;}
+.po-complete p{font-size:16px;color:rgba(255,255,255,0.85);}
+.po-complete .btn-po{
+  padding:10px 28px;border:none;border-radius:999px;
+  background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#1a1a2e;
+  font-weight:700;font-size:16px;cursor:pointer;transition:transform 0.2s;
+}
+.po-complete .btn-po:hover{transform:scale(1.05);}
+@keyframes fadeIn{0%{opacity:0;transform:translateY(20px)}100%{opacity:1;transform:translateY(0)}}
 }
 .feed-item{
   width:64px;height:64px;border-radius:50%;
@@ -1294,27 +1337,14 @@ body{
       <div class="game-card-status completed">⭐</div>
     </div>
 
-    <!-- Card 5: Alien Garden -->
+    <!-- Card 5: Planet Order -->
     <div class="game-card card-alien game-card-completed" data-planet="alien" onclick="openGame('alien')">
       <div class="card-bg"></div>
       <div class="game-card-glow"></div>
-      <div class="game-card-emoji">👽</div>
+      <div class="game-card-emoji">🌍</div>
       <div class="game-card-info">
-        <div class="game-card-name">Alien Garden</div>
-        <div class="game-card-desc">Feed the alien what it wants!</div>
-      </div>
-      <div class="game-card-play">▶</div>
-      <div class="game-card-status completed">⭐</div>
-    </div>
-
-    <!-- Card 6: Rainbow Moon -->
-    <div class="game-card card-moon game-card-completed" data-planet="moon" onclick="openGame('moon')">
-      <div class="card-bg"></div>
-      <div class="game-card-glow"></div>
-      <div class="game-card-emoji">🌙</div>
-      <div class="game-card-info">
-        <div class="game-card-name">Rainbow Moon</div>
-        <div class="game-card-desc">Jump across planets to reach the moon!</div>
+        <div class="game-card-name">Planet Order</div>
+        <div class="game-card-desc">Drag planets in order from the Sun!</div>
       </div>
       <div class="game-card-play">▶</div>
       <div class="game-card-status completed">⭐</div>
@@ -1428,26 +1458,28 @@ body{
   </div>
 </div>
 
-<!-- ═══ Game Overlay: Alien Feeding ═══ -->
-<div class="game-overlay" id="gameAlien">
+<!-- ═══ Game Overlay: Planet Order ═══ -->
+<div class="game-overlay" id="gameAlien" style="background:linear-gradient(rgba(0,0,0,0.6),rgba(0,0,0,0.6)),url('rolling space.png') center/cover no-repeat">
   <div class="game-header">
     <button class="game-back-btn" onclick="closeGame('alien')">✕</button>
-    <span class="game-title">👽 Alien Garden</span>
-    <div style="font-size:14px;color:rgba(255,255,255,0.9)" id="alienScore">0/3</div>
+    <span class="game-title">🌍 Planet Order</span>
+    <div style="font-size:14px;color:rgba(255,255,255,0.9)" id="poScore">0 / 8</div>
   </div>
-  <div class="game-body">
-    <div id="alienGameArea">
-      <div class="alien-area">
-        <div class="alien-character" id="alienChar" style="animation-delay:0s">👽</div>
-        <div class="alien-thought" id="alienThought">I want <strong>red stars</strong>! ✨</div>
-        <div class="feed-items" id="feedItems"></div>
+  <div class="game-body" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:10px">
+    <div class="po-area" id="poGameArea">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
+        <div class="po-sun">☀️</div>
+        <div class="po-sun-label">— Sun —</div>
       </div>
+      <div class="po-slots" id="poSlots"></div>
+      <div style="font-size:13px;color:rgba(255,255,255,0.4);margin:-2px 0">↓ Drag planets into correct order ↓</div>
+      <div class="po-cards" id="poCards"></div>
     </div>
-    <div class="success-screen" id="alienSuccess">
-      <div class="success-emoji">🎉</div>
-      <div class="success-title">Yummy! Thank you!</div>
-      <div class="success-stars">⭐ +3 stars</div>
-      <button class="btn-game btn-next" onclick="closeGame('alien',true)">Back to Map</button>
+    <div class="po-complete" id="poComplete">
+      <div class="po-big">🌌</div>
+      <h3>Solar System Complete!</h3>
+      <p>You placed all planets in the correct order!</p>
+      <button class="btn-po" onclick="closeGame('alien',true)">⭐ Back to Map</button>
     </div>
   </div>
 </div>
@@ -1544,30 +1576,6 @@ body{
   </div>
 </div>
 
-<!-- ═══ Game Overlay: Planet Jump ═══ -->
-<div class="game-overlay" id="gameMoon">
-  <div class="game-header">
-    <button class="game-back-btn" onclick="closeGame('moon')">✕</button>
-    <span class="game-title">🌙 Rainbow Moon</span>
-    <div style="font-size:14px;color:rgba(255,255,255,0.9)" id="jumpScore">0/4</div>
-  </div>
-  <div class="game-body">
-    <div id="jumpGameArea">
-      <div class="jump-track">
-        <div class="jump-astronaut" id="astroChar">🧑‍🚀</div>
-        <div class="jump-planets" id="jumpPlanets"></div>
-        <div class="hunt-mission" style="margin-top:8px" id="jumpMission">Tap the planets to reach the moon! 🌙</div>
-      </div>
-    </div>
-    <div class="success-screen" id="jumpSuccess">
-      <div class="success-emoji">🌙</div>
-      <div class="success-title">You Reached the Moon!</div>
-      <div class="success-stars">⭐ +5 stars</div>
-      <button class="btn-game btn-next" onclick="closeGame('jump',true)">Back to Map</button>
-    </div>
-  </div>
-</div>
-
 <!-- ═══ Win Celebration ═══ -->
 <div class="win-celebration" id="winCelebration">
   <div class="big-emoji">🏆</div>
@@ -1604,7 +1612,7 @@ body{
 // ─── State ───
 let gameState={
   stars:parseInt(localStorage.getItem('qqStars'))||0,
-  planets:{color:true,letter:false,shape:false,rocket:false,alien:false,moon:false}
+  planets:{color:true,letter:false,shape:false,rocket:false,alien:false}
 };
 try{const saved=JSON.parse(localStorage.getItem('qqPlanets'));if(saved)Object.assign(gameState.planets,saved)}catch(e){}
 
@@ -1661,12 +1669,11 @@ let currentGame=null;
 function openGame(planet){
   if(currentGame)return;
   currentGame=planet;
-  if(planet==='color'){initPlanetMatch();}
-  if(planet==='letter')initLetterQuiz();
-  else if(planet==='alien')initAlienFeed();
+  if(planet==='color')initPlanetMatch();
+  else if(planet==='letter')initLetterQuiz();
+  else if(planet==='alien')initPlanetOrder();
   else if(planet==='rocket')initRocketBuild();
   else if(planet==='shape')initMemory();
-  else if(planet==='moon')initJump();
   else return;
   const el=document.getElementById('game'+planet.charAt(0).toUpperCase()+planet.slice(1));
   if(el){
@@ -2108,73 +2115,174 @@ function showPMResult(){
 }
 
 // ═══════════════════════════════════════
-// MINI GAME 2: ALIEN FEEDING
+// MINI GAME 2: PLANET ORDER
 // ═══════════════════════════════════════
-const alienLevels=[
-  {want:'red',emoji:'🔴',items:[{emoji:'🔴',name:'red'},{emoji:'🟡',name:'yellow'},{emoji:'🟢',name:'green'},{emoji:'🔵',name:'blue'},{emoji:'🟣',name:'purple'}]},
-  {want:'yellow',emoji:'🟡',items:[{emoji:'🟡',name:'yellow'},{emoji:'🔴',name:'red'},{emoji:'🟢',name:'green'},{emoji:'🟣',name:'purple'},{emoji:'🔵',name:'blue'}]},
-  {want:'green',emoji:'🟢',items:[{emoji:'🟢',name:'green'},{emoji:'🔴',name:'red'},{emoji:'🟡',name:'yellow'},{emoji:'🔵',name:'blue'},{emoji:'🟣',name:'purple'}]},
+const poPlanets = [
+  { name: 'Mercury', img: 'mercury.png.png', order: 0 },
+  { name: 'Venus',   img: 'venus.png.jpeg',  order: 1 },
+  { name: 'Earth',   img: 'eath.png.png',    order: 2 },
+  { name: 'Mars',    img: 'mars.png.jpeg',   order: 3 },
+  { name: 'Jupiter', img: 'jupter.pmg.jpeg', order: 4 },
+  { name: 'Saturn',  img: 'saturn.png.png',  order: 5 },
+  { name: 'Uranus',  img: 'urasun.png',      order: 6 },
+  { name: 'Neptune', img: 'netrpturn.png.png', order: 7 }
 ];
-let alienRound=0;
-let alienScore=0;
+let poDraggedCard = null;
+let poPlaced = 0;
+let poGameActive = false;
 
-function initAlienFeed(){
-  alienRound=0;
-  alienScore=0;
-  document.getElementById('alienGameArea').style.display='';
-  document.getElementById('alienSuccess').classList.remove('active');
-  spawnAlienRound();
+function initPlanetOrder() {
+  poPlaced = 0;
+  poGameActive = true;
+  document.getElementById('poGameArea').style.display = '';
+  document.getElementById('poComplete').classList.remove('active');
+  document.getElementById('poScore').textContent = '0 / 8';
+
+  // Build slots
+  const slots = document.getElementById('poSlots');
+  slots.innerHTML = '';
+  for (let i = 0; i < poPlanets.length; i++) {
+    const s = document.createElement('div');
+    s.className = 'po-slot';
+    s.dataset.order = i;
+    s.innerHTML = '<span class="slot-num">' + (i + 1) + '</span>';
+    s.addEventListener('dragover', e => e.preventDefault());
+    s.addEventListener('drop', poDropSlot);
+    s.addEventListener('touchmove', e => e.preventDefault());
+    slots.appendChild(s);
+  }
+
+  // Build shuffled cards
+  const cards = document.getElementById('poCards');
+  cards.innerHTML = '';
+  const shuffled = [...poPlanets];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  shuffled.forEach(p => {
+    const c = document.createElement('div');
+    c.className = 'po-card';
+    c.style.backgroundImage = "url('" + p.img + "')";
+    c.dataset.order = p.order;
+    c.draggable = true;
+    c.addEventListener('dragstart', e => { if (!c.classList.contains('placed')) poDraggedCard = c; });
+    c.addEventListener('touchstart', poTouchStart, { passive: false });
+    c.addEventListener('touchmove', poTouchMove, { passive: false });
+    c.addEventListener('touchend', poTouchEnd);
+    c.addEventListener('touchcancel', poTouchCancel);
+    cards.appendChild(c);
+  });
 }
 
-function spawnAlienRound(){
-  if(alienRound>=alienLevels.length){
-    document.getElementById('alienGameArea').style.display='none';
-    document.getElementById('alienSuccess').classList.add('active');
-    spawnConfetti();
-    return;
+function poDropSlot(e) {
+  e.preventDefault();
+  if (!poDraggedCard || poDraggedCard.classList.contains('placed')) return;
+  const slot = this;
+  const order = parseInt(slot.dataset.order);
+  const cardOrder = parseInt(poDraggedCard.dataset.order);
+  if (order === cardOrder) {
+    // Place the card as a background image on the slot
+    slot.style.backgroundImage = poDraggedCard.style.backgroundImage;
+    slot.style.backgroundSize = 'cover';
+    slot.style.backgroundPosition = 'center';
+    slot.classList.add('filled');
+    poDraggedCard.classList.add('placed');
+    poDraggedCard = null;
+    poPlaced++;
+    document.getElementById('poScore').textContent = poPlaced + ' / 8';
+    playPopSound();
+    if (poPlaced === poPlanets.length) {
+      setTimeout(poWin, 400);
+    }
+  } else {
+    slot.classList.add('wrong');
+    setTimeout(() => slot.classList.remove('wrong'), 500);
   }
-  const level=alienLevels[alienRound];
-  document.getElementById('alienThought').innerHTML=`I want <strong>${level.want}</strong>! ${level.emoji}`;
-  document.getElementById('alienScore').textContent=`${alienRound+1}/${alienLevels.length}`;
+}
 
-  // Shuffle items
-  const items=[...level.items];
-  for(let i=items.length-1;i>0;i--){
-    const j=Math.floor(Math.random()*(i+1));
-    [items[i],items[j]]=[items[j],items[i]];
+// Touch drag helpers
+let poTouchCard = null;
+let poTouchClone = null;
+
+function poTouchStart(e) {
+  const card = this;
+  if (card.classList.contains('placed')) return;
+  e.preventDefault();
+  poTouchCard = card;
+  poDraggedCard = card;
+  const touch = e.touches[0];
+  const rect = card.getBoundingClientRect();
+  const clone = card.cloneNode(true);
+  clone.style.position = 'fixed';
+  clone.style.zIndex = '1000';
+  clone.style.width = rect.width + 'px';
+  clone.style.height = rect.height + 'px';
+  clone.style.left = (touch.clientX - rect.width / 2) + 'px';
+  clone.style.top = (touch.clientY - rect.height / 2) + 'px';
+  clone.style.pointerEvents = 'none';
+  clone.style.opacity = '0.85';
+  clone.style.transform = 'scale(1.15)';
+  clone.style.borderRadius = '50%';
+  document.body.appendChild(clone);
+  poTouchClone = clone;
+  card.style.opacity = '0.4';
+}
+
+function poTouchMove(e) {
+  if (!poTouchClone || !poTouchCard) return;
+  e.preventDefault();
+  const touch = e.touches[0];
+  const rect = poTouchCard.getBoundingClientRect();
+  poTouchClone.style.left = (touch.clientX - rect.width / 2) + 'px';
+  poTouchClone.style.top = (touch.clientY - rect.height / 2) + 'px';
+  // Highlight hovered slot
+  document.querySelectorAll('.po-slot.hover').forEach(s => s.classList.remove('hover'));
+  const el = document.elementFromPoint(touch.clientX, touch.clientY);
+  if (el) {
+    const slot = el.closest('.po-slot');
+    if (slot && !slot.classList.contains('filled')) slot.classList.add('hover');
   }
+}
 
-  const container=document.getElementById('feedItems');
-  container.innerHTML='';
-  items.forEach(item=>{
-    const el=document.createElement('div');
-    el.className='feed-item';
-    const colors={red:'#ef4444',yellow:'#fbbf24',green:'#6ee7b7',blue:'#67e8f9',purple:'#a78bfa'};
-    el.style.background=colors[item.name]||'rgba(255,255,255,0.2)';
-    el.textContent=item.emoji;
-    el.addEventListener('click',function(){
-      if(this.classList.contains('hidden'))return;
-      if(item.name===level.want){
-        this.classList.add('hidden');
-        alienScore++;
-        alienRound++;
-        document.getElementById('alienScore').textContent=`${alienRound+1}/${alienLevels.length}`;
-        spawnConfetti(8);
-        // Alien happy reaction
-        document.getElementById('alienChar').textContent='🥳';
-        setTimeout(()=>document.getElementById('alienChar').textContent='👽',600);
-        setTimeout(spawnAlienRound,700);
-      }else{
-        this.classList.add('wrong');
-        document.getElementById('alienChar').textContent='😕';
-        setTimeout(()=>{
-          this.classList.remove('wrong');
-          document.getElementById('alienChar').textContent='👽';
-        },500);
-      }
-    });
-    container.appendChild(el);
-  });
+function poTouchEnd(e) {
+  if (poTouchClone) { poTouchClone.remove(); poTouchClone = null; }
+  if (!poTouchCard) return;
+  poTouchCard.style.opacity = '1';
+  const hovered = document.querySelector('.po-slot.hover');
+  if (hovered) {
+    hovered.classList.remove('hover');
+    poDropSlot.call(hovered, { preventDefault: () => {} });
+  }
+  poTouchCard = null;
+}
+
+function poTouchCancel() {
+  if (poTouchClone) { poTouchClone.remove(); poTouchClone = null; }
+  if (poTouchCard) { poTouchCard.style.opacity = '1'; poTouchCard = null; }
+  document.querySelectorAll('.po-slot.hover').forEach(s => s.classList.remove('hover'));
+}
+
+function poWin() {
+  poGameActive = false;
+  document.getElementById('poGameArea').style.display = 'none';
+  document.getElementById('poComplete').classList.add('active');
+  spawnConfetti(40);
+}
+
+function playPopSound() {
+  try {
+    const ac = new (window.AudioContext || window.webkitAudioContext)();
+    if (ac.state === 'suspended') ac.resume();
+    const osc = ac.createOscillator();
+    const g = ac.createGain();
+    osc.connect(g); g.connect(ac.destination);
+    osc.frequency.value = 660;
+    osc.type = 'sine';
+    g.gain.setValueAtTime(0.15, ac.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + 0.12);
+    osc.start(ac.currentTime); osc.stop(ac.currentTime + 0.12);
+  } catch(e) {}
 }
 
 // ═══════════════════════════════════════
@@ -2321,65 +2429,11 @@ function initMemory(){
 }
 
 // ═══════════════════════════════════════
-// MINI GAME 5: PLANET JUMP
-// ═══════════════════════════════════════
-const jumpPlanets=['🌑','🌕','🌖','🌗','🌘','🌙'];
-let jumpCurrent=0;
 
-function initJump(){
-  jumpCurrent=0;
-  document.getElementById('jumpGameArea').style.display='';
-  document.getElementById('jumpSuccess').classList.remove('active');
-  document.getElementById('jumpScore').textContent=`0/${jumpPlanets.length}`;
-
-  const container=document.getElementById('jumpPlanets');
-  container.innerHTML='';
-  jumpPlanets.forEach((emoji,i)=>{
-    const el=document.createElement('div');
-    el.className='jump-planet-node'+(i===0?' current':'')+(i>0?' locked':'');
-    el.textContent=emoji;
-    el.dataset.index=i;
-    el.addEventListener('click',()=>jumpToPlanet(i));
-    container.appendChild(el);
-  });
-  updateJumpMission();
-}
-
-function jumpToPlanet(i){
-  if(i!==jumpCurrent+1)return;
-  jumpCurrent=i;
-  const nodes=document.querySelectorAll('.jump-planet-node');
-  nodes.forEach((n,idx)=>{
-    n.className='jump-planet-node';
-    if(idx<jumpCurrent)n.classList.add('visited');
-    else if(idx===jumpCurrent)n.classList.add('current');
-    else n.classList.add('locked');
-  });
-  document.getElementById('astroChar').style.transform=`translateX(${i*48}px)`;
-  document.getElementById('jumpScore').textContent=`${jumpCurrent}/${jumpPlanets.length-1}`;
-  spawnConfetti(10);
-  if(jumpCurrent===jumpPlanets.length-1){
-    document.getElementById('jumpGameArea').style.display='none';
-    document.getElementById('jumpSuccess').classList.add('active');
-    spawnConfetti(40);
-  }
-  updateJumpMission();
-}
-
-function updateJumpMission(){
-  const msgs=[
-    'Tap the next planet to jump! 🚀',
-    'Almost there! Keep going! ⭐',
-    'One more jump to the moon! 🌙',
-    'You made it to the moon! 🎉'
-  ];
-  const idx=Math.min(jumpCurrent,msgs.length-1);
-  document.getElementById('jumpMission').innerHTML=msgs[idx];
-}
 
 // ─── Init ───
 // Create all planets unlocked
-gameState.planets.color=true;gameState.planets.letter=true;gameState.planets.shape=true;gameState.planets.rocket=true;gameState.planets.alien=true;gameState.planets.moon=true;
+gameState.planets.color=true;gameState.planets.letter=true;gameState.planets.shape=true;gameState.planets.rocket=true;gameState.planets.alien=true;
 saveState();
 
 // First visit message
